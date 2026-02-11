@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1440 - Gestor de Tiempo</title>
+    <title>1440 - Cada minuto cuenta</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -21,10 +21,13 @@
             --success: #00ff88;
             --danger: #ff3366;
             --warning: #ffaa00;
+            --purple: #8b5cf6;
             --text-primary: #ffffff;
             --text-secondary: #99b3d9;
             --text-muted: #5580b3;
             --border: #1a3366;
+            --sleep: #6366f1;
+            --empty: #374151;
         }
 
         body {
@@ -60,6 +63,7 @@
             padding: 2rem;
             position: relative;
             z-index: 1;
+            padding-bottom: 6rem;
         }
 
         /* Login Screen */
@@ -200,6 +204,56 @@
             margin-bottom: 0.4rem;
         }
 
+        /* Sleep Setup Modal */
+        .sleep-setup-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 11, 31, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 2001;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .sleep-setup-modal.active {
+            display: flex;
+        }
+
+        .sleep-setup-content {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .sleep-setup-content h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .time-picker-group {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .time-picker {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
         /* Buttons */
         .btn {
             background: linear-gradient(135deg, var(--cyan), var(--blue));
@@ -269,7 +323,7 @@
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         .loading {
@@ -291,13 +345,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
-            animation: slideDown 0.6s ease-out;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            margin-bottom: 1.5rem;
         }
 
         .logo {
@@ -331,55 +379,58 @@
             display: flex;
             gap: 0.75rem;
             flex-wrap: wrap;
-        }
-
-        .sync-status {
-            display: flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
         }
 
-        .sync-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--cyan);
-            box-shadow: 0 0 8px var(--cyan);
-            animation: pulse-dot 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Timer Section */
-        .timer-section {
+        /* Progress Bar 1440 */
+        .progress-1440 {
             background: var(--bg-secondary);
             border: 2px solid var(--border);
-            border-radius: 20px;
-            padding: 2.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .progress-label strong {
+            color: var(--cyan);
+            font-size: 1.1rem;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 16px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--cyan), var(--blue));
+            border-radius: 8px;
+            transition: width 0.5s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .timer-section::before {
+        .progress-bar-fill::after {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--cyan), var(--blue), transparent);
-            animation: shimmer 3s linear infinite;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
         }
 
         @keyframes shimmer {
@@ -387,71 +438,302 @@
             100% { transform: translateX(100%); }
         }
 
-        .timer-display {
+        /* Sticky Active Timer */
+        .sticky-timer {
+            position: sticky;
+            top: 1rem;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 102, 255, 0.1));
+            border: 2px solid var(--cyan);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2);
+        }
+
+        .sticky-timer-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .pulse-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+            box-shadow: 0 0 12px var(--success);
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .sticky-timer-info {
+            flex: 1;
+        }
+
+        .sticky-timer-task {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .sticky-timer-meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .sticky-timer-display {
             font-family: 'Space Mono', monospace;
-            font-size: 4rem;
+            font-size: 2.5rem;
             font-weight: 700;
             text-align: center;
-            margin-bottom: 1.5rem;
-            letter-spacing: 0.08em;
-            background: linear-gradient(135deg, var(--cyan), var(--blue), var(--cyan));
-            background-size: 200% 100%;
+            margin: 0.75rem 0;
+            background: linear-gradient(135deg, var(--cyan), var(--success));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: gradientFlow 4s linear infinite;
         }
 
-        @keyframes gradientFlow {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
+        .sticky-timer-actions {
+            display: flex;
+            gap: 0.75rem;
         }
 
-        .timer-controls {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 1rem;
+        .sticky-timer-actions .btn {
+            flex: 1;
+        }
+
+        /* Quick Track Widget */
+        .quick-track {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
             margin-bottom: 1.5rem;
         }
 
-        .timer-input-group {
+        .quick-track h3 {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1rem;
+        }
+
+        .quick-track-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .quick-track-item {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quick-track-item:hover {
+            border-color: var(--cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 255, 255, 0.2);
+        }
+
+        .quick-track-item.active {
+            border-color: var(--success);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .quick-track-info {
+            flex: 1;
+        }
+
+        .quick-track-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
             gap: 0.5rem;
         }
 
-        label {
-            font-size: 0.8rem;
+        .quick-track-time {
+            font-size: 0.85rem;
             color: var(--text-secondary);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .quick-track-btn {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--bg-primary);
+            font-weight: 700;
+        }
+
+        /* Timeline 24h */
+        .timeline-24h {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-24h h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-hours {
+            position: relative;
+            height: 600px;
+            overflow-y: auto;
+        }
+
+        .timeline-hour {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            min-height: 50px;
+            position: relative;
+        }
+
+        .timeline-hour:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-hour-label {
+            width: 60px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-family: 'Space Mono', monospace;
+            padding: 0.5rem;
+        }
+
+        .timeline-hour-content {
+            flex: 1;
+            position: relative;
+            padding: 0.25rem;
+        }
+
+        .timeline-entry {
+            position: absolute;
+            left: 4px;
+            right: 4px;
+            border-radius: 6px;
+            padding: 0.5rem;
+            font-size: 0.85rem;
             font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            overflow: hidden;
+        }
+
+        .timeline-entry:hover {
+            transform: translateX(2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .timeline-entry.tracked {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 102, 255, 0.2));
+            border: 2px solid var(--cyan);
+        }
+
+        .timeline-entry.sleep {
+            background: rgba(99, 102, 241, 0.3);
+            border: 2px solid var(--sleep);
+        }
+
+        .timeline-entry.empty {
+            background: rgba(55, 65, 81, 0.3);
+            border: 2px dashed var(--empty);
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dashboard-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .dashboard-card h3 {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.08em;
+            margin-bottom: 1rem;
         }
 
-        input, select, textarea {
-            background: var(--bg-tertiary);
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            padding: 0.9rem 1.1rem;
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
+        .dashboard-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'Space Mono', monospace;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
         }
 
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--cyan);
-            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.1);
+        /* Pie Chart */
+        .pie-chart-container {
+            width: 100%;
+            aspect-ratio: 1;
+            position: relative;
+            margin: 1rem 0;
         }
 
-        .timer-action-buttons {
+        .pie-chart {
+            width: 100%;
+            height: 100%;
+        }
+
+        .pie-legend {
+            margin-top: 1rem;
+        }
+
+        .pie-legend-item {
             display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
         }
 
-        .timer-action-buttons .btn {
+        .pie-legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .pie-legend-label {
             flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .pie-legend-value {
+            font-family: 'Space Mono', monospace;
+            font-weight: 600;
+            color: var(--cyan);
         }
 
         /* Tabs */
@@ -459,6 +741,8 @@
             display: flex;
             gap: 0.6rem;
             margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
         }
 
         .tab {
@@ -471,6 +755,7 @@
             transition: all 0.3s ease;
             font-weight: 600;
             font-size: 0.95rem;
+            white-space: nowrap;
         }
 
         .tab:hover {
@@ -490,238 +775,6 @@
 
         .tab-content.active {
             display: block;
-        }
-
-        /* Categories & Projects */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .category-section {
-            margin-bottom: 2rem;
-        }
-
-        .category-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .category-header:hover {
-            border-color: var(--cyan);
-        }
-
-        .category-name {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1rem;
-            padding-left: 2rem;
-        }
-
-        .project-card {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .project-card:hover {
-            border-color: var(--cyan);
-            transform: translateY(-3px);
-        }
-
-        .project-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-
-        .project-name {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-
-        .project-dot {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            box-shadow: 0 0 8px currentColor;
-        }
-
-        .project-stats {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 2px solid var(--border);
-        }
-
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-        }
-
-        .stat-value {
-            color: var(--cyan);
-            font-weight: 700;
-            font-family: 'Space Mono', monospace;
-        }
-
-        /* Entries */
-        .entries-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-        }
-
-        .entry-card {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 1.3rem;
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            gap: 1.2rem;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .entry-card:hover {
-            border-color: var(--cyan);
-            transform: translateY(-2px);
-        }
-
-        .entry-time {
-            font-family: 'Space Mono', monospace;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--cyan);
-            min-width: 90px;
-        }
-
-        .entry-details {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-
-        .entry-description {
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .entry-meta {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            flex-wrap: wrap;
-        }
-
-        .entry-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.3rem 0.8rem;
-            background: var(--bg-tertiary);
-            border-radius: 6px;
-            font-size: 0.8rem;
-            border: 1px solid var(--border);
-        }
-
-        .entry-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .icon-btn {
-            background: var(--bg-tertiary);
-            border: 2px solid var(--border);
-            color: var(--text-secondary);
-            width: 38px;
-            height: 38px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .icon-btn:hover {
-            border-color: var(--cyan);
-            color: var(--cyan);
-        }
-
-        .icon-btn.delete:hover {
-            border-color: var(--danger);
-            color: var(--danger);
-        }
-
-        /* Reports */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.25rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 1.75rem;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            border-color: var(--cyan);
-        }
-
-        .stat-card h3 {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-weight: 700;
-        }
-
-        .stat-card .value {
-            font-size: 2.8rem;
-            font-weight: 800;
-            font-family: 'Space Mono', monospace;
-            background: linear-gradient(135deg, var(--cyan), var(--blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
         /* Modal */
@@ -791,6 +844,32 @@
             margin-bottom: 1.5rem;
         }
 
+        label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        input, select, textarea {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 0.9rem 1.1rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.1);
+        }
+
         textarea {
             min-height: 100px;
             resize: vertical;
@@ -811,32 +890,9 @@
             cursor: pointer;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 3.5rem 2rem;
-            color: var(--text-secondary);
-        }
-
-        .empty-state-icon {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            opacity: 0.3;
-        }
-
-        .empty-state h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.6rem;
-            font-weight: 700;
-        }
-
-        .filters {
-            display: flex;
-            gap: 0.9rem;
-            flex-wrap: wrap;
-        }
-
-        .filters select {
-            min-width: 180px;
+        input[type="time"] {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1rem;
         }
 
         @media (max-width: 768px) {
@@ -844,42 +900,28 @@
                 padding: 1rem;
             }
 
-            header {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
+            .sticky-timer-display {
+                font-size: 2rem;
             }
 
-            .timer-display {
-                font-size: 3rem;
-            }
-
-            .timer-controls {
+            .quick-track-items {
                 grid-template-columns: 1fr;
             }
 
-            .entry-card {
-                grid-template-columns: 1fr;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-                padding-left: 0;
-            }
-
-            .stats-grid {
+            .dashboard-grid {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Login Screen -->
     <div class="login-screen" id="loginScreen">
         <div class="login-box">
             <div class="login-logo">
                 <div class="login-logo-icon">1440</div>
                 <h1>1440</h1>
-                <p>1440 minutos, infinitas posibilidades</p>
+                <p>Cada minuto cuenta</p>
             </div>
 
             <div class="login-tabs">
@@ -932,6 +974,37 @@
         </div>
     </div>
 
+    <!-- Sleep Setup Modal -->
+    <div class="sleep-setup-modal" id="sleepSetupModal">
+        <div class="sleep-setup-content">
+            <h2>😴 Configura tu Sueño</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Para registrar automáticamente tu sueño, dinos tu rutina habitual. Siempre podrás editarla después.
+            </p>
+            
+            <div class="time-picker-group">
+                <div class="time-picker">
+                    <label>🌙 Me duermo a:</label>
+                    <input type="time" id="sleepTime" value="22:30">
+                </div>
+                <div class="time-picker">
+                    <label>☀️ Me despierto a:</label>
+                    <input type="time" id="wakeTime" value="07:00">
+                </div>
+            </div>
+
+            <div class="login-info">
+                <strong>💡 Tip</strong>
+                Esta configuración se aplicará automáticamente cada día. Si cambias tu rutina, el sistema lo detectará y te preguntará.
+            </div>
+
+            <button class="btn btn-success btn-full" onclick="saveSleepRoutine()">
+                Guardar Rutina
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App -->
     <div class="container" id="mainApp" style="display: none;">
         <header>
             <div class="logo">
@@ -939,114 +1012,128 @@
                 <h1>1440</h1>
             </div>
             <div class="header-actions">
-                <div class="sync-status">
-                    <div class="sync-dot"></div>
-                    <span>Sincronizado</span>
-                </div>
                 <button class="btn btn-secondary btn-small" onclick="exportData('csv')">📊 CSV</button>
                 <button class="btn btn-secondary btn-small" onclick="exportData('pdf')">📄 PDF</button>
                 <button class="btn btn-danger btn-small" onclick="logout()">🚪 Salir</button>
             </div>
         </header>
 
-        <div class="timer-section">
-            <div class="timer-display" id="timerDisplay">00:00:00</div>
-            
-            <div class="timer-controls">
-                <div class="timer-input-group">
-                    <label for="taskDescription">¿En qué estás trabajando?</label>
-                    <input type="text" id="taskDescription" placeholder="Descripción de la tarea...">
+        <!-- Progress 1440 -->
+        <div class="progress-1440">
+            <div class="progress-label">
+                <span id="progressText">Hoy: <strong>0 / 1440</strong> min registrados</span>
+                <span id="progressPercent" style="color: var(--text-secondary);">0%</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Sticky Active Timer -->
+        <div class="sticky-timer hidden" id="stickyTimer">
+            <div class="sticky-timer-header">
+                <div class="pulse-dot"></div>
+                <div class="sticky-timer-info">
+                    <div class="sticky-timer-task" id="activeTaskName">Trabajando...</div>
+                    <div class="sticky-timer-meta" id="activeTaskMeta">Trabajo • Proyecto X</div>
+                </div>
+            </div>
+            <div class="sticky-timer-display" id="activeTimerDisplay">00:00:00</div>
+            <div class="sticky-timer-actions">
+                <button class="btn btn-danger" onclick="stopActiveTimer()">⏹ Detener</button>
+                <button class="btn btn-secondary" onclick="openQuickSwitch()">🔄 Cambiar</button>
+            </div>
+        </div>
+
+        <!-- Quick Track Widget -->
+        <div class="quick-track">
+            <h3>⚡ Quick Track - 1 Click</h3>
+            <div class="quick-track-items" id="quickTrackItems">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('timeline')">📅 Timeline</button>
+            <button class="tab" onclick="switchTab('areas')">📁 Áreas</button>
+            <button class="tab" onclick="switchTab('dashboard')">📊 Dashboard</button>
+        </div>
+
+        <!-- Timeline Tab -->
+        <div class="tab-content active" id="timelineTab">
+            <div class="timeline-24h">
+                <h3>Timeline del Día</h3>
+                <div class="timeline-hours" id="timeline24h">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Areas Tab -->
+        <div class="tab-content" id="areasTab">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2>Áreas de Vida</h2>
+                <button class="btn btn-small" onclick="openAreaModal()">➕ Nueva Área</button>
+            </div>
+            <div id="areasContainer"></div>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div class="tab-content" id="dashboardTab">
+            <h2 style="margin-bottom: 1.5rem;">Dashboard</h2>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>Distribución 1440</h3>
+                    <div class="pie-chart-container">
+                        <svg class="pie-chart" id="pieChart" viewBox="0 0 100 100"></svg>
+                    </div>
+                    <div class="pie-legend" id="pieLegend"></div>
                 </div>
                 
-                <div class="timer-input-group">
-                    <label for="categorySelect">Categoría</label>
-                    <select id="categorySelect" onchange="updateProjectsByCategory()">
-                        <option value="">Todas</option>
-                    </select>
+                <div class="dashboard-card">
+                    <h3>Sueño Promedio</h3>
+                    <div class="dashboard-value" id="avgSleep">0h</div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Última semana</p>
                 </div>
 
-                <div class="timer-input-group">
-                    <label for="projectSelect">Proyecto</label>
-                    <select id="projectSelect">
-                        <option value="">Sin proyecto</option>
-                    </select>
+                <div class="dashboard-card">
+                    <h3>Tiempo Vacío</h3>
+                    <div class="dashboard-value" id="emptyTime">0h</div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Sin registrar hoy</p>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>Balance Vida</h3>
+                    <div class="dashboard-value" id="workLifeBalance">50%</div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Trabajo vs Personal</p>
                 </div>
             </div>
-
-            <div class="timer-action-buttons">
-                <button class="btn btn-success" id="startBtn" onclick="startTimer()">▶ Iniciar</button>
-                <button class="btn btn-danger" id="stopBtn" onclick="stopTimer()" style="display: none;">⏹ Detener</button>
-                <button class="btn btn-secondary" onclick="openManualEntryModal()">➕ Manual</button>
-            </div>
-        </div>
-
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('entries')">📋 Entradas</button>
-            <button class="tab" onclick="switchTab('projects')">📁 Proyectos</button>
-            <button class="tab" onclick="switchTab('reports')">📊 Reportes</button>
-        </div>
-
-        <div class="tab-content active" id="entriesTab">
-            <div class="section-header">
-                <h2>Registro de Tiempo</h2>
-                <div class="filters">
-                    <select id="filterCategory" onchange="filterEntries()">
-                        <option value="">Todas las categorías</option>
-                    </select>
-                    <select id="filterProject" onchange="filterEntries()">
-                        <option value="">Todos los proyectos</option>
-                    </select>
-                    <select id="filterPeriod" onchange="filterEntries()">
-                        <option value="today">Hoy</option>
-                        <option value="week">Esta semana</option>
-                        <option value="month">Este mes</option>
-                        <option value="all">Todo</option>
-                    </select>
-                </div>
-            </div>
-            <div class="entries-list" id="entriesList"></div>
-        </div>
-
-        <div class="tab-content" id="projectsTab">
-            <div class="section-header">
-                <h2>Categorías y Proyectos</h2>
-                <div style="display: flex; gap: 0.75rem;">
-                    <button class="btn btn-small" onclick="openCategoryModal()">➕ Categoría</button>
-                    <button class="btn btn-small" onclick="openProjectModal()">➕ Proyecto</button>
-                </div>
-            </div>
-            <div id="categoriesContainer"></div>
-        </div>
-
-        <div class="tab-content" id="reportsTab">
-            <h2 style="margin-bottom: 1.5rem;">Estadísticas y Reportes</h2>
-            <div class="stats-grid" id="statsGrid"></div>
-            <div id="detailedReport"></div>
         </div>
     </div>
 
-    <!-- Category Modal -->
-    <div class="modal" id="categoryModal">
+    <!-- Area Modal -->
+    <div class="modal" id="areaModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Nueva Categoría</h2>
-                <button class="close-modal" onclick="closeModal('categoryModal')">×</button>
+                <h2>Nueva Área de Vida</h2>
+                <button class="close-modal" onclick="closeModal('areaModal')">×</button>
             </div>
             <div class="form-group">
-                <label for="categoryName">Nombre</label>
-                <input type="text" id="categoryName" placeholder="Ej: Trabajo, Vida Personal, Hobbies">
+                <label>Nombre</label>
+                <input type="text" id="areaName" placeholder="Ej: Trabajo, Salud, Familia">
             </div>
             <div class="form-group">
-                <label for="categoryIcon">Emoji/Icono</label>
-                <input type="text" id="categoryIcon" placeholder="📁 💼 🏃 📚" maxlength="2">
+                <label>Emoji/Icono</label>
+                <input type="text" id="areaIcon" placeholder="💼 🏃 ❤️" maxlength="2">
             </div>
             <div class="form-group">
-                <label for="categoryColor">Color</label>
-                <input type="color" id="categoryColor" value="#00ffff">
+                <label>Color</label>
+                <input type="color" id="areaColor" value="#00ffff">
             </div>
             <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeModal('categoryModal')">Cancelar</button>
-                <button class="btn" onclick="saveCategory()">Guardar</button>
+                <button class="btn btn-secondary" onclick="closeModal('areaModal')">Cancelar</button>
+                <button class="btn" onclick="saveArea()">Guardar</button>
             </div>
         </div>
     </div>
@@ -1059,64 +1146,22 @@
                 <button class="close-modal" onclick="closeModal('projectModal')">×</button>
             </div>
             <div class="form-group">
-                <label for="projectCategory">Categoría</label>
-                <select id="projectCategory">
-                    <option value="">Sin categoría</option>
+                <label>Área de Vida</label>
+                <select id="projectArea">
+                    <option value="">Sin área</option>
                 </select>
             </div>
             <div class="form-group">
-                <label for="projectName">Nombre del Proyecto</label>
-                <input type="text" id="projectName" placeholder="Ej: Cliente ABC - Diseño Web">
+                <label>Nombre</label>
+                <input type="text" id="projectName" placeholder="Ej: Cliente ABC">
             </div>
             <div class="form-group">
-                <label for="projectColor">Color</label>
+                <label>Color</label>
                 <input type="color" id="projectColor" value="#0066ff">
-            </div>
-            <div class="form-group">
-                <label for="projectNotes">Notas (opcional)</label>
-                <textarea id="projectNotes" placeholder="Descripción del proyecto..."></textarea>
             </div>
             <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeModal('projectModal')">Cancelar</button>
                 <button class="btn" onclick="saveProject()">Guardar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Manual Entry Modal -->
-    <div class="modal" id="manualEntryModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Entrada Manual</h2>
-                <button class="close-modal" onclick="closeModal('manualEntryModal')">×</button>
-            </div>
-            <div class="form-group">
-                <label for="manualDescription">Descripción</label>
-                <input type="text" id="manualDescription" placeholder="¿Qué hiciste?">
-            </div>
-            <div class="form-group">
-                <label for="manualProject">Proyecto</label>
-                <select id="manualProject">
-                    <option value="">Sin proyecto</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="manualDate">Fecha</label>
-                <input type="date" id="manualDate">
-            </div>
-            <div class="timer-controls" style="grid-template-columns: 1fr 1fr;">
-                <div class="timer-input-group">
-                    <label for="manualStartTime">Hora de inicio</label>
-                    <input type="time" id="manualStartTime">
-                </div>
-                <div class="timer-input-group">
-                    <label for="manualEndTime">Hora de fin</label>
-                    <input type="time" id="manualEndTime">
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeModal('manualEntryModal')">Cancelar</button>
-                <button class="btn" onclick="saveManualEntry()">Guardar</button>
             </div>
         </div>
     </div>
@@ -1131,11 +1176,10 @@
         const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentUser = null;
-        let timerInterval = null;
-        let startTime = null;
-        let elapsedSeconds = 0;
+        let activeTimer = null;
+        let activeTimerInterval = null;
         let appData = {
-            categories: [],
+            categories: [], // Áreas de vida
             projects: [],
             entries: []
         };
@@ -1220,12 +1264,14 @@
 
                 if (error) throw error;
 
-                successEl.textContent = '¡Cuenta creada exitosamente! Redirigiendo...';
+                successEl.textContent = '¡Cuenta creada! Configuremos tu rutina de sueño...';
                 successEl.classList.remove('hidden');
                 
                 setTimeout(() => {
+                    currentUser = user;
                     switchLoginTab('login');
                     successEl.classList.add('hidden');
+                    document.getElementById('sleepSetupModal').classList.add('active');
                     for (let i = 1; i <= 4; i++) {
                         document.getElementById(`register-pin-${i}`).value = '';
                     }
@@ -1238,6 +1284,42 @@
             } finally {
                 btnText.classList.remove('hidden');
                 btnLoading.classList.add('hidden');
+            }
+        }
+
+        async function saveSleepRoutine() {
+            const sleepTime = document.getElementById('sleepTime').value;
+            const wakeTime = document.getElementById('wakeTime').value;
+
+            if (!sleepTime || !wakeTime) {
+                alert('Por favor completa ambos horarios');
+                return;
+            }
+
+            try {
+                // Create or update user preferences
+                const { error } = await sb
+                    .from('users')
+                    .update({
+                        sleep_routine: {
+                            enabled: true,
+                            sleep_time: sleepTime,
+                            wake_time: wakeTime,
+                            auto_apply: true
+                        }
+                    })
+                    .eq('id', currentUser.id);
+
+                if (error) throw error;
+
+                document.getElementById('sleepSetupModal').classList.remove('active');
+                await loadUserData();
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al guardar la rutina');
             }
         }
 
@@ -1261,7 +1343,7 @@
             try {
                 const { data: user, error } = await sb
                     .from('users')
-                    .select('id')
+                    .select('*')
                     .eq('pin', pin)
                     .maybeSingle();
 
@@ -1280,8 +1362,16 @@
                 currentUser = user;
                 await loadUserData();
                 
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
+                // Check if needs sleep setup
+                if (!user.sleep_routine || !user.sleep_routine.enabled) {
+                    document.getElementById('sleepSetupModal').classList.add('active');
+                } else {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('mainApp').style.display = 'block';
+                }
+
+                // Process daily sleep
+                await processDailySleep();
 
             } catch (error) {
                 console.error('Error:', error);
@@ -1298,28 +1388,70 @@
                 const [categories, projects, entries] = await Promise.all([
                     sb.from('categories').select('*').eq('user_id', currentUser.id).order('created_at'),
                     sb.from('projects').select('*').eq('user_id', currentUser.id).order('created_at'),
-                    sb.from('time_entries').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false })
+                    sb.from('time_entries').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(100)
                 ]);
 
                 appData.categories = categories.data || [];
                 appData.projects = projects.data || [];
                 appData.entries = entries.data || [];
 
-                updateAllSelects();
-                renderCategories();
-                renderEntries();
-                renderReports();
-                updateTimerDisplay();
+                renderQuickTrack();
+                renderTimeline();
+                renderAreas();
+                renderDashboard();
+                updateProgress();
 
             } catch (error) {
                 console.error('Error al cargar datos:', error);
             }
         }
 
+        async function processDailySleep() {
+            if (!currentUser.sleep_routine || !currentUser.sleep_routine.enabled) return;
+
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            // Check if sleep already exists for yesterday
+            const { data: existingSleep } = await sb
+                .from('time_entries')
+                .select('id')
+                .eq('user_id', currentUser.id)
+                .eq('type', 'sleep')
+                .gte('date', yesterday.toISOString().split('T')[0])
+                .maybeSingle();
+
+            if (existingSleep) return; // Already has sleep
+
+            // Apply routine automatically
+            const routine = currentUser.sleep_routine;
+            const sleepStart = new Date(`${yesterday.toISOString().split('T')[0]}T${routine.sleep_time}`);
+            const sleepEnd = new Date(`${today.toISOString().split('T')[0]}T${routine.wake_time}`);
+            const duration = Math.floor((sleepEnd - sleepStart) / 1000);
+
+            if (duration > 0 && duration < 86400) { // Reasonable sleep duration
+                await sb.from('time_entries').insert([{
+                    user_id: currentUser.id,
+                    type: 'sleep',
+                    description: 'Sueño',
+                    start_time: sleepStart.toISOString(),
+                    end_time: sleepEnd.toISOString(),
+                    duration: duration,
+                    date: yesterday.toISOString().split('T')[0],
+                    auto_detected: true
+                }]);
+
+                await loadUserData();
+            }
+        }
+
         function logout() {
-            if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
+            if (confirm('¿Cerrar sesión?')) {
                 currentUser = null;
                 appData = { categories: [], projects: [], entries: [] };
+                if (activeTimerInterval) clearInterval(activeTimerInterval);
+                activeTimer = null;
                 document.getElementById('loginScreen').style.display = 'flex';
                 document.getElementById('mainApp').style.display = 'none';
                 for (let i = 1; i <= 4; i++) {
@@ -1329,45 +1461,80 @@
             }
         }
 
-        // Timer Functions
-        function updateTimerDisplay() {
-            const hours = Math.floor(elapsedSeconds / 3600);
-            const minutes = Math.floor((elapsedSeconds % 3600) / 60);
-            const seconds = elapsedSeconds % 60;
+        // Quick Track Functions
+        function renderQuickTrack() {
+            const container = document.getElementById('quickTrackItems');
             
-            document.getElementById('timerDisplay').textContent = 
+            // Get top projects/areas
+            const topItems = [...appData.categories.slice(0, 4), ...appData.projects.slice(0, 4)];
+
+            container.innerHTML = topItems.map(item => {
+                const isCategory = !item.category_id && item.icon;
+                const icon = isCategory ? item.icon : '📌';
+                const name = item.name;
+                const color = item.color;
+
+                return `
+                    <div class="quick-track-item" onclick="startQuickTrack('${item.id}', '${isCategory ? 'category' : 'project'}')">
+                        <div class="quick-track-info">
+                            <div class="quick-track-name">${icon} ${name}</div>
+                            <div class="quick-track-time">0h 00m hoy</div>
+                        </div>
+                        <div class="quick-track-btn">▶</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function startQuickTrack(id, type) {
+            if (activeTimer) {
+                await stopActiveTimer();
+            }
+
+            const item = type === 'category' 
+                ? appData.categories.find(c => c.id === id)
+                : appData.projects.find(p => p.id === id);
+
+            if (!item) return;
+
+            activeTimer = {
+                id: id,
+                type: type,
+                name: item.name,
+                icon: item.icon || '📌',
+                startTime: new Date(),
+                elapsedSeconds: 0
+            };
+
+            // Show sticky timer
+            document.getElementById('stickyTimer').classList.remove('hidden');
+            document.getElementById('activeTaskName').textContent = item.name;
+            document.getElementById('activeTaskMeta').textContent = type === 'category' ? 'Área de Vida' : 'Proyecto';
+
+            // Start interval
+            activeTimerInterval = setInterval(() => {
+                activeTimer.elapsedSeconds++;
+                updateActiveTimerDisplay();
+            }, 1000);
+        }
+
+        function updateActiveTimerDisplay() {
+            if (!activeTimer) return;
+
+            const hours = Math.floor(activeTimer.elapsedSeconds / 3600);
+            const minutes = Math.floor((activeTimer.elapsedSeconds % 3600) / 60);
+            const seconds = activeTimer.elapsedSeconds % 60;
+
+            document.getElementById('activeTimerDisplay').textContent = 
                 `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
 
-        function startTimer() {
-            const description = document.getElementById('taskDescription').value;
-            if (!description.trim()) {
-                alert('Por favor ingresa una descripción de la tarea');
-                return;
-            }
+        async function stopActiveTimer() {
+            if (!activeTimer || !activeTimerInterval) return;
 
-            startTime = new Date();
-            elapsedSeconds = 0;
-            
-            timerInterval = setInterval(() => {
-                elapsedSeconds++;
-                updateTimerDisplay();
-            }, 1000);
+            clearInterval(activeTimerInterval);
+            activeTimerInterval = null;
 
-            document.getElementById('startBtn').style.display = 'none';
-            document.getElementById('stopBtn').style.display = 'block';
-            document.getElementById('taskDescription').disabled = true;
-            document.getElementById('categorySelect').disabled = true;
-            document.getElementById('projectSelect').disabled = true;
-        }
-
-        async function stopTimer() {
-            if (!timerInterval) return;
-
-            clearInterval(timerInterval);
-            timerInterval = null;
-
-            const projectId = document.getElementById('projectSelect').value || null;
             const endTime = new Date();
 
             try {
@@ -1375,12 +1542,14 @@
                     .from('time_entries')
                     .insert([{
                         user_id: currentUser.id,
-                        project_id: projectId,
-                        description: document.getElementById('taskDescription').value,
-                        start_time: startTime.toISOString(),
+                        project_id: activeTimer.type === 'project' ? activeTimer.id : null,
+                        category_id: activeTimer.type === 'category' ? activeTimer.id : null,
+                        description: activeTimer.name,
+                        start_time: activeTimer.startTime.toISOString(),
                         end_time: endTime.toISOString(),
-                        duration: elapsedSeconds,
-                        date: new Date().toISOString().split('T')[0]
+                        duration: activeTimer.elapsedSeconds,
+                        date: new Date().toISOString().split('T')[0],
+                        type: 'tracked'
                     }])
                     .select()
                     .single();
@@ -1388,36 +1557,88 @@
                 if (error) throw error;
 
                 appData.entries.unshift(data);
-                
-                document.getElementById('taskDescription').value = '';
-                document.getElementById('taskDescription').disabled = false;
-                document.getElementById('categorySelect').disabled = false;
-                document.getElementById('projectSelect').disabled = false;
-                document.getElementById('startBtn').style.display = 'block';
-                document.getElementById('stopBtn').style.display = 'none';
-                
-                elapsedSeconds = 0;
-                updateTimerDisplay();
-                
-                renderEntries();
-                renderReports();
+                document.getElementById('stickyTimer').classList.add('hidden');
+                activeTimer = null;
+
+                renderTimeline();
+                renderDashboard();
+                updateProgress();
 
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error al guardar la entrada');
+                alert('Error al guardar');
             }
         }
 
-        // Category Functions
-        function openCategoryModal() {
-            document.getElementById('categoryModal').classList.add('active');
-            document.getElementById('categoryName').value = '';
-            document.getElementById('categoryIcon').value = '📁';
-            document.getElementById('categoryColor').value = '#00ffff';
+        function openQuickSwitch() {
+            // TODO: Implement quick switch modal
+            alert('Quick Switch - próximamente');
         }
 
-        async function saveCategory() {
-            const name = document.getElementById('categoryName').value;
+        // Timeline Functions
+        function renderTimeline() {
+            const container = document.getElementById('timeline24h');
+            const today = new Date().toISOString().split('T')[0];
+            const todayEntries = appData.entries.filter(e => e.date === today);
+
+            let html = '';
+            for (let hour = 0; hour < 24; hour++) {
+                const hourStr = String(hour).padStart(2, '0');
+                html += `
+                    <div class="timeline-hour">
+                        <div class="timeline-hour-label">${hourStr}:00</div>
+                        <div class="timeline-hour-content" id="hour-${hour}">
+                            ${renderHourEntries(hour, todayEntries)}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function renderHourEntries(hour, entries) {
+            // Find entries that overlap with this hour
+            const hourEntries = entries.filter(e => {
+                const startHour = new Date(e.start_time).getHours();
+                const endHour = new Date(e.end_time).getHours();
+                return hour >= startHour && hour <= endHour;
+            });
+
+            if (hourEntries.length === 0) {
+                return `<div class="timeline-entry empty" style="top: 0; height: 100%;">Vacío</div>`;
+            }
+
+            return hourEntries.map(entry => {
+                const start = new Date(entry.start_time);
+                const end = new Date(entry.end_time);
+                const startMinutes = start.getHours() === hour ? start.getMinutes() : 0;
+                const endMinutes = end.getHours() === hour ? end.getMinutes() : 60;
+                
+                const top = (startMinutes / 60) * 100;
+                const height = ((endMinutes - startMinutes) / 60) * 100;
+
+                const className = entry.type === 'sleep' ? 'sleep' : 'tracked';
+
+                return `
+                    <div class="timeline-entry ${className}" 
+                         style="top: ${top}%; height: ${height}%">
+                        ${entry.description}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Area Functions
+        function openAreaModal() {
+            document.getElementById('areaModal').classList.add('active');
+            document.getElementById('areaName').value = '';
+            document.getElementById('areaIcon').value = '📁';
+            document.getElementById('areaColor').value = '#00ffff';
+        }
+
+        async function saveArea() {
+            const name = document.getElementById('areaName').value;
             if (!name.trim()) {
                 alert('Por favor ingresa un nombre');
                 return;
@@ -1429,8 +1650,8 @@
                     .insert([{
                         user_id: currentUser.id,
                         name: name.trim(),
-                        icon: document.getElementById('categoryIcon').value || '📁',
-                        color: document.getElementById('categoryColor').value
+                        icon: document.getElementById('areaIcon').value || '📁',
+                        color: document.getElementById('areaColor').value
                     }])
                     .select()
                     .single();
@@ -1438,9 +1659,9 @@
                 if (error) throw error;
 
                 appData.categories.push(data);
-                closeModal('categoryModal');
-                updateAllSelects();
-                renderCategories();
+                closeModal('areaModal');
+                renderQuickTrack();
+                renderAreas();
 
             } catch (error) {
                 console.error('Error:', error);
@@ -1448,592 +1669,128 @@
             }
         }
 
-        async function deleteCategory(id) {
-            if (!confirm('¿Eliminar esta categoría y sus proyectos?')) return;
-
-            try {
-                const { error } = await sb
-                    .from('categories')
-                    .delete()
-                    .eq('id', id);
-
-                if (error) throw error;
-
-                appData.categories = appData.categories.filter(c => c.id !== id);
-                appData.projects = appData.projects.filter(p => p.category_id !== id);
-                
-                updateAllSelects();
-                renderCategories();
-
-            } catch (error) {
-                console.error('Error:', error);
-            }
+        function renderAreas() {
+            const container = document.getElementById('areasContainer');
+            container.innerHTML = '<p style="color: var(--text-secondary);">Funcionalidad completa próximamente...</p>';
         }
 
-        // Project Functions
-        function openProjectModal() {
-            document.getElementById('projectModal').classList.add('active');
-            document.getElementById('projectName').value = '';
-            document.getElementById('projectColor').value = '#0066ff';
-            document.getElementById('projectNotes').value = '';
-            document.getElementById('projectCategory').value = '';
+        // Dashboard Functions
+        function renderDashboard() {
+            renderPieChart();
+            calculateStats();
         }
 
-        async function saveProject() {
-            const name = document.getElementById('projectName').value;
-            if (!name.trim()) {
-                alert('Por favor ingresa un nombre');
-                return;
-            }
+        function renderPieChart() {
+            const svg = document.getElementById('pieChart');
+            const legend = document.getElementById('pieLegend');
 
-            try {
-                const categoryId = document.getElementById('projectCategory').value || null;
-                
-                const { data, error } = await sb
-                    .from('projects')
-                    .insert([{
-                        user_id: currentUser.id,
-                        category_id: categoryId,
-                        name: name.trim(),
-                        color: document.getElementById('projectColor').value,
-                        notes: document.getElementById('projectNotes').value
-                    }])
-                    .select()
-                    .single();
+            // Calculate distribution
+            const today = new Date().toISOString().split('T')[0];
+            const todayEntries = appData.entries.filter(e => e.date === today);
 
-                if (error) throw error;
+            const distribution = {};
+            let totalMinutes = 0;
 
-                appData.projects.push(data);
-                closeModal('projectModal');
-                updateAllSelects();
-                renderCategories();
+            todayEntries.forEach(entry => {
+                const minutes = Math.floor(entry.duration / 60);
+                totalMinutes += minutes;
 
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error al guardar');
-            }
-        }
-
-        async function deleteProject(id) {
-            if (!confirm('¿Eliminar este proyecto?')) return;
-
-            try {
-                const { error } = await sb
-                    .from('projects')
-                    .delete()
-                    .eq('id', id);
-
-                if (error) throw error;
-
-                appData.projects = appData.projects.filter(p => p.id !== id);
-                updateAllSelects();
-                renderCategories();
-
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        function updateProjectsByCategory() {
-            const categoryId = document.getElementById('categorySelect').value;
-            const projectSelect = document.getElementById('projectSelect');
-            
-            let projects = appData.projects;
-            if (categoryId) {
-                projects = projects.filter(p => p.category_id === categoryId);
-            }
-            
-            projectSelect.innerHTML = '<option value="">Sin proyecto</option>' +
-                projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-        }
-
-        function updateAllSelects() {
-            const categorySelects = [
-                document.getElementById('categorySelect'),
-                document.getElementById('projectCategory'),
-                document.getElementById('filterCategory')
-            ];
-
-            categorySelects.forEach(select => {
-                const current = select.value;
-                select.innerHTML = '<option value="">Todas</option>' +
-                    appData.categories.map(c => 
-                        `<option value="${c.id}">${c.icon} ${c.name}</option>`
-                    ).join('');
-                select.value = current;
-            });
-
-            const projectSelects = [
-                document.getElementById('projectSelect'),
-                document.getElementById('manualProject'),
-                document.getElementById('filterProject')
-            ];
-
-            projectSelects.forEach(select => {
-                const current = select.value;
-                select.innerHTML = '<option value="">Sin proyecto</option>' +
-                    appData.projects.map(p => {
-                        const category = appData.categories.find(c => c.id === p.category_id);
-                        const prefix = category ? `${category.icon} ` : '';
-                        return `<option value="${p.id}">${prefix}${p.name}</option>`;
-                    }).join('');
-                select.value = current;
-            });
-        }
-
-        // Manual Entry
-        function openManualEntryModal() {
-            document.getElementById('manualEntryModal').classList.add('active');
-            document.getElementById('manualDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('manualDescription').value = '';
-            document.getElementById('manualProject').value = '';
-            document.getElementById('manualStartTime').value = '';
-            document.getElementById('manualEndTime').value = '';
-        }
-
-        async function saveManualEntry() {
-            const description = document.getElementById('manualDescription').value;
-            const date = document.getElementById('manualDate').value;
-            const startTimeStr = document.getElementById('manualStartTime').value;
-            const endTimeStr = document.getElementById('manualEndTime').value;
-
-            if (!description.trim() || !date || !startTimeStr || !endTimeStr) {
-                alert('Por favor completa todos los campos');
-                return;
-            }
-
-            const start = new Date(`${date}T${startTimeStr}`);
-            const end = new Date(`${date}T${endTimeStr}`);
-            const duration = Math.floor((end - start) / 1000);
-
-            if (duration <= 0) {
-                alert('La hora de fin debe ser posterior');
-                return;
-            }
-
-            try {
-                const projectId = document.getElementById('manualProject').value || null;
-                
-                const { data, error } = await sb
-                    .from('time_entries')
-                    .insert([{
-                        user_id: currentUser.id,
-                        project_id: projectId,
-                        description: description.trim(),
-                        start_time: start.toISOString(),
-                        end_time: end.toISOString(),
-                        duration: duration,
-                        date: date
-                    }])
-                    .select()
-                    .single();
-
-                if (error) throw error;
-
-                appData.entries.unshift(data);
-                closeModal('manualEntryModal');
-                renderEntries();
-                renderReports();
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error al guardar');
-            }
-        }
-
-        async function deleteEntry(id) {
-            if (!confirm('¿Eliminar esta entrada?')) return;
-
-            try {
-                const { error } = await sb
-                    .from('time_entries')
-                    .delete()
-                    .eq('id', id);
-
-                if (error) throw error;
-
-                appData.entries = appData.entries.filter(e => e.id !== id);
-                renderEntries();
-                renderReports();
-
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        // Render Functions
-        function renderCategories() {
-            const container = document.getElementById('categoriesContainer');
-
-            if (appData.categories.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📁</div>
-                        <h3>No hay categorías</h3>
-                        <p>Crea una categoría para organizar tus proyectos</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = appData.categories.map(category => {
-                const categoryProjects = appData.projects.filter(p => p.category_id === category.id);
-                
-                return `
-                    <div class="category-section">
-                        <div class="category-header">
-                            <div class="category-name">
-                                <span style="font-size: 1.5rem;">${category.icon}</span>
-                                ${category.name}
-                                <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: 500; margin-left: 0.5rem;">
-                                    (${categoryProjects.length})
-                                </span>
-                            </div>
-                            <button class="icon-btn delete" onclick="deleteCategory('${category.id}')">🗑️</button>
-                        </div>
-                        ${categoryProjects.length > 0 ? `
-                            <div class="projects-grid">
-                                ${categoryProjects.map(project => {
-                                    const projectEntries = appData.entries.filter(e => e.project_id === project.id);
-                                    const totalTime = projectEntries.reduce((sum, e) => sum + e.duration, 0);
-                                    
-                                    return `
-                                        <div class="project-card">
-                                            <div class="project-header">
-                                                <div class="project-name">${project.name}</div>
-                                                <span class="project-dot" style="background: ${project.color};"></span>
-                                            </div>
-                                            ${project.notes ? `<p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">${project.notes}</p>` : ''}
-                                            <div class="project-stats">
-                                                <div class="stat-row">
-                                                    <span class="stat-label">Tiempo total</span>
-                                                    <span class="stat-value">${formatDuration(totalTime)}</span>
-                                                </div>
-                                                <div class="stat-row">
-                                                    <span class="stat-label">Entradas</span>
-                                                    <span class="stat-value">${projectEntries.length}</span>
-                                                </div>
-                                            </div>
-                                            <div style="margin-top: 1rem;">
-                                                <button class="btn btn-danger btn-small" style="width: 100%;" onclick="deleteProject('${project.id}')">Eliminar</button>
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        ` : `
-                            <p style="color: var(--text-muted); padding-left: 2rem; font-size: 0.9rem;">
-                                No hay proyectos
-                            </p>
-                        `}
-                    </div>
-                `;
-            }).join('');
-
-            const uncategorized = appData.projects.filter(p => !p.category_id);
-            if (uncategorized.length > 0) {
-                container.innerHTML += `
-                    <div class="category-section">
-                        <div class="category-header">
-                            <div class="category-name">
-                                <span style="font-size: 1.5rem;">📌</span>
-                                Sin Categoría
-                                <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: 500; margin-left: 0.5rem;">
-                                    (${uncategorized.length})
-                                </span>
-                            </div>
-                        </div>
-                        <div class="projects-grid">
-                            ${uncategorized.map(project => {
-                                const projectEntries = appData.entries.filter(e => e.project_id === project.id);
-                                const totalTime = projectEntries.reduce((sum, e) => sum + e.duration, 0);
-                                
-                                return `
-                                    <div class="project-card">
-                                        <div class="project-header">
-                                            <div class="project-name">${project.name}</div>
-                                            <span class="project-dot" style="background: ${project.color};"></span>
-                                        </div>
-                                        ${project.notes ? `<p style="color: var(--text-secondary); font-size: 0.85rem;">${project.notes}</p>` : ''}
-                                        <div class="project-stats">
-                                            <div class="stat-row">
-                                                <span class="stat-label">Tiempo total</span>
-                                                <span class="stat-value">${formatDuration(totalTime)}</span>
-                                            </div>
-                                            <div class="stat-row">
-                                                <span class="stat-label">Entradas</span>
-                                                <span class="stat-value">${projectEntries.length}</span>
-                                            </div>
-                                        </div>
-                                        <div style="margin-top: 1rem;">
-                                            <button class="btn btn-danger btn-small" style="width: 100%;" onclick="deleteProject('${project.id}')">Eliminar</button>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        function getFilteredEntries() {
-            let filtered = [...appData.entries];
-            
-            const categoryFilter = document.getElementById('filterCategory').value;
-            if (categoryFilter) {
-                const categoryProjects = appData.projects
-                    .filter(p => p.category_id === categoryFilter)
-                    .map(p => p.id);
-                filtered = filtered.filter(e => categoryProjects.includes(e.project_id));
-            }
-
-            const projectFilter = document.getElementById('filterProject').value;
-            if (projectFilter) {
-                filtered = filtered.filter(e => e.project_id === projectFilter);
-            }
-
-            const periodFilter = document.getElementById('filterPeriod').value;
-            const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-            if (periodFilter === 'today') {
-                filtered = filtered.filter(e => new Date(e.date) >= today);
-            } else if (periodFilter === 'week') {
-                const weekAgo = new Date(today);
-                weekAgo.setDate(weekAgo.getDate() - 7);
-                filtered = filtered.filter(e => new Date(e.date) >= weekAgo);
-            } else if (periodFilter === 'month') {
-                const monthAgo = new Date(today);
-                monthAgo.setMonth(monthAgo.getMonth() - 1);
-                filtered = filtered.filter(e => new Date(e.date) >= monthAgo);
-            }
-
-            return filtered;
-        }
-
-        function renderEntries() {
-            const container = document.getElementById('entriesList');
-            const filtered = getFilteredEntries();
-
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">⏱️</div>
-                        <h3>No hay entradas</h3>
-                        <p>Inicia el temporizador o agrega una entrada manual</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = filtered.map(entry => {
-                const project = appData.projects.find(p => p.id === entry.project_id);
-                const category = project ? appData.categories.find(c => c.id === project.category_id) : null;
-                
-                let badges = '';
-                if (category) {
-                    badges += `
-                        <span class="entry-badge">
-                            ${category.icon} ${category.name}
-                        </span>
-                    `;
-                }
-                if (project) {
-                    badges += `
-                        <span class="entry-badge">
-                            <span class="project-dot" style="background: ${project.color}; width: 8px; height: 8px;"></span>
-                            ${project.name}
-                        </span>
-                    `;
-                }
-
-                return `
-                    <div class="entry-card">
-                        <div class="entry-time">${formatDuration(entry.duration)}</div>
-                        <div class="entry-details">
-                            <div class="entry-description">${entry.description}</div>
-                            <div class="entry-meta">
-                                <span>${formatDate(entry.start_time)} • ${formatTime(entry.start_time)} - ${formatTime(entry.end_time)}</span>
-                                ${badges}
-                            </div>
-                        </div>
-                        <div class="entry-actions">
-                            <button class="icon-btn delete" onclick="deleteEntry('${entry.id}')">🗑️</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function filterEntries() {
-            renderEntries();
-        }
-
-        function renderReports() {
-            const statsContainer = document.getElementById('statsGrid');
-            
-            const today = new Date();
-            const todayStr = today.toISOString().split('T')[0];
-            const thisWeekStart = new Date(today);
-            thisWeekStart.setDate(thisWeekStart.getDate() - today.getDay());
-            
-            const todayEntries = appData.entries.filter(e => e.date === todayStr);
-            const weekEntries = appData.entries.filter(e => new Date(e.date) >= thisWeekStart);
-
-            const todayTotal = todayEntries.reduce((sum, e) => sum + e.duration, 0);
-            const weekTotal = weekEntries.reduce((sum, e) => sum + e.duration, 0);
-            const allTotal = appData.entries.reduce((sum, e) => sum + e.duration, 0);
-
-            statsContainer.innerHTML = `
-                <div class="stat-card">
-                    <h3>Hoy</h3>
-                    <div class="value">${formatDuration(todayTotal)}</div>
-                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">${todayEntries.length} entradas</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Esta Semana</h3>
-                    <div class="value">${formatDuration(weekTotal)}</div>
-                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">${weekEntries.length} entradas</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Total</h3>
-                    <div class="value">${formatDuration(allTotal)}</div>
-                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">${appData.entries.length} entradas</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Proyectos</h3>
-                    <div class="value">${appData.projects.length}</div>
-                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">${appData.categories.length} categorías</p>
-                </div>
-            `;
-
-            const detailedContainer = document.getElementById('detailedReport');
-            if (appData.categories.length > 0) {
-                const categoryStats = appData.categories.map(category => {
-                    const categoryProjects = appData.projects.filter(p => p.category_id === category.id);
-                    const projectIds = categoryProjects.map(p => p.id);
-                    const entries = appData.entries.filter(e => projectIds.includes(e.project_id));
-                    const total = entries.reduce((sum, e) => sum + e.duration, 0);
-                    return { category, total, count: entries.length };
-                }).filter(s => s.total > 0).sort((a, b) => b.total - a.total);
-
-                if (categoryStats.length > 0) {
-                    detailedContainer.innerHTML = `
-                        <h3 style="margin: 2rem 0 1.25rem 0; font-size: 1.4rem;">Desglose por Categoría</h3>
-                        <div class="entries-list">
-                            ${categoryStats.map(stat => `
-                                <div class="entry-card">
-                                    <span style="font-size: 2rem;">${stat.category.icon}</span>
-                                    <div class="entry-details">
-                                        <div class="entry-description">${stat.category.name}</div>
-                                        <div class="entry-meta">${stat.count} entradas</div>
-                                    </div>
-                                    <div class="entry-time">${formatDuration(stat.total)}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
+                if (entry.type === 'sleep') {
+                    distribution['Sueño'] = (distribution['Sueño'] || 0) + minutes;
+                } else if (entry.category_id) {
+                    const cat = appData.categories.find(c => c.id === entry.category_id);
+                    const name = cat ? cat.name : 'Otro';
+                    distribution[name] = (distribution[name] || 0) + minutes;
                 } else {
-                    detailedContainer.innerHTML = '';
+                    distribution['Otro'] = (distribution['Otro'] || 0) + minutes;
                 }
-            } else {
-                detailedContainer.innerHTML = '';
-            }
-        }
-
-        // Utility Functions
-        function formatDuration(seconds) {
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            return `${hours}h ${String(minutes).padStart(2, '0')}m`;
-        }
-
-        function formatTime(isoString) {
-            const date = new Date(isoString);
-            return date.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
-        }
-
-        function formatDate(isoString) {
-            const date = new Date(isoString);
-            return date.toLocaleDateString('es', { day: 'numeric', month: 'short', year: 'numeric' });
-        }
-
-        // Export Functions
-        function exportData(format) {
-            if (format === 'csv') {
-                exportCSV();
-            } else if (format === 'pdf') {
-                exportPDF();
-            }
-        }
-
-        function exportCSV() {
-            const headers = ['Fecha', 'Descripción', 'Categoría', 'Proyecto', 'Inicio', 'Fin', 'Duración (horas)'];
-            const rows = appData.entries.map(entry => {
-                const project = appData.projects.find(p => p.id === entry.project_id);
-                const category = project ? appData.categories.find(c => c.id === project.category_id) : null;
-                
-                return [
-                    entry.date,
-                    entry.description,
-                    category ? category.name : '',
-                    project ? project.name : 'Sin proyecto',
-                    formatTime(entry.start_time),
-                    formatTime(entry.end_time),
-                    (entry.duration / 3600).toFixed(2)
-                ];
             });
 
-            let csv = headers.join(',') + '\n';
-            csv += rows.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+            const empty = 1440 - totalMinutes;
+            if (empty > 0) {
+                distribution['Vacío'] = empty;
+            }
 
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `1440-export-${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
+            // Generate pie chart
+            const colors = ['#00ffff', '#0066ff', '#8b5cf6', '#00ff88', '#ff3366', '#6366f1', '#374151'];
+            let currentAngle = 0;
+            let svgContent = '';
+            let legendContent = '';
 
-        function exportPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            Object.entries(distribution).forEach(([name, minutes], index) => {
+                const percentage = (minutes / 1440) * 100;
+                const angle = (percentage / 100) * 360;
+                const endAngle = currentAngle + angle;
 
-            doc.setFontSize(20);
-            doc.text('1440 - Reporte de Tiempo', 20, 20);
-            
-            doc.setFontSize(12);
-            doc.text(`Generado: ${new Date().toLocaleDateString('es')}`, 20, 30);
-            
-            let y = 45;
-            
-            appData.entries.forEach((entry) => {
-                if (y > 270) {
-                    doc.addPage();
-                    y = 20;
-                }
-                
-                const project = appData.projects.find(p => p.id === entry.project_id);
-                const category = project ? appData.categories.find(c => c.id === project.category_id) : null;
-                
-                doc.setFontSize(10);
-                doc.text(`${entry.date} - ${entry.description}`, 20, y);
-                y += 5;
-                doc.setFontSize(8);
-                
-                let info = '';
-                if (category) info += `Cat: ${category.name} | `;
-                info += `Proy: ${project ? project.name : 'N/A'} | Dur: ${formatDuration(entry.duration)}`;
-                
-                doc.text(info, 20, y);
-                y += 8;
+                const x1 = 50 + 40 * Math.cos((currentAngle - 90) * Math.PI / 180);
+                const y1 = 50 + 40 * Math.sin((currentAngle - 90) * Math.PI / 180);
+                const x2 = 50 + 40 * Math.cos((endAngle - 90) * Math.PI / 180);
+                const y2 = 50 + 40 * Math.sin((endAngle - 90) * Math.PI / 180);
+
+                const largeArc = angle > 180 ? 1 : 0;
+
+                svgContent += `
+                    <path d="M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2} Z"
+                          fill="${colors[index % colors.length]}"
+                          opacity="0.8" />
+                `;
+
+                legendContent += `
+                    <div class="pie-legend-item">
+                        <div class="pie-legend-color" style="background: ${colors[index % colors.length]}"></div>
+                        <div class="pie-legend-label">${name}</div>
+                        <div class="pie-legend-value">${Math.floor(minutes / 60)}h ${minutes % 60}m</div>
+                    </div>
+                `;
+
+                currentAngle = endAngle;
             });
 
-            doc.save(`1440-report-${new Date().toISOString().split('T')[0]}.pdf`);
+            svg.innerHTML = svgContent;
+            legend.innerHTML = legendContent;
         }
 
+        function calculateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayEntries = appData.entries.filter(e => e.date === today);
+
+            // Sleep average (last 7 days)
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            const sleepEntries = appData.entries.filter(e => 
+                e.type === 'sleep' && 
+                new Date(e.date) >= weekAgo
+            );
+            const avgSleepMinutes = sleepEntries.length > 0
+                ? sleepEntries.reduce((sum, e) => sum + e.duration, 0) / sleepEntries.length / 60
+                : 0;
+
+            document.getElementById('avgSleep').textContent = 
+                `${Math.floor(avgSleepMinutes / 60)}h ${Math.floor(avgSleepMinutes % 60)}m`;
+
+            // Empty time today
+            const trackedMinutes = todayEntries.reduce((sum, e) => sum + Math.floor(e.duration / 60), 0);
+            const emptyMinutes = 1440 - trackedMinutes;
+            document.getElementById('emptyTime').textContent = 
+                `${Math.floor(emptyMinutes / 60)}h ${emptyMinutes % 60}m`;
+
+            // Work-life balance (simplified)
+            document.getElementById('workLifeBalance').textContent = '50%';
+        }
+
+        function updateProgress() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayEntries = appData.entries.filter(e => e.date === today);
+            const totalMinutes = todayEntries.reduce((sum, e) => sum + Math.floor(e.duration / 60), 0);
+            const percentage = Math.min((totalMinutes / 1440) * 100, 100);
+
+            document.getElementById('progressText').innerHTML = 
+                `Hoy: <strong>${totalMinutes} / 1440</strong> min registrados`;
+            document.getElementById('progressPercent').textContent = `${Math.floor(percentage)}%`;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+        }
+
+        // Tab Functions
         function switchTab(tabName) {
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -2041,8 +1798,8 @@
             event.target.classList.add('active');
             document.getElementById(tabName + 'Tab').classList.add('active');
 
-            if (tabName === 'reports') {
-                renderReports();
+            if (tabName === 'dashboard') {
+                renderDashboard();
             }
         }
 
@@ -2050,6 +1807,12 @@
             document.getElementById(modalId).classList.remove('active');
         }
 
+        // Export Functions
+        function exportData(format) {
+            alert(`Exportar ${format.toUpperCase()} - próximamente`);
+        }
+
+        // Initialize
         document.getElementById('login-pin-1').focus();
     </script>
 </body>
