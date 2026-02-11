@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1440 - Gestor de Tiempo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #050b1f;
+            --bg-secondary: #0a1532;
+            --bg-tertiary: #0f1f45;
+            --cyan: #00ffff;
+            --blue: #0066ff;
+            --success: #00ff88;
+            --danger: #ff3366;
+            --warning: #ffaa00;
+            --text-primary: #ffffff;
+            --text-secondary: #99b3d9;
+            --text-muted: #5580b3;
+            --border: #1a3366;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(0, 102, 255, 0.08) 0%, transparent 40%);
+            animation: pulse 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-3%, -3%) scale(1.05); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 2000;
+        }
+
+        .login-box {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-logo-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 auto 1rem;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .login-logo h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-logo p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .login-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--bg-tertiary);
+            padding: 0.4rem;
+            border-radius: 10px;
+        }
+
+        .login-tab {
+            flex: 1;
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+            border-radius: 8px;
+            padding: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .login-tab.active {
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: var(--bg-primary);
+        }
+
+        .login-form {
+            display: none;
+        }
+
+        .login-form.active {
+            display: block;
+        }
+
+        .pin-input {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin: 1.25rem 0;
+        }
+
+        .pin-digit {
+            width: 50px;
+            height: 58px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            color: var(--cyan);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .pin-digit:focus {
+            outline: none;
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .login-info {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.05), rgba(0, 102, 255, 0.05));
+            border-left: 3px solid var(--cyan);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1.25rem 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .login-info strong {
+            color: var(--cyan);
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 10px;
+            padding: 0.85rem 1.5rem;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #00cc70);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #cc0044);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--cyan);
+            border: 2px solid var(--border);
+        }
+
+        .btn-small {
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .error-message, .success-message {
+            padding: 0.9rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .error-message {
+            background: rgba(255, 51, 102, 0.1);
+            border: 2px solid var(--danger);
+            color: var(--danger);
+        }
+
+        .success-message {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid var(--success);
+            color: var(--success);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.4rem;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .logo h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .sync-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 8px var(--cyan);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Timer Section */
+        .timer-section {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timer-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan), var(--blue), transparent);
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .timer-display {
+            font-family: 'Space Mono', monospace;
+            font-size: 4rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.08em;
+            background: linear-gradient(135deg, var(--cyan), var(--blue), var(--cyan));
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 4s linear infinite;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .timer-controls {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .timer-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        input, select, textarea {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 0.9rem 1.1rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.1);
+        }
+
+        .timer-action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .timer-action-buttons .btn {
+            flex: 1;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .tab:hover {
+            color: var(--cyan);
+            background: var(--bg-secondary);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 102, 255, 0.1));
+            color: var(--cyan);
+            border-color: var(--cyan);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Categories & Projects */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .category-section {
+            margin-bottom: 2rem;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-header:hover {
+            border-color: var(--cyan);
+        }
+
+        .category-name {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            padding-left: 2rem;
+        }
+
+        .project-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-3px);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .project-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .project-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        .project-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--border);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            color: var(--cyan);
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* Entries */
+        .entries-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .entry-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 1.3rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1.2rem;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .entry-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-2px);
+        }
+
+        .entry-time {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--cyan);
+            min-width: 90px;
+        }
+
+        .entry-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .entry-description {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .entry-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+
+        .entry-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.8rem;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            border: 1px solid var(--border);
+        }
+
+        .entry-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            color: var(--text-secondary);
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .icon-btn:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .icon-btn.delete:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* Reports */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 1.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--cyan);
+        }
+
+        .stat-card h3 {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+        }
+
+        .stat-card .value {
+            font-size: 2.8rem;
+            font-weight: 800;
+            font-family: 'Space Mono', monospace;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 11, 31, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 520px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.75rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .close-modal {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 1.4rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.75rem;
+        }
+
+        .modal-actions .btn {
+            flex: 1;
+        }
+
+        input[type="color"] {
+            height: 48px;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3.5rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.6rem;
+            font-weight: 700;
+        }
+
+        .filters {
+            display: flex;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .filters select {
+            min-width: 180px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .timer-display {
+                font-size: 3rem;
+            }
+
+            .timer-controls {
+                grid-template-columns: 1fr;
+            }
+
+            .entry-card {
+                grid-template-columns: 1fr;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+                padding-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="login-logo">
+                <div class="login-logo-icon">1440</div>
+                <h1>1440</h1>
+                <p>1440 minutos, infinitas posibilidades</p>
+            </div>
+
+            <div class="login-tabs">
+                <button class="login-tab active" onclick="switchLoginTab('login')">Ingresar</button>
+                <button class="login-tab" onclick="switchLoginTab('register')">Crear Cuenta</button>
+            </div>
+
+            <div class="login-form active" id="loginForm">
+                <div class="login-info">
+                    <strong>🔒 Ingresa tu PIN</strong>
+                    Tu PIN personal de 4 dígitos
+                </div>
+                <div class="pin-input">
+                    <input type="password" maxlength="1" class="pin-digit" id="login-pin-1" oninput="movePinFocus(this, 'login-pin-2')" />
+                    <input type="password" maxlength="1" class="pin-digit" id="login-pin-2" oninput="movePinFocus(this, 'login-pin-3')" />
+                    <input type="password" maxlength="1" class="pin-digit" id="login-pin-3" oninput="movePinFocus(this, 'login-pin-4')" />
+                    <input type="password" maxlength="1" class="pin-digit" id="login-pin-4" oninput="handlePinComplete('login')" />
+                </div>
+                <div id="loginError" class="error-message hidden"></div>
+                <button class="btn btn-full" onclick="handleLogin()">
+                    <span id="loginBtnText">Ingresar</span>
+                    <span id="loginBtnLoading" class="loading hidden"></span>
+                </button>
+            </div>
+
+            <div class="login-form" id="registerForm">
+                <div class="login-info">
+                    <strong>🚀 Crea tu PIN</strong>
+                    Elige un PIN de 4 dígitos que recordarás
+                </div>
+                <div class="pin-input">
+                    <input type="password" maxlength="1" class="pin-digit" id="register-pin-1" oninput="movePinFocus(this, 'register-pin-2')" />
+                    <input type="password" maxlength="1" class="pin-digit" id="register-pin-2" oninput="movePinFocus(this, 'register-pin-3')" />
+                    <input type="password" maxlength="1" class="pin-digit" id="register-pin-3" oninput="movePinFocus(this, 'register-pin-4')" />
+                    <input type="password" maxlength="1" class="pin-digit" id="register-pin-4" />
+                </div>
+                <div class="login-info" style="border-left-color: var(--warning);">
+                    <strong>⚠️ Importante</strong>
+                    • No olvides tu PIN - no hay recuperación<br>
+                    • Tus datos se sincronizarán en la nube<br>
+                    • Accede desde cualquier dispositivo
+                </div>
+                <div id="registerError" class="error-message hidden"></div>
+                <div id="registerSuccess" class="success-message hidden"></div>
+                <button class="btn btn-success btn-full" onclick="handleRegister()">
+                    <span id="registerBtnText">Crear Cuenta</span>
+                    <span id="registerBtnLoading" class="loading hidden"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="mainApp" style="display: none;">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">1440</div>
+                <h1>1440</h1>
+            </div>
+            <div class="header-actions">
+                <div class="sync-status">
+                    <div class="sync-dot"></div>
+                    <span>Sincronizado</span>
+                </div>
+                <button class="btn btn-secondary btn-small" onclick="exportData('csv')">📊 CSV</button>
+                <button class="btn btn-secondary btn-small" onclick="exportData('pdf')">📄 PDF</button>
+                <button class="btn btn-danger btn-small" onclick="logout()">🚪 Salir</button>
+            </div>
+        </header>
+
+        <div class="timer-section">
+            <div class="timer-display" id="timerDisplay">00:00:00</div>
+            
+            <div class="timer-controls">
+                <div class="timer-input-group">
+                    <label for="taskDescription">¿En qué estás trabajando?</label>
+                    <input type="text" id="taskDescription" placeholder="Descripción de la tarea...">
+                </div>
+                
+                <div class="timer-input-group">
+                    <label for="categorySelect">Categoría</label>
+                    <select id="categorySelect" onchange="updateProjectsByCategory()">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+
+                <div class="timer-input-group">
+                    <label for="projectSelect">Proyecto</label>
+                    <select id="projectSelect">
+                        <option value="">Sin proyecto</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="timer-action-buttons">
+                <button class="btn btn-success" id="startBtn" onclick="startTimer()">▶ Iniciar</button>
+                <button class="btn btn-danger" id="stopBtn" onclick="stopTimer()" style="display: none;">⏹ Detener</button>
+                <button class="btn btn-secondary" onclick="openManualEntryModal()">➕ Manual</button>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('entries')">📋 Entradas</button>
+            <button class="tab" onclick="switchTab('projects')">📁 Proyectos</button>
+            <button class="tab" onclick="switchTab('reports')">📊 Reportes</button>
+        </div>
+
+        <div class="tab-content active" id="entriesTab">
+            <div class="section-header">
+                <h2>Registro de Tiempo</h2>
+                <div class="filters">
+                    <select id="filterCategory" onchange="filterEntries()">
+                        <option value="">Todas las categorías</option>
+                    </select>
+                    <select id="filterProject" onchange="filterEntries()">
+                        <option value="">Todos los proyectos</option>
+                    </select>
+                    <select id="filterPeriod" onchange="filterEntries()">
+                        <option value="today">Hoy</option>
+                        <option value="week">Esta semana</option>
+                        <option value="month">Este mes</option>
+                        <option value="all">Todo</option>
+                    </select>
+                </div>
+            </div>
+            <div class="entries-list" id="entriesList"></div>
+        </div>
+
+        <div class="tab-content" id="projectsTab">
+            <div class="section-header">
+                <h2>Categorías y Proyectos</h2>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button class="btn btn-small" onclick="openCategoryModal()">➕ Categoría</button>
+                    <button class="btn btn-small" onclick="openProjectModal()">➕ Proyecto</button>
+                </div>
+            </div>
+            <div id="categoriesContainer"></div>
+        </div>
+
+        <div class="tab-content" id="reportsTab">
+            <h2 style="margin-bottom: 1.5rem;">Estadísticas y Reportes</h2>
+            <div class="stats-grid" id="statsGrid"></div>
+            <div id="detailedReport"></div>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div class="modal" id="categoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nueva Categoría</h2>
+                <button class="close-modal" onclick="closeModal('categoryModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label for="categoryName">Nombre</label>
+                <input type="text" id="categoryName" placeholder="Ej: Trabajo, Vida Personal, Hobbies">
+            </div>
+            <div class="form-group">
+                <label for="categoryIcon">Emoji/Icono</label>
+                <input type="text" id="categoryIcon" placeholder="📁 💼 🏃 📚" maxlength="2">
+            </div>
+            <div class="form-group">
+                <label for="categoryColor">Color</label>
+                <input type="color" id="categoryColor" value="#00ffff">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('categoryModal')">Cancelar</button>
+                <button class="btn" onclick="saveCategory()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nuevo Proyecto</h2>
+                <button class="close-modal" onclick="closeModal('projectModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label for="projectCategory">Categoría</label>
+                <select id="projectCategory">
+                    <option value="">Sin categoría</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="projectName">Nombre del Proyecto</label>
+                <input type="text" id="projectName" placeholder="Ej: Cliente ABC - Diseño Web">
+            </div>
+            <div class="form-group">
+                <label for="projectColor">Color</label>
+                <input type="color" id="projectColor" value="#0066ff">
+            </div>
+            <div class="form-group">
+                <label for="projectNotes">Notas (opcional)</label>
+                <textarea id="projectNotes" placeholder="Descripción del proyecto..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('projectModal')">Cancelar</button>
+                <button class="btn" onclick="saveProject()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manual Entry Modal -->
+    <div class="modal" id="manualEntryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Entrada Manual</h2>
+                <button class="close-modal" onclick="closeModal('manualEntryModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label for="manualDescription">Descripción</label>
+                <input type="text" id="manualDescription" placeholder="¿Qué hiciste?">
+            </div>
+            <div class="form-group">
+                <label for="manualProject">Proyecto</label>
+                <select id="manualProject">
+                    <option value="">Sin proyecto</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="manualDate">Fecha</label>
+                <input type="date" id="manualDate">
+            </div>
+            <div class="timer-controls" style="grid-template-columns: 1fr 1fr;">
+                <div class="timer-input-group">
+                    <label for="manualStartTime">Hora de inicio</label>
+                    <input type="time" id="manualStartTime">
+                </div>
+                <div class="timer-input-group">
+                    <label for="manualEndTime">Hora de fin</label>
+                    <input type="time" id="manualEndTime">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('manualEntryModal')">Cancelar</button>
+                <button class="btn" onclick="saveManualEntry()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://ilzxgnqylmycktwsrfcr.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsenhnbnF5bG15Y2t0d3NyZmNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3NTg0OTAsImV4cCI6MjA4NjMzNDQ5MH0.MkXUo8CjpH2QTUuLpoqA0LRHwTzC9p4WiFn1lFmk0d4';
+        
+        const {createClient} = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let timerInterval = null;
+        let startTime = null;
+        let elapsedSeconds = 0;
+        let appData = {
+            categories: [],
+            projects: [],
+            entries: []
+        };
+
+        // Auth Functions
+        function switchLoginTab(tab) {
+            document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.login-form').forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.querySelectorAll('.login-tab')[0].classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+                document.getElementById('login-pin-1').focus();
+            } else {
+                document.querySelectorAll('.login-tab')[1].classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+                document.getElementById('register-pin-1').focus();
+            }
+        }
+
+        function movePinFocus(current, nextId) {
+            if (current.value.length === 1 && nextId) {
+                document.getElementById(nextId).focus();
+            }
+        }
+
+        function getPinValue(prefix) {
+            return document.getElementById(`${prefix}-pin-1`).value +
+                   document.getElementById(`${prefix}-pin-2`).value +
+                   document.getElementById(`${prefix}-pin-3`).value +
+                   document.getElementById(`${prefix}-pin-4`).value;
+        }
+
+        function handlePinComplete(type) {
+            setTimeout(() => {
+                const pin = getPinValue(type);
+                if (pin.length === 4 && type === 'login') {
+                    handleLogin();
+                }
+            }, 100);
+        }
+
+        async function handleRegister() {
+            const pin = getPinValue('register');
+            const errorEl = document.getElementById('registerError');
+            const successEl = document.getElementById('registerSuccess');
+            const btnText = document.getElementById('registerBtnText');
+            const btnLoading = document.getElementById('registerBtnLoading');
+            
+            errorEl.classList.add('hidden');
+            successEl.classList.add('hidden');
+
+            if (pin.length !== 4) {
+                errorEl.textContent = 'Por favor ingresa un PIN de 4 dígitos';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            btnText.classList.add('hidden');
+            btnLoading.classList.remove('hidden');
+
+            try {
+                const { data: existing } = await sb
+                    .from('users')
+                    .select('id')
+                    .eq('pin', pin)
+                    .maybeSingle();
+
+                if (existing) {
+                    errorEl.textContent = 'Este PIN ya está en uso. Por favor elige otro.';
+                    errorEl.classList.remove('hidden');
+                    btnText.classList.remove('hidden');
+                    btnLoading.classList.add('hidden');
+                    return;
+                }
+
+                const { data: user, error } = await sb
+                    .from('users')
+                    .insert([{ pin: pin }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                successEl.textContent = '¡Cuenta creada exitosamente! Redirigiendo...';
+                successEl.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    switchLoginTab('login');
+                    successEl.classList.add('hidden');
+                    for (let i = 1; i <= 4; i++) {
+                        document.getElementById(`register-pin-${i}`).value = '';
+                    }
+                }, 1500);
+
+            } catch (error) {
+                console.error('Error:', error);
+                errorEl.textContent = 'Error al crear la cuenta. Intenta nuevamente.';
+                errorEl.classList.remove('hidden');
+            } finally {
+                btnText.classList.remove('hidden');
+                btnLoading.classList.add('hidden');
+            }
+        }
+
+        async function handleLogin() {
+            const pin = getPinValue('login');
+            const errorEl = document.getElementById('loginError');
+            const btnText = document.getElementById('loginBtnText');
+            const btnLoading = document.getElementById('loginBtnLoading');
+            
+            errorEl.classList.add('hidden');
+
+            if (pin.length !== 4) {
+                errorEl.textContent = 'Por favor ingresa tu PIN de 4 dígitos';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            btnText.classList.add('hidden');
+            btnLoading.classList.remove('hidden');
+
+            try {
+                const { data: user, error } = await sb
+                    .from('users')
+                    .select('id')
+                    .eq('pin', pin)
+                    .maybeSingle();
+
+                if (error || !user) {
+                    errorEl.textContent = 'PIN incorrecto. Intenta nuevamente.';
+                    errorEl.classList.remove('hidden');
+                    for (let i = 1; i <= 4; i++) {
+                        document.getElementById(`login-pin-${i}`).value = '';
+                    }
+                    document.getElementById('login-pin-1').focus();
+                    btnText.classList.remove('hidden');
+                    btnLoading.classList.add('hidden');
+                    return;
+                }
+
+                currentUser = user;
+                await loadUserData();
+                
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error:', error);
+                errorEl.textContent = 'Error de conexión. Intenta nuevamente.';
+                errorEl.classList.remove('hidden');
+            } finally {
+                btnText.classList.remove('hidden');
+                btnLoading.classList.add('hidden');
+            }
+        }
+
+        async function loadUserData() {
+            try {
+                const [categories, projects, entries] = await Promise.all([
+                    sb.from('categories').select('*').eq('user_id', currentUser.id).order('created_at'),
+                    sb.from('projects').select('*').eq('user_id', currentUser.id).order('created_at'),
+                    sb.from('time_entries').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false })
+                ]);
+
+                appData.categories = categories.data || [];
+                appData.projects = projects.data || [];
+                appData.entries = entries.data || [];
+
+                updateAllSelects();
+                renderCategories();
+                renderEntries();
+                renderReports();
+                updateTimerDisplay();
+
+            } catch (error) {
+                console.error('Error al cargar datos:', error);
+            }
+        }
+
+        function logout() {
+            if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
+                currentUser = null;
+                appData = { categories: [], projects: [], entries: [] };
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+                for (let i = 1; i <= 4; i++) {
+                    document.getElementById(`login-pin-${i}`).value = '';
+                }
+                document.getElementById('login-pin-1').focus();
+            }
+        }
+
+        // Timer Functions
+        function updateTimerDisplay() {
+            const hours = Math.floor(elapsedSeconds / 3600);
+            const minutes = Math.floor((elapsedSeconds % 3600) / 60);
+            const seconds = elapsedSeconds % 60;
+            
+            document.getElementById('timerDisplay').textContent = 
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            const description = document.getElementById('taskDescription').value;
+            if (!description.trim()) {
+                alert('Por favor ingresa una descripción de la tarea');
+                return;
+            }
+
+            startTime = new Date();
+            elapsedSeconds = 0;
+            
+            timerInterval = setInterval(() => {
+                elapsedSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'block';
+            document.getElementById('taskDescription').disabled = true;
+            document.getElementById('categorySelect').disabled = true;
+            document.getElementById('projectSelect').disabled = true;
+        }
+
+        async function stopTimer() {
+            if (!timerInterval) return;
+
+            clearInterval(timerInterval);
+            timerInterval = null;
+
+            const projectId = document.getElementById('projectSelect').value || null;
+            const endTime = new Date();
+
+            try {
+                const { data, error } = await sb
+                    .from('time_entries')
+                    .insert([{
+                        user_id: currentUser.id,
+                        project_id: projectId,
+                        description: document.getElementById('taskDescription').value,
+                        start_time: startTime.toISOString(),
+                        end_time: endTime.toISOString(),
+                        duration: elapsedSeconds,
+                        date: new Date().toISOString().split('T')[0]
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                appData.entries.unshift(data);
+                
+                document.getElementById('taskDescription').value = '';
+                document.getElementById('taskDescription').disabled = false;
+                document.getElementById('categorySelect').disabled = false;
+                document.getElementById('projectSelect').disabled = false;
+                document.getElementById('startBtn').style.display = 'block';
+                document.getElementById('stopBtn').style.display = 'none';
+                
+                elapsedSeconds = 0;
+                updateTimerDisplay();
+                
+                renderEntries();
+                renderReports();
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al guardar la entrada');
+            }
+        }
+
+        // Category Functions
+        function openCategoryModal() {
+            document.getElementById('categoryModal').classList.add('active');
+            document.getElementById('categoryName').value = '';
+            document.getElementById('categoryIcon').value = '📁';
+            document.getElementById('categoryColor').value = '#00ffff';
+        }
+
+        async function saveCategory() {
+            const name = document.getElementById('categoryName').value;
+            if (!name.trim()) {
+                alert('Por favor ingresa un nombre');
+                return;
+            }
+
+            try {
+                const { data, error } = await sb
+                    .from('categories')
+                    .insert([{
+                        user_id: currentUser.id,
+                        name: name.trim(),
+                        icon: document.getElementById('categoryIcon').value || '📁',
+                        color: document.getElementById('categoryColor').value
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                appData.categories.push(data);
+                closeModal('categoryModal');
+                updateAllSelects();
+                renderCategories();
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al guardar');
+            }
+        }
+
+        async function deleteCategory(id) {
+            if (!confirm('¿Eliminar esta categoría y sus proyectos?')) return;
+
+            try {
+                const { error } = await sb
+                    .from('categories')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                appData.categories = appData.categories.filter(c => c.id !== id);
+                appData.projects = appData.projects.filter(p => p.category_id !== id);
+                
+                updateAllSelects();
+                renderCategories();
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Project Functions
+        function openProjectModal() {
+            document.getElementById('projectModal').classList.add('active');
+            document.getElementById('projectName').value = '';
+            document.getElementById('projectColor').value = '#0066ff';
+            document.getElementById('projectNotes').value = '';
+            document.getElementById('projectCategory').value = '';
+        }
+
+        async function saveProject() {
+            const name = document.getElementById('projectName').value;
+            if (!name.trim()) {
+                alert('Por favor ingresa un nombre');
+                return;
+            }
+
+            try {
+                const categoryId = document.getElementById('projectCategory').value || null;
+                
+                const { data, error } = await sb
+                    .from('projects')
+                    .insert([{
+                        user_id: currentUser.id,
+                        category_id: categoryId,
+                        name: name.trim(),
+                        color: document.getElementById('projectColor').value,
+                        notes: document.getElementById('projectNotes').value
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                appData.projects.push(data);
+                closeModal('projectModal');
+                updateAllSelects();
+                renderCategories();
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al guardar');
+            }
+        }
+
+        async function deleteProject(id) {
+            if (!confirm('¿Eliminar este proyecto?')) return;
+
+            try {
+                const { error } = await sb
+                    .from('projects')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                appData.projects = appData.projects.filter(p => p.id !== id);
+                updateAllSelects();
+                renderCategories();
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function updateProjectsByCategory() {
+            const categoryId = document.getElementById('categorySelect').value;
+            const projectSelect = document.getElementById('projectSelect');
+            
+            let projects = appData.projects;
+            if (categoryId) {
+                projects = projects.filter(p => p.category_id === categoryId);
+            }
+            
+            projectSelect.innerHTML = '<option value="">Sin proyecto</option>' +
+                projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+        }
+
+        function updateAllSelects() {
+            const categorySelects = [
+                document.getElementById('categorySelect'),
+                document.getElementById('projectCategory'),
+                document.getElementById('filterCategory')
+            ];
+
+            categorySelects.forEach(select => {
+                const current = select.value;
+                select.innerHTML = '<option value="">Todas</option>' +
+                    appData.categories.map(c => 
+                        `<option value="${c.id}">${c.icon} ${c.name}</option>`
+                    ).join('');
+                select.value = current;
+            });
+
+            const projectSelects = [
+                document.getElementById('projectSelect'),
+                document.getElementById('manualProject'),
+                document.getElementById('filterProject')
+            ];
+
+            projectSelects.forEach(select => {
+                const current = select.value;
+                select.innerHTML = '<option value="">Sin proyecto</option>' +
+                    appData.projects.map(p => {
+                        const category = appData.categories.find(c => c.id === p.category_id);
+                        const prefix = category ? `${category.icon} ` : '';
+                        return `<option value="${p.id}">${prefix}${p.name}</option>`;
+                    }).join('');
+                select.value = current;
+            });
+        }
+
+        // Manual Entry
+        function openManualEntryModal() {
+            document.getElementById('manualEntryModal').classList.add('active');
+            document.getElementById('manualDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('manualDescription').value = '';
+            document.getElementById('manualProject').value = '';
+            document.getElementById('manualStartTime').value = '';
+            document.getElementById('manualEndTime').value = '';
+        }
+
+        async function saveManualEntry() {
+            const description = document.getElementById('manualDescription').value;
+            const date = document.getElementById('manualDate').value;
+            const startTimeStr = document.getElementById('manualStartTime').value;
+            const endTimeStr = document.getElementById('manualEndTime').value;
+
+            if (!description.trim() || !date || !startTimeStr || !endTimeStr) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const start = new Date(`${date}T${startTimeStr}`);
+            const end = new Date(`${date}T${endTimeStr}`);
+            const duration = Math.floor((end - start) / 1000);
+
+            if (duration <= 0) {
+                alert('La hora de fin debe ser posterior');
+                return;
+            }
+
+            try {
+                const projectId = document.getElementById('manualProject').value || null;
+                
+                const { data, error } = await sb
+                    .from('time_entries')
+                    .insert([{
+                        user_id: currentUser.id,
+                        project_id: projectId,
+                        description: description.trim(),
+                        start_time: start.toISOString(),
+                        end_time: end.toISOString(),
+                        duration: duration,
+                        date: date
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                appData.entries.unshift(data);
+                closeModal('manualEntryModal');
+                renderEntries();
+                renderReports();
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al guardar');
+            }
+        }
+
+        async function deleteEntry(id) {
+            if (!confirm('¿Eliminar esta entrada?')) return;
+
+            try {
+                const { error } = await sb
+                    .from('time_entries')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                appData.entries = appData.entries.filter(e => e.id !== id);
+                renderEntries();
+                renderReports();
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Render Functions
+        function renderCategories() {
+            const container = document.getElementById('categoriesContainer');
+
+            if (appData.categories.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📁</div>
+                        <h3>No hay categorías</h3>
+                        <p>Crea una categoría para organizar tus proyectos</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = appData.categories.map(category => {
+                const categoryProjects = appData.projects.filter(p => p.category_id === category.id);
+                
+                return `
+                    <div class="category-section">
+                        <div class="category-header">
+                            <div class="category-name">
+                                <span style="font-size: 1.5rem;">${category.icon}</span>
+                                ${category.name}
+                                <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: 500; margin-left: 0.5rem;">
+                                    (${categoryProjects.length})
+                                </span>
+                            </div>
+                            <button class="icon-btn delete" onclick="deleteCategory('${category.id}')">🗑️</button>
+                        </div>
+                        ${categoryProjects.length > 0 ? `
+                            <div class="projects-grid">
+                                ${categoryProjects.map(project => {
+                                    const projectEntries = appData.entries.filter(e => e.project_id === project.id);
+                                    const totalTime = projectEntries.reduce((sum, e) => sum + e.duration, 0);
+                                    
+                                    return `
+                                        <div class="project-card">
+                                            <div class="project-header">
+                                                <div class="project-name">${project.name}</div>
+                                                <span class="project-dot" style="background: ${project.color};"></span>
+                                            </div>
+                                            ${project.notes ? `<p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">${project.notes}</p>` : ''}
+                                            <div class="project-stats">
+                                                <div class="stat-row">
+                                                    <span class="stat-label">Tiempo total</span>
+                                                    <span class="stat-value">${formatDuration(totalTime)}</span>
+                                                </div>
+                                                <div class="stat-row">
+                                                    <span class="stat-label">Entradas</span>
+                                                    <span class="stat-value">${projectEntries.length}</span>
+                                                </div>
+                                            </div>
+                                            <div style="margin-top: 1rem;">
+                                                <button class="btn btn-danger btn-small" style="width: 100%;" onclick="deleteProject('${project.id}')">Eliminar</button>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        ` : `
+                            <p style="color: var(--text-muted); padding-left: 2rem; font-size: 0.9rem;">
+                                No hay proyectos
+                            </p>
+                        `}
+                    </div>
+                `;
+            }).join('');
+
+            const uncategorized = appData.projects.filter(p => !p.category_id);
+            if (uncategorized.length > 0) {
+                container.innerHTML += `
+                    <div class="category-section">
+                        <div class="category-header">
+                            <div class="category-name">
+                                <span style="font-size: 1.5rem;">📌</span>
+                                Sin Categoría
+                                <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: 500; margin-left: 0.5rem;">
+                                    (${uncategorized.length})
+                                </span>
+                            </div>
+                        </div>
+                        <div class="projects-grid">
+                            ${uncategorized.map(project => {
+                                const projectEntries = appData.entries.filter(e => e.project_id === project.id);
+                                const totalTime = projectEntries.reduce((sum, e) => sum + e.duration, 0);
+                                
+                                return `
+                                    <div class="project-card">
+                                        <div class="project-header">
+                                            <div class="project-name">${project.name}</div>
+                                            <span class="project-dot" style="background: ${project.color};"></span>
+                                        </div>
+                                        ${project.notes ? `<p style="color: var(--text-secondary); font-size: 0.85rem;">${project.notes}</p>` : ''}
+                                        <div class="project-stats">
+                                            <div class="stat-row">
+                                                <span class="stat-label">Tiempo total</span>
+                                                <span class="stat-value">${formatDuration(totalTime)}</span>
+                                            </div>
+                                            <div class="stat-row">
+                                                <span class="stat-label">Entradas</span>
+                                                <span class="stat-value">${projectEntries.length}</span>
+                                            </div>
+                                        </div>
+                                        <div style="margin-top: 1rem;">
+                                            <button class="btn btn-danger btn-small" style="width: 100%;" onclick="deleteProject('${project.id}')">Eliminar</button>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function getFilteredEntries() {
+            let filtered = [...appData.entries];
+            
+            const categoryFilter = document.getElementById('filterCategory').value;
+            if (categoryFilter) {
+                const categoryProjects = appData.projects
+                    .filter(p => p.category_id === categoryFilter)
+                    .map(p => p.id);
+                filtered = filtered.filter(e => categoryProjects.includes(e.project_id));
+            }
+
+            const projectFilter = document.getElementById('filterProject').value;
+            if (projectFilter) {
+                filtered = filtered.filter(e => e.project_id === projectFilter);
+            }
+
+            const periodFilter = document.getElementById('filterPeriod').value;
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+            if (periodFilter === 'today') {
+                filtered = filtered.filter(e => new Date(e.date) >= today);
+            } else if (periodFilter === 'week') {
+                const weekAgo = new Date(today);
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                filtered = filtered.filter(e => new Date(e.date) >= weekAgo);
+            } else if (periodFilter === 'month') {
+                const monthAgo = new Date(today);
+                monthAgo.setMonth(monthAgo.getMonth() - 1);
+                filtered = filtered.filter(e => new Date(e.date) >= monthAgo);
+            }
+
+            return filtered;
+        }
+
+        function renderEntries() {
+            const container = document.getElementById('entriesList');
+            const filtered = getFilteredEntries();
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⏱️</div>
+                        <h3>No hay entradas</h3>
+                        <p>Inicia el temporizador o agrega una entrada manual</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(entry => {
+                const project = appData.projects.find(p => p.id === entry.project_id);
+                const category = project ? appData.categories.find(c => c.id === project.category_id) : null;
+                
+                let badges = '';
+                if (category) {
+                    badges += `
+                        <span class="entry-badge">
+                            ${category.icon} ${category.name}
+                        </span>
+                    `;
+                }
+                if (project) {
+                    badges += `
+                        <span class="entry-badge">
+                            <span class="project-dot" style="background: ${project.color}; width: 8px; height: 8px;"></span>
+                            ${project.name}
+                        </span>
+                    `;
+                }
+
+                return `
+                    <div class="entry-card">
+                        <div class="entry-time">${formatDuration(entry.duration)}</div>
+                        <div class="entry-details">
+                            <div class="entry-description">${entry.description}</div>
+                            <div class="entry-meta">
+                                <span>${formatDate(entry.start_time)} • ${formatTime(entry.start_time)} - ${formatTime(entry.end_time)}</span>
+                                ${badges}
+                            </div>
+                        </div>
+                        <div class="entry-actions">
+                            <button class="icon-btn delete" onclick="deleteEntry('${entry.id}')">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterEntries() {
+            renderEntries();
+        }
+
+        function renderReports() {
+            const statsContainer = document.getElementById('statsGrid');
+            
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+            const thisWeekStart = new Date(today);
+            thisWeekStart.setDate(thisWeekStart.getDate() - today.getDay());
+            
+            const todayEntries = appData.entries.filter(e => e.date === todayStr);
+            const weekEntries = appData.entries.filter(e => new Date(e.date) >= thisWeekStart);
+
+            const todayTotal = todayEntries.reduce((sum, e) => sum + e.duration, 0);
+            const weekTotal = weekEntries.reduce((sum, e) => sum + e.duration, 0);
+            const allTotal = appData.entries.reduce((sum, e) => sum + e.duration, 0);
+
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <h3>Hoy</h3>
+                    <div class="value">${formatDuration(todayTotal)}</div>
+                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">${todayEntries.length} entradas</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Esta Semana</h3>
+                    <div class="value">${formatDuration(weekTotal)}</div>
+                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">${weekEntries.length} entradas</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total</h3>
+                    <div class="value">${formatDuration(allTotal)}</div>
+                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">${appData.entries.length} entradas</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Proyectos</h3>
+                    <div class="value">${appData.projects.length}</div>
+                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">${appData.categories.length} categorías</p>
+                </div>
+            `;
+
+            const detailedContainer = document.getElementById('detailedReport');
+            if (appData.categories.length > 0) {
+                const categoryStats = appData.categories.map(category => {
+                    const categoryProjects = appData.projects.filter(p => p.category_id === category.id);
+                    const projectIds = categoryProjects.map(p => p.id);
+                    const entries = appData.entries.filter(e => projectIds.includes(e.project_id));
+                    const total = entries.reduce((sum, e) => sum + e.duration, 0);
+                    return { category, total, count: entries.length };
+                }).filter(s => s.total > 0).sort((a, b) => b.total - a.total);
+
+                if (categoryStats.length > 0) {
+                    detailedContainer.innerHTML = `
+                        <h3 style="margin: 2rem 0 1.25rem 0; font-size: 1.4rem;">Desglose por Categoría</h3>
+                        <div class="entries-list">
+                            ${categoryStats.map(stat => `
+                                <div class="entry-card">
+                                    <span style="font-size: 2rem;">${stat.category.icon}</span>
+                                    <div class="entry-details">
+                                        <div class="entry-description">${stat.category.name}</div>
+                                        <div class="entry-meta">${stat.count} entradas</div>
+                                    </div>
+                                    <div class="entry-time">${formatDuration(stat.total)}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    detailedContainer.innerHTML = '';
+                }
+            } else {
+                detailedContainer.innerHTML = '';
+            }
+        }
+
+        // Utility Functions
+        function formatDuration(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            return `${hours}h ${String(minutes).padStart(2, '0')}m`;
+        }
+
+        function formatTime(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleDateString('es', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        // Export Functions
+        function exportData(format) {
+            if (format === 'csv') {
+                exportCSV();
+            } else if (format === 'pdf') {
+                exportPDF();
+            }
+        }
+
+        function exportCSV() {
+            const headers = ['Fecha', 'Descripción', 'Categoría', 'Proyecto', 'Inicio', 'Fin', 'Duración (horas)'];
+            const rows = appData.entries.map(entry => {
+                const project = appData.projects.find(p => p.id === entry.project_id);
+                const category = project ? appData.categories.find(c => c.id === project.category_id) : null;
+                
+                return [
+                    entry.date,
+                    entry.description,
+                    category ? category.name : '',
+                    project ? project.name : 'Sin proyecto',
+                    formatTime(entry.start_time),
+                    formatTime(entry.end_time),
+                    (entry.duration / 3600).toFixed(2)
+                ];
+            });
+
+            let csv = headers.join(',') + '\n';
+            csv += rows.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `1440-export-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(20);
+            doc.text('1440 - Reporte de Tiempo', 20, 20);
+            
+            doc.setFontSize(12);
+            doc.text(`Generado: ${new Date().toLocaleDateString('es')}`, 20, 30);
+            
+            let y = 45;
+            
+            appData.entries.forEach((entry) => {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                const project = appData.projects.find(p => p.id === entry.project_id);
+                const category = project ? appData.categories.find(c => c.id === project.category_id) : null;
+                
+                doc.setFontSize(10);
+                doc.text(`${entry.date} - ${entry.description}`, 20, y);
+                y += 5;
+                doc.setFontSize(8);
+                
+                let info = '';
+                if (category) info += `Cat: ${category.name} | `;
+                info += `Proy: ${project ? project.name : 'N/A'} | Dur: ${formatDuration(entry.duration)}`;
+                
+                doc.text(info, 20, y);
+                y += 8;
+            });
+
+            doc.save(`1440-report-${new Date().toISOString().split('T')[0]}.pdf`);
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+
+            if (tabName === 'reports') {
+                renderReports();
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        document.getElementById('login-pin-1').focus();
+    </script>
+</body>
+</html>
