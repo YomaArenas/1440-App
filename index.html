@@ -6,672 +6,371 @@
     <title>1440 - Cada minuto cuenta</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --bg: #050b1f;
-            --bg2: #0a1532;
-            --bg3: #0f1f45;
-            --cyan: #00ffff;
-            --blue: #0066ff;
-            --success: #00ff88;
-            --danger: #ff3366;
-            --warning: #ffaa00;
-            --sleep: #6366f1;
-            --text: #ffffff;
-            --text2: #99b3d9;
-            --text3: #5580b3;
-            --border: #1a3366;
-            --header-h: 64px;
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg:#050b1f;--bg2:#0a1532;--bg3:#0f1f45;
+            --cyan:#00ffff;--blue:#0066ff;--success:#00ff88;
+            --danger:#ff3366;--warning:#ffaa00;--sleep:#6366f1;
+            --text:#fff;--text2:#99b3d9;--text3:#5580b3;
+            --border:#1a3366;--hh:64px;
         }
-
-        body {
-            font-family: 'Outfit', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at 20% 20%, rgba(0,255,255,.06) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 80%, rgba(0,102,255,.06) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* ─── FIXED HEADER ─── */
-        .app-header {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: var(--header-h);
-            background: rgba(5,11,31,.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-            z-index: 500;
-        }
-
-        /* Logo SVG — no background */
-        .logo-svg {
-            display: flex;
-            align-items: center;
-            gap: .75rem;
-        }
-
-        .logo-text {
-            font-family: 'Space Mono', monospace;
-            font-size: 1.6rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--cyan), var(--blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: .05em;
-            line-height: 1;
-        }
-
-        /* The dot-toggle "0" in 1440 */
-        .logo-mark {
-            position: relative;
-            display: inline-block;
-        }
-        .logo-mark::after {
-            content: '';
-            position: absolute;
-            width: 6px; height: 6px;
-            background: var(--cyan);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--cyan);
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        /* Compact active timer in header */
-        .header-timer {
-            display: none;
-            align-items: center;
-            gap: .75rem;
-            background: rgba(0,255,255,.08);
-            border: 1px solid rgba(0,255,255,.3);
-            border-radius: 10px;
-            padding: .4rem 1rem;
-        }
-
-        .header-timer.visible { display: flex; }
-
-        .header-timer-dot {
-            width: 8px; height: 8px;
-            background: var(--success);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--success);
-            animation: blink 1.5s ease-in-out infinite;
-        }
-
-        @keyframes blink {
-            0%,100% { opacity:1; } 50% { opacity:.3; }
-        }
-
-        .header-timer-name {
-            font-size: .85rem;
-            font-weight: 600;
-            max-width: 160px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .header-timer-time {
-            font-family: 'Space Mono', monospace;
-            font-size: .9rem;
-            color: var(--cyan);
-        }
-
-        .header-actions { display: flex; gap: .6rem; align-items: center; }
-
-        /* ─── MAIN ─── */
-        .main {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: calc(var(--header-h) + 1.5rem) 2rem 4rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ─── BUTTONS ─── */
-        .btn {
-            background: linear-gradient(135deg, var(--cyan), var(--blue));
-            color: var(--bg);
-            border: none; border-radius: 10px;
-            padding: .75rem 1.4rem;
-            font-family: inherit; font-size: .9rem; font-weight: 700;
-            cursor: pointer; transition: all .25s ease;
-            display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-            text-transform: uppercase; letter-spacing: .03em;
-        }
-        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
-        .btn:active { transform: translateY(0); }
-        .btn-sm { padding: .5rem .9rem; font-size: .8rem; }
-        .btn-full { width: 100%; }
-        .btn-success { background: linear-gradient(135deg, var(--success), #00cc70); color: #000; }
-        .btn-danger { background: linear-gradient(135deg, var(--danger), #cc0044); color: #fff; }
-        .btn-ghost { background: transparent; color: var(--cyan); border: 2px solid var(--border); }
-        .btn-ghost:hover { border-color: var(--cyan); }
-
-        /* ─── CARDS ─── */
-        .card {
-            background: var(--bg2);
-            border: 2px solid var(--border);
-            border-radius: 16px;
-            padding: 1.5rem;
-        }
-
-        /* ─── PROGRESS BAR 1440 ─── */
-        .progress-1440 {
-            margin-bottom: 1.25rem;
-        }
-
-        .progress-top {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: .6rem;
-            font-size: .9rem;
-        }
-
-        .progress-top strong {
-            color: var(--cyan);
-            font-family: 'Space Mono', monospace;
-        }
-
-        .progress-track {
-            height: 14px;
-            background: var(--bg3);
-            border-radius: 7px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--cyan), var(--blue));
-            border-radius: 7px;
-            transition: width .5s ease;
-            position: relative;
-        }
-
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
-            animation: shim 2s linear infinite;
-        }
-
-        @keyframes shim { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
-
-        /* ─── QUICK TRACK ─── */
-        .quick-track { margin-bottom: 1.25rem; }
-
-        .section-title {
-            font-size: .8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .1em;
-            color: var(--text3);
-            margin-bottom: 1rem;
-        }
-
-        .qt-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-            gap: .75rem;
-        }
-
-        .qt-item {
-            background: var(--bg3);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: .9rem 1rem;
-            cursor: pointer;
-            transition: all .25s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .qt-item:hover { border-color: var(--cyan); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,255,255,.15); }
-        .qt-item.running { border-color: var(--success); background: rgba(0,255,136,.08); }
-
-        .qt-label { font-weight: 600; font-size: .95rem; }
-        .qt-sub { font-size: .8rem; color: var(--text2); font-family: 'Space Mono', monospace; }
-        .qt-play {
-            width: 34px; height: 34px;
-            background: linear-gradient(135deg, var(--cyan), var(--blue));
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; color: var(--bg); font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .qt-empty {
-            grid-column: 1/-1;
-            padding: 2rem;
-            text-align: center;
-            color: var(--text3);
-            font-size: .9rem;
-        }
-
-        /* ─── ACTIVE TIMER BANNER ─── */
-        .timer-banner {
-            background: linear-gradient(135deg, rgba(0,255,255,.08), rgba(0,102,255,.08));
-            border: 2px solid var(--cyan);
-            border-radius: 16px;
-            padding: 1.25rem 1.5rem;
-            margin-bottom: 1.25rem;
-            display: none;
-        }
-        .timer-banner.visible { display: block; }
-
-        .tb-top { display: flex; align-items: center; gap: .75rem; margin-bottom: .75rem; }
-        .tb-dot { width: 12px; height: 12px; background: var(--success); border-radius: 50%; box-shadow: 0 0 12px var(--success); animation: blink 1.5s ease-in-out infinite; }
-        .tb-label { font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--success); }
-        .tb-name { font-size: 1.3rem; font-weight: 700; }
-        .tb-meta { font-size: .85rem; color: var(--text2); margin-top: .1rem; }
-        .tb-time { font-family: 'Space Mono', monospace; font-size: 2.8rem; font-weight: 700; text-align: center; background: linear-gradient(135deg, var(--cyan), var(--success)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: .5rem 0; }
-        .tb-actions { display: flex; gap: .75rem; }
-        .tb-actions .btn { flex: 1; }
-
-        /* ─── TABS ─── */
-        .tabs { display: flex; gap: .5rem; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: .25rem; }
-
-        .tab {
-            background: transparent;
-            color: var(--text2);
-            border: 2px solid transparent;
-            border-radius: 10px;
-            padding: .7rem 1.25rem;
-            cursor: pointer;
-            transition: all .25s ease;
-            font-weight: 600; font-size: .9rem;
-            white-space: nowrap;
-            font-family: inherit;
-        }
-
-        .tab:hover { color: var(--cyan); background: var(--bg2); }
-        .tab.active { color: var(--cyan); border-color: var(--cyan); background: rgba(0,255,255,.08); }
-
-        .tab-pane { display: none; }
-        .tab-pane.active { display: block; }
-
-        /* ─── TIMELINE ─── */
-        .timeline-wrap { overflow-y: auto; max-height: 70vh; }
-
-        .tl-row {
-            display: grid;
-            grid-template-columns: 52px 1fr;
-            min-height: 80px;
-            border-bottom: 1px solid rgba(26,51,102,.5);
-            position: relative;
-        }
-
-        .tl-label {
-            padding: .5rem .5rem 0 0;
-            font-size: .75rem;
-            color: var(--text3);
-            font-family: 'Space Mono', monospace;
-            text-align: right;
-            position: sticky;
-        }
-
-        .tl-col { position: relative; padding: 2px 4px; }
-
-        .tl-entry {
-            border-radius: 6px;
-            padding: .4rem .6rem;
-            font-size: .82rem;
-            font-weight: 600;
-            margin-bottom: 3px;
-            cursor: pointer;
-            transition: filter .2s;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .tl-entry:hover { filter: brightness(1.2); }
-        .tl-entry.tracked { background: rgba(0,255,255,.15); border-left: 3px solid var(--cyan); color: var(--cyan); }
-        .tl-entry.sleep { background: rgba(99,102,241,.2); border-left: 3px solid var(--sleep); color: #a5b4fc; }
-        .tl-entry.gap { background: rgba(55,65,81,.3); border-left: 3px dashed #4b5563; color: var(--text3); font-weight: 400; cursor: default; }
-
-        .tl-add {
-            position: absolute;
-            right: 6px; top: 4px;
-            background: transparent;
-            border: 1px dashed var(--border);
-            color: var(--text3);
-            border-radius: 6px;
-            padding: .2rem .5rem;
-            font-size: .75rem;
-            cursor: pointer;
-            transition: all .2s;
-            font-family: inherit;
-        }
-
-        .tl-add:hover { border-color: var(--cyan); color: var(--cyan); }
-
-        /* ─── AREAS & PROJECTS ─── */
-        .section-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: .75rem; }
-
-        .area-block { margin-bottom: 1.75rem; }
-
-        .area-head {
-            display: flex; align-items: center; justify-content: space-between;
-            background: var(--bg2); border: 2px solid var(--border);
-            border-radius: 12px; padding: .9rem 1.25rem;
-            margin-bottom: .75rem;
-        }
-
-        .area-head-left { display: flex; align-items: center; gap: .75rem; font-size: 1.1rem; font-weight: 700; }
-        .area-time { font-family: 'Space Mono', monospace; color: var(--cyan); font-size: .9rem; }
-
-        .proj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; padding-left: 1.5rem; }
-
-        .proj-card {
-            background: var(--bg2); border: 2px solid var(--border);
-            border-radius: 14px; padding: 1.25rem;
-            transition: all .25s ease;
-        }
-
-        .proj-card:hover { border-color: var(--cyan); transform: translateY(-2px); }
-
-        .proj-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: .75rem; }
-        .proj-dot { width: 12px; height: 12px; border-radius: 50%; }
-        .proj-name { font-weight: 700; font-size: 1rem; }
-        .proj-stat { display: flex; justify-content: space-between; font-size: .85rem; padding-top: .75rem; border-top: 1px solid var(--border); }
-        .proj-stat span:last-child { font-family: 'Space Mono', monospace; color: var(--cyan); font-weight: 700; }
-
-        .icon-btn {
-            width: 32px; height: 32px;
-            background: var(--bg3); border: 1px solid var(--border);
-            border-radius: 7px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all .2s; font-size: .9rem;
-            color: var(--text2);
-        }
-        .icon-btn:hover { border-color: var(--danger); color: var(--danger); }
-
-        /* ─── ENTRIES LIST ─── */
-        .entries-list { display: flex; flex-direction: column; gap: .75rem; }
-
-        .entry-card {
-            background: var(--bg2); border: 2px solid var(--border);
-            border-radius: 14px; padding: 1.1rem 1.25rem;
-            display: grid; grid-template-columns: 85px 1fr auto;
-            gap: 1rem; align-items: center;
-            transition: all .25s ease;
-        }
-
-        .entry-card:hover { border-color: var(--cyan); transform: translateY(-1px); }
-        .entry-dur { font-family: 'Space Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--cyan); }
-        .entry-desc { font-weight: 600; margin-bottom: .25rem; }
-        .entry-meta { font-size: .82rem; color: var(--text2); display: flex; gap: .75rem; flex-wrap: wrap; }
-        .badge { padding: .2rem .6rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 5px; font-size: .78rem; }
-        .badge.sleep-badge { border-color: var(--sleep); color: #a5b4fc; }
-        .entry-actions { display: flex; gap: .4rem; }
-
-        /* ─── DASHBOARD ─── */
-        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem; }
-
-        .dash-card { border-radius: 16px; padding: 1.5rem; background: var(--bg2); border: 2px solid var(--border); }
-        .dash-card h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text2); margin-bottom: 1rem; }
-        .dash-val { font-family: 'Space Mono', monospace; font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, var(--cyan), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .dash-sub { font-size: .85rem; color: var(--text3); margin-top: .25rem; }
-
-        .pie-wrap { position: relative; width: 180px; height: 180px; margin: .75rem auto; }
-        .pie-svg { width: 100%; height: 100%; }
-        .pie-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
-        .pie-center-val { font-family: 'Space Mono', monospace; font-size: 1.4rem; font-weight: 700; color: var(--cyan); }
-        .pie-center-sub { font-size: .75rem; color: var(--text3); }
-
-        .legend-item { display: flex; align-items: center; gap: .6rem; margin-bottom: .4rem; font-size: .85rem; }
-        .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-        .legend-val { margin-left: auto; font-family: 'Space Mono', monospace; font-size: .8rem; color: var(--cyan); }
-
-        /* ─── MODALS ─── */
-        .overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(5,11,31,.92); backdrop-filter: blur(8px);
-            z-index: 900; align-items: center; justify-content: center; padding: 1rem;
-        }
-        .overlay.open { display: flex; }
-
-        .modal {
-            background: var(--bg2); border: 2px solid var(--border);
-            border-radius: 20px; padding: 2rem;
-            max-width: 500px; width: 100%; max-height: 92vh; overflow-y: auto;
-        }
-
-        .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-        .modal-head h2 { font-size: 1.4rem; font-weight: 700; }
-        .modal-close { width: 32px; height: 32px; background: var(--bg3); border: 1px solid var(--border); border-radius: 7px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text2); font-size: 1.2rem; transition: all .2s; }
-        .modal-close:hover { border-color: var(--cyan); color: var(--cyan); }
-
-        .form-group { margin-bottom: 1.25rem; }
-        .form-group label { display: block; font-size: .85rem; font-weight: 600; color: var(--text2); margin-bottom: .5rem; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; background: var(--bg3); border: 2px solid var(--border);
-            border-radius: 10px; padding: .8rem 1rem; color: var(--text);
-            font-family: inherit; font-size: .95rem; transition: all .25s;
-        }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(0,255,255,.1); }
-        .form-group textarea { min-height: 80px; resize: vertical; }
-        input[type="color"] { height: 44px; cursor: pointer; }
-        input[type="time"] { font-family: 'Space Mono', monospace; }
-        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .modal-actions { display: flex; gap: .75rem; margin-top: 1.5rem; }
-        .modal-actions .btn { flex: 1; }
-
-        /* ─── LOGIN ─── */
-        .login-screen {
-            position: fixed; inset: 0;
-            background: var(--bg);
-            display: flex; align-items: center; justify-content: center;
-            padding: 1rem; z-index: 1000;
-        }
-
-        .login-box {
-            background: var(--bg2); border: 2px solid var(--border);
-            border-radius: 20px; padding: 2rem;
-            max-width: 400px; width: 100%;
-            box-shadow: 0 0 60px rgba(0,255,255,.08);
-        }
-
-        .login-logo { text-align: center; margin-bottom: 1.5rem; }
-
-        .login-logo-title {
-            font-family: 'Space Mono', monospace;
-            font-size: 3rem; font-weight: 700;
-            background: linear-gradient(135deg, var(--cyan), var(--blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1;
-            position: relative;
-            display: inline-block;
-        }
-
-        .login-logo-sub { color: var(--text2); font-size: .85rem; margin-top: .5rem; }
-
-        .login-tabs { display: flex; gap: .4rem; background: var(--bg3); padding: .35rem; border-radius: 10px; margin-bottom: 1.5rem; }
-        .login-tab { flex: 1; background: transparent; border: none; border-radius: 8px; padding: .65rem; cursor: pointer; font-family: inherit; font-weight: 600; font-size: .9rem; color: var(--text2); transition: all .25s; }
-        .login-tab.active { background: linear-gradient(135deg, var(--cyan), var(--blue)); color: var(--bg); }
-
-        .login-form { display: none; }
-        .login-form.active { display: block; }
-
-        .pin-row { display: flex; gap: .6rem; justify-content: center; margin: 1.25rem 0; }
-        .pin-d {
-            width: 52px; height: 60px;
-            background: var(--bg3); border: 2px solid var(--border);
-            border-radius: 10px; color: var(--cyan);
-            font-size: 1.6rem; font-weight: 700; text-align: center;
-            font-family: 'Space Mono', monospace; transition: all .25s;
-        }
-        .pin-d:focus { outline: none; border-color: var(--cyan); transform: scale(1.05); }
-
-        .info-box { background: rgba(0,255,255,.04); border-left: 3px solid var(--cyan); padding: .9rem 1rem; border-radius: 8px; margin: 1rem 0; font-size: .85rem; color: var(--text2); }
-        .info-box.warn { border-left-color: var(--warning); }
-        .info-box strong { display: block; margin-bottom: .3rem; color: var(--cyan); }
-        .info-box.warn strong { color: var(--warning); }
-
-        .msg { padding: .8rem; border-radius: 8px; margin: .75rem 0; text-align: center; font-weight: 600; font-size: .88rem; }
-        .msg.err { background: rgba(255,51,102,.1); border: 2px solid var(--danger); color: var(--danger); }
-        .msg.ok { background: rgba(0,255,136,.1); border: 2px solid var(--success); color: var(--success); }
-        .hidden { display: none !important; }
-
-        .spin { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3); border-top-color: currentColor; border-radius: 50%; animation: spinA .7s linear infinite; }
-        @keyframes spinA { to { transform: rotate(360deg); } }
-
-        /* ─── SLEEP SETUP ─── */
-        .sleep-setup { display: none; position: fixed; inset: 0; background: rgba(5,11,31,.96); backdrop-filter: blur(8px); z-index: 1100; align-items: center; justify-content: center; padding: 1rem; }
-        .sleep-setup.open { display: flex; }
-
-        /* ─── SLEEP POPUP ─── */
-        .sleep-popup { display: none; position: fixed; bottom: 2rem; right: 2rem; background: var(--bg2); border: 2px solid var(--sleep); border-radius: 16px; padding: 1.5rem; max-width: 340px; width: 100%; z-index: 600; box-shadow: 0 8px 32px rgba(99,102,241,.3); }
-        .sleep-popup.open { display: block; animation: slideUp .4s ease; }
-        @keyframes slideUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
-
-        /* ─── EMPTY STATE ─── */
-        .empty { text-align: center; padding: 3rem 1rem; color: var(--text3); }
-        .empty-icon { font-size: 3rem; opacity: .3; margin-bottom: .75rem; }
-        .empty h3 { font-size: 1.1rem; color: var(--text); margin-bottom: .4rem; }
-
-        /* ─── SCROLLBAR ─── */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 3px; }
-
-        @media (max-width: 768px) {
-            .main { padding: calc(var(--header-h) + 1rem) 1rem 4rem; }
-            .app-header { padding: 0 1rem; }
-            .tb-time { font-size: 2rem; }
-            .entry-card { grid-template-columns: 1fr; }
-            .proj-grid { grid-template-columns: 1fr; }
-            .dash-grid { grid-template-columns: 1fr; }
+        body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+        body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 20%,rgba(0,255,255,.06) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(0,102,255,.06) 0%,transparent 50%);pointer-events:none;z-index:0}
+
+        /* ── HEADER ── */
+        .app-header{position:fixed;top:0;left:0;right:0;height:var(--hh);background:rgba(5,11,31,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.5rem;gap:1rem;z-index:500}
+
+        /* Logo: 1440 with LED dot on 0 */
+        .logo-1440{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:.04em;line-height:1;flex-shrink:0;display:flex;align-items:center}
+        .logo-zero{position:relative;display:inline-block;-webkit-text-fill-color:transparent}
+        .logo-zero::after{content:'';position:absolute;width:5px;height:5px;background:var(--cyan);border-radius:50%;box-shadow:0 0 6px var(--cyan),0 0 12px var(--cyan);top:50%;left:50%;transform:translate(-50%,-50%)}
+
+        /* Mantra */
+        .mantra-wrap{flex:1;min-width:0;cursor:pointer}
+        .mantra-question{font-size:.75rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.1rem}
+        .mantra-answer{font-size:.9rem;font-weight:600;color:var(--cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .mantra-placeholder{font-size:.85rem;color:var(--text3);font-style:italic}
+
+        /* Header timer compact */
+        .h-timer{display:none;align-items:center;gap:.6rem;background:rgba(0,255,255,.08);border:1px solid rgba(0,255,255,.25);border-radius:8px;padding:.35rem .9rem;flex-shrink:0}
+        .h-timer.on{display:flex}
+        .h-dot{width:7px;height:7px;background:var(--success);border-radius:50%;box-shadow:0 0 8px var(--success);animation:blink 1.5s ease-in-out infinite}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+        .h-tname{font-size:.82rem;font-weight:600;max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .h-ttime{font-family:'Space Mono',monospace;font-size:.85rem;color:var(--cyan)}
+
+        .h-actions{display:flex;gap:.5rem;align-items:center;flex-shrink:0}
+
+        /* ── BUTTONS ── */
+        .btn{background:linear-gradient(135deg,var(--cyan),var(--blue));color:var(--bg);border:none;border-radius:10px;padding:.7rem 1.25rem;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;justify-content:center;gap:.4rem;text-transform:uppercase;letter-spacing:.03em}
+        .btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+        .btn-sm{padding:.45rem .85rem;font-size:.78rem}
+        .btn-full{width:100%}
+        .btn-success{background:linear-gradient(135deg,var(--success),#00cc70);color:#000}
+        .btn-danger{background:linear-gradient(135deg,var(--danger),#cc0044);color:#fff}
+        .btn-ghost{background:transparent;color:var(--cyan);border:2px solid var(--border)}
+        .btn-ghost:hover{border-color:var(--cyan)}
+        .btn-reg{background:linear-gradient(135deg,#ff6b35,#ff3366);color:#fff;box-shadow:0 4px 20px rgba(255,107,53,.3)}
+        .btn-reg:hover{box-shadow:0 6px 28px rgba(255,107,53,.4)}
+
+        /* ── MAIN ── */
+        .main{max-width:1400px;margin:0 auto;padding:calc(var(--hh) + 1.5rem) 2rem 4rem;position:relative;z-index:1}
+
+        /* ── PROGRESS ── */
+        .progress-bar-wrap{background:var(--bg2);border:2px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:1.25rem}
+        .progress-top{display:flex;justify-content:space-between;margin-bottom:.6rem;font-size:.88rem}
+        .progress-top strong{color:var(--cyan);font-family:'Space Mono',monospace}
+        .progress-track{height:12px;background:var(--bg3);border-radius:6px;overflow:hidden}
+        .progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));border-radius:6px;transition:width .5s ease;position:relative}
+        .progress-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);animation:shim 2s linear infinite}
+        @keyframes shim{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+        /* ── ACTIVE TIMER BANNER ── */
+        .timer-banner{background:linear-gradient(135deg,rgba(0,255,255,.07),rgba(0,102,255,.07));border:2px solid var(--cyan);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:none}
+        .timer-banner.on{display:block}
+        .tb-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+        .tb-dot{width:11px;height:11px;background:var(--success);border-radius:50%;box-shadow:0 0 10px var(--success);animation:blink 1.5s ease-in-out infinite}
+        .tb-badge{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--success)}
+        .tb-name{font-size:1.25rem;font-weight:700}
+        .tb-meta{font-size:.82rem;color:var(--text2);margin-top:.15rem}
+        .tb-time{font-family:'Space Mono',monospace;font-size:2.8rem;font-weight:700;text-align:center;background:linear-gradient(135deg,var(--cyan),var(--success));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:.5rem 0}
+        .tb-btns{display:flex;gap:.75rem}
+        .tb-btns .btn{flex:1}
+
+        /* ── REGISTRO MANUAL BUTTON (prominent) ── */
+        .reg-manual-bar{display:flex;align-items:center;gap:1rem;background:linear-gradient(135deg,rgba(255,107,53,.08),rgba(255,51,102,.08));border:2px solid rgba(255,107,53,.3);border-radius:14px;padding:1.1rem 1.5rem;margin-bottom:1.25rem;cursor:pointer;transition:all .25s}
+        .reg-manual-bar:hover{border-color:rgba(255,107,53,.6);transform:translateY(-1px);box-shadow:0 4px 20px rgba(255,107,53,.15)}
+        .reg-manual-icon{font-size:1.75rem;flex-shrink:0}
+        .reg-manual-text h4{font-size:1rem;font-weight:700;color:#ff6b35;margin-bottom:.15rem}
+        .reg-manual-text p{font-size:.82rem;color:var(--text2)}
+        .reg-manual-btn{margin-left:auto;flex-shrink:0}
+
+        /* ── QUICK TRACK ── */
+        .qt-wrap{background:var(--bg2);border:2px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem}
+        .section-title{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.9rem}
+        .qt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:.65rem}
+        .qt-item{background:var(--bg3);border:2px solid var(--border);border-radius:11px;padding:.85rem 1rem;cursor:pointer;transition:all .25s;display:flex;justify-content:space-between;align-items:center}
+        .qt-item:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,255,255,.15)}
+        .qt-item.running{border-color:var(--success);background:rgba(0,255,136,.07)}
+        .qt-label{font-weight:600;font-size:.92rem;margin-bottom:.2rem}
+        .qt-sub{font-size:.78rem;color:var(--text2);font-family:'Space Mono',monospace}
+        .qt-play{width:32px;height:32px;background:linear-gradient(135deg,var(--cyan),var(--blue));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.95rem;color:var(--bg);font-weight:700;flex-shrink:0}
+        .qt-empty{grid-column:1/-1;padding:1.5rem;text-align:center;color:var(--text3);font-size:.88rem}
+
+        /* ── TABS ── */
+        .tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;overflow-x:auto;padding-bottom:.25rem}
+        .tab{background:transparent;color:var(--text2);border:2px solid transparent;border-radius:10px;padding:.65rem 1.2rem;cursor:pointer;transition:all .25s;font-weight:600;font-size:.88rem;white-space:nowrap;font-family:inherit}
+        .tab:hover{color:var(--cyan);background:var(--bg2)}
+        .tab.active{color:var(--cyan);border-color:var(--cyan);background:rgba(0,255,255,.07)}
+        .tab-pane{display:none}
+        .tab-pane.active{display:block}
+
+        /* ── TIMELINE ── */
+        .tl-wrap{overflow-y:auto;max-height:72vh}
+        .tl-row{display:grid;grid-template-columns:56px 1fr;min-height:72px;border-bottom:1px solid rgba(26,51,102,.4);position:relative}
+        .tl-label{padding:.5rem .5rem 0 0;font-size:.75rem;color:var(--text3);font-family:'Space Mono',monospace;text-align:right}
+        .tl-col{position:relative;padding:4px 6px;min-height:72px}
+        .tl-entry{border-radius:7px;padding:.45rem .75rem;font-size:.83rem;font-weight:600;margin-bottom:4px;cursor:pointer;transition:filter .2s;display:flex;align-items:center;gap:.5rem}
+        .tl-entry:hover{filter:brightness(1.2)}
+        .tl-tracked{background:rgba(0,255,255,.12);border-left:3px solid var(--cyan);color:var(--cyan)}
+        .tl-sleep{background:rgba(99,102,241,.18);border-left:3px solid var(--sleep);color:#a5b4fc}
+        .tl-gap{background:rgba(55,65,81,.2);border-left:3px dashed #374151;color:var(--text3);font-weight:400;cursor:default}
+        .tl-add{position:absolute;right:6px;top:6px;background:transparent;border:1px dashed var(--border);color:var(--text3);border-radius:6px;padding:.2rem .5rem;font-size:.73rem;cursor:pointer;transition:all .2s;font-family:inherit}
+        .tl-add:hover{border-color:var(--cyan);color:var(--cyan)}
+        .tl-dur{font-size:.73rem;opacity:.7;margin-left:auto;font-family:'Space Mono',monospace;white-space:nowrap}
+
+        /* ── AREAS ── */
+        .area-block{margin-bottom:1.5rem;border:2px solid var(--border);border-radius:16px;overflow:hidden}
+        .area-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;cursor:pointer;transition:background .2s}
+        .area-head:hover{background:rgba(255,255,255,.03)}
+        .area-left{display:flex;align-items:center;gap:.75rem}
+        .area-color-pill{width:8px;height:32px;border-radius:4px;flex-shrink:0}
+        .area-icon{font-size:1.4rem}
+        .area-name{font-size:1.05rem;font-weight:700}
+        .area-count{font-size:.8rem;color:var(--text3);font-weight:400;margin-left:.4rem}
+        .area-right{display:flex;align-items:center;gap:.75rem}
+        .area-total{font-family:'Space Mono',monospace;font-size:.88rem;font-weight:700}
+        .area-chevron{font-size:.9rem;color:var(--text3);transition:transform .3s}
+        .area-chevron.open{transform:rotate(90deg)}
+        .area-projects{padding:0 1.25rem 1.25rem;display:none}
+        .area-projects.open{display:block}
+        .proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.75rem;margin-top:.75rem}
+        .proj-card{background:var(--bg3);border:2px solid var(--border);border-radius:12px;padding:1.1rem;transition:all .25s}
+        .proj-card:hover{transform:translateY(-2px)}
+        .proj-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+        .proj-name{font-weight:700;font-size:.95rem}
+        .proj-dot{width:10px;height:10px;border-radius:50%}
+        .proj-stat{display:flex;justify-content:space-between;font-size:.82rem;padding-top:.6rem;border-top:1px solid var(--border)}
+        .proj-stat span:last-child{font-family:'Space Mono',monospace;font-weight:700}
+
+        /* ── REGISTROS (entries) ── */
+        .reg-list{display:flex;flex-direction:column;gap:.75rem}
+        .reg-card{background:var(--bg2);border:2px solid var(--border);border-radius:13px;padding:1rem 1.25rem;display:grid;grid-template-columns:82px 1fr auto;gap:1rem;align-items:center;transition:all .25s}
+        .reg-card:hover{border-color:var(--cyan);transform:translateY(-1px)}
+        .reg-dur{font-family:'Space Mono',monospace;font-size:1.25rem;font-weight:700;color:var(--cyan)}
+        .reg-desc{font-weight:600;margin-bottom:.25rem;font-size:.95rem}
+        .reg-meta{font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;flex-wrap:wrap}
+        .badge{padding:.18rem .55rem;background:var(--bg3);border:1px solid var(--border);border-radius:5px;font-size:.76rem}
+        .badge-sleep{border-color:var(--sleep);color:#a5b4fc}
+        .reg-actions{display:flex;gap:.4rem}
+
+        /* ── DASHBOARD ── */
+        .dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.25rem;margin-bottom:1.5rem}
+        .dash-card{background:var(--bg2);border:2px solid var(--border);border-radius:16px;padding:1.5rem}
+        .dash-card h3{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);margin-bottom:1rem}
+        .dash-val{font-family:'Space Mono',monospace;font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .dash-sub{font-size:.83rem;color:var(--text3);margin-top:.25rem}
+        .pie-wrap{position:relative;width:170px;height:170px;margin:.75rem auto}
+        .pie-svg{width:100%;height:100%}
+        .pie-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+        .pie-cval{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--cyan)}
+        .pie-csub{font-size:.72rem;color:var(--text3)}
+        .legend-item{display:flex;align-items:center;gap:.55rem;margin-bottom:.4rem;font-size:.83rem}
+        .legend-dot{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+        .legend-val{margin-left:auto;font-family:'Space Mono',monospace;font-size:.78rem;color:var(--cyan)}
+
+        /* ── MODALS ── */
+        .overlay{display:none;position:fixed;inset:0;background:rgba(5,11,31,.92);backdrop-filter:blur(8px);z-index:900;align-items:center;justify-content:center;padding:1rem}
+        .overlay.open{display:flex}
+        .modal{background:var(--bg2);border:2px solid var(--border);border-radius:20px;padding:2rem;max-width:500px;width:100%;max-height:92vh;overflow-y:auto}
+        .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+        .modal-head h2{font-size:1.35rem;font-weight:700}
+        .modal-close{width:30px;height:30px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:1.1rem;transition:all .2s}
+        .modal-close:hover{border-color:var(--cyan);color:var(--cyan)}
+        .fg{margin-bottom:1.1rem}
+        .fg label{display:block;font-size:.83rem;font-weight:600;color:var(--text2);margin-bottom:.4rem}
+        .fg input,.fg select,.fg textarea{width:100%;background:var(--bg3);border:2px solid var(--border);border-radius:9px;padding:.75rem 1rem;color:var(--text);font-family:inherit;font-size:.93rem;transition:all .25s}
+        .fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,255,255,.1)}
+        .fg textarea{min-height:75px;resize:vertical}
+        input[type=color]{height:42px;cursor:pointer}
+        input[type=time]{font-family:'Space Mono',monospace}
+        .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+        .modal-btns{display:flex;gap:.75rem;margin-top:1.25rem}
+        .modal-btns .btn{flex:1}
+
+        /* ── LOGIN ── */
+        .login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:1rem;z-index:1000}
+        .login-box{background:var(--bg2);border:2px solid var(--border);border-radius:20px;padding:2rem;max-width:400px;width:100%;box-shadow:0 0 60px rgba(0,255,255,.07)}
+        .login-logo{text-align:center;margin-bottom:1.5rem}
+        .login-logo-title{font-family:'Space Mono',monospace;font-size:3rem;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;display:inline-flex;align-items:center;letter-spacing:.05em}
+        .logo-zero-lg{position:relative;display:inline-block;-webkit-text-fill-color:transparent}
+        .logo-zero-lg::after{content:'';position:absolute;width:7px;height:7px;background:var(--cyan);border-radius:50%;box-shadow:0 0 8px var(--cyan),0 0 16px rgba(0,255,255,.5);top:50%;left:50%;transform:translate(-50%,-50%)}
+        .login-sub{color:var(--text2);font-size:.83rem;margin-top:.5rem}
+        .login-tabs{display:flex;gap:.4rem;background:var(--bg3);padding:.3rem;border-radius:9px;margin-bottom:1.5rem}
+        .login-tab{flex:1;background:transparent;border:none;border-radius:7px;padding:.6rem;cursor:pointer;font-family:inherit;font-weight:600;font-size:.88rem;color:var(--text2);transition:all .25s}
+        .login-tab.active{background:linear-gradient(135deg,var(--cyan),var(--blue));color:var(--bg)}
+        .login-form{display:none}
+        .login-form.active{display:block}
+        .pin-row{display:flex;gap:.6rem;justify-content:center;margin:1.1rem 0}
+        .pin-d{width:52px;height:60px;background:var(--bg3);border:2px solid var(--border);border-radius:10px;color:var(--cyan);font-size:1.6rem;font-weight:700;text-align:center;font-family:'Space Mono',monospace;transition:all .25s}
+        .pin-d:focus{outline:none;border-color:var(--cyan);transform:scale(1.05)}
+        .info-box{background:rgba(0,255,255,.04);border-left:3px solid var(--cyan);padding:.85rem 1rem;border-radius:8px;margin:.85rem 0;font-size:.83rem;color:var(--text2)}
+        .info-box.warn{border-left-color:var(--warning)}
+        .info-box strong{display:block;margin-bottom:.25rem;color:var(--cyan)}
+        .info-box.warn strong{color:var(--warning)}
+        .msg{padding:.75rem;border-radius:8px;margin:.65rem 0;text-align:center;font-weight:600;font-size:.85rem}
+        .msg.err{background:rgba(255,51,102,.1);border:2px solid var(--danger);color:var(--danger)}
+        .msg.ok{background:rgba(0,255,136,.1);border:2px solid var(--success);color:var(--success)}
+        .hidden{display:none!important}
+        .spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:currentColor;border-radius:50%;animation:spinA .7s linear infinite}
+        @keyframes spinA{to{transform:rotate(360deg)}}
+
+        /* Sleep setup */
+        .sleep-setup{display:none;position:fixed;inset:0;background:rgba(5,11,31,.96);backdrop-filter:blur(8px);z-index:1100;align-items:center;justify-content:center;padding:1rem}
+        .sleep-setup.open{display:flex}
+
+        /* Sleep popup */
+        .sleep-popup{display:none;position:fixed;bottom:2rem;right:2rem;background:var(--bg2);border:2px solid var(--sleep);border-radius:16px;padding:1.4rem;max-width:320px;width:100%;z-index:600;box-shadow:0 8px 32px rgba(99,102,241,.3)}
+        .sleep-popup.open{display:block;animation:slideUp .4s ease}
+        @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+        /* Empty */
+        .empty{text-align:center;padding:2.5rem 1rem;color:var(--text3)}
+        .empty-icon{font-size:2.5rem;opacity:.3;margin-bottom:.6rem}
+        .empty h3{font-size:1rem;color:var(--text);margin-bottom:.3rem}
+
+        /* Icon btn */
+        .icon-btn{width:30px;height:30px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:.85rem;color:var(--text2)}
+        .icon-btn:hover{border-color:var(--danger);color:var(--danger)}
+        .icon-btn.edit:hover{border-color:var(--cyan);color:var(--cyan)}
+
+        ::-webkit-scrollbar{width:5px;height:5px}
+        ::-webkit-scrollbar-track{background:var(--bg)}
+        ::-webkit-scrollbar-thumb{background:var(--blue);border-radius:3px}
+
+        @media(max-width:768px){
+            .main{padding:calc(var(--hh) + 1rem) 1rem 4rem}
+            .app-header{padding:0 1rem}
+            .row2{grid-template-columns:1fr}
+            .reg-card{grid-template-columns:1fr}
+            .proj-grid{grid-template-columns:1fr}
+            .dash-grid{grid-template-columns:1fr}
+            .tb-time{font-size:2rem}
         }
     </style>
 </head>
 <body>
 
-<!-- ═══════════════ LOGIN ═══════════════ -->
+<!-- ═══ LOGIN ═══ -->
 <div class="login-screen" id="loginScreen">
     <div class="login-box">
         <div class="login-logo">
-            <div class="login-logo-title">1<span class="logo-mark">4</span>4<span class="logo-mark">0</span></div>
-            <div class="login-logo-sub">Cada minuto cuenta</div>
+            <div class="login-logo-title">14<span class="logo-zero-lg">4</span><span class="logo-zero-lg">0</span></div>
+            <div class="login-sub">Cada minuto cuenta</div>
         </div>
-
         <div class="login-tabs">
-            <button class="login-tab active" onclick="switchTab_login('login')">Ingresar</button>
-            <button class="login-tab" onclick="switchTab_login('register')">Crear Cuenta</button>
+            <button class="login-tab active" onclick="switchLoginTab('login')">Ingresar</button>
+            <button class="login-tab" onclick="switchLoginTab('register')">Crear Cuenta</button>
         </div>
-
         <div class="login-form active" id="lf-login">
             <div class="info-box"><strong>🔒 Tu PIN de 4 dígitos</strong>Solo tú lo conoces</div>
             <div class="pin-row">
-                <input type="password" maxlength="1" class="pin-d" id="lp1" oninput="pinFocus(this,'lp2')">
-                <input type="password" maxlength="1" class="pin-d" id="lp2" oninput="pinFocus(this,'lp3')">
-                <input type="password" maxlength="1" class="pin-d" id="lp3" oninput="pinFocus(this,'lp4')">
+                <input type="password" maxlength="1" class="pin-d" id="lp1" oninput="pf(this,'lp2')">
+                <input type="password" maxlength="1" class="pin-d" id="lp2" oninput="pf(this,'lp3')">
+                <input type="password" maxlength="1" class="pin-d" id="lp3" oninput="pf(this,'lp4')">
                 <input type="password" maxlength="1" class="pin-d" id="lp4" oninput="autoLogin()">
             </div>
             <div id="loginErr" class="msg err hidden"></div>
             <button class="btn btn-full" onclick="doLogin()">
-                <span id="lBtnTxt">Ingresar</span><span id="lBtnSpin" class="spin hidden"></span>
+                <span id="lTxt">Ingresar</span><span id="lSpin" class="spin hidden"></span>
             </button>
         </div>
-
         <div class="login-form" id="lf-register">
-            <div class="info-box"><strong>🚀 Elige tu PIN</strong>4 dígitos que no olvides</div>
+            <div class="info-box"><strong>🚀 Elige tu PIN</strong>4 dígitos únicos</div>
             <div class="pin-row">
-                <input type="password" maxlength="1" class="pin-d" id="rp1" oninput="pinFocus(this,'rp2')">
-                <input type="password" maxlength="1" class="pin-d" id="rp2" oninput="pinFocus(this,'rp3')">
-                <input type="password" maxlength="1" class="pin-d" id="rp3" oninput="pinFocus(this,'rp4')">
+                <input type="password" maxlength="1" class="pin-d" id="rp1" oninput="pf(this,'rp2')">
+                <input type="password" maxlength="1" class="pin-d" id="rp2" oninput="pf(this,'rp3')">
+                <input type="password" maxlength="1" class="pin-d" id="rp3" oninput="pf(this,'rp4')">
                 <input type="password" maxlength="1" class="pin-d" id="rp4">
             </div>
-            <div class="info-box warn"><strong>⚠️ Recuerda tu PIN</strong>No hay recuperación · Sync en la nube · Multi-dispositivo</div>
+            <div class="info-box warn"><strong>⚠️ Recuerda tu PIN</strong>Sin recuperación · Sync en la nube · Multi-dispositivo</div>
             <div id="regErr" class="msg err hidden"></div>
             <div id="regOk" class="msg ok hidden"></div>
             <button class="btn btn-success btn-full" onclick="doRegister()">
-                <span id="rBtnTxt">Crear Cuenta</span><span id="rBtnSpin" class="spin hidden"></span>
+                <span id="rTxt">Crear Cuenta</span><span id="rSpin" class="spin hidden"></span>
             </button>
         </div>
     </div>
 </div>
 
-<!-- ═══════════════ SLEEP SETUP ═══════════════ -->
+<!-- ═══ SLEEP SETUP ═══ -->
 <div class="sleep-setup" id="sleepSetup">
-    <div class="modal" style="max-width:460px">
+    <div class="modal" style="max-width:440px">
         <div style="text-align:center;margin-bottom:1.5rem">
-            <div style="font-size:3rem;margin-bottom:.5rem">😴</div>
-            <h2 style="font-size:1.5rem;background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Configura tu Sueño</h2>
-            <p style="color:var(--text2);margin-top:.5rem;font-size:.9rem">Configuralo una vez y 1440 lo registra automáticamente cada día</p>
+            <div style="font-size:2.5rem;margin-bottom:.5rem">😴</div>
+            <h2 style="font-size:1.4rem;background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Configura tu Sueño</h2>
+            <p style="color:var(--text2);margin-top:.4rem;font-size:.88rem">Configuralo una vez y 1440 lo registra automáticamente</p>
         </div>
-        <div class="row-2">
-            <div class="form-group"><label>🌙 Me duermo a:</label><input type="time" id="setupSleepTime" value="22:30"></div>
-            <div class="form-group"><label>☀️ Me despierto a:</label><input type="time" id="setupWakeTime" value="07:00"></div>
+        <div class="row2">
+            <div class="fg"><label>🌙 Me duermo a:</label><input type="time" id="setupSleep" value="22:30"></div>
+            <div class="fg"><label>☀️ Me despierto a:</label><input type="time" id="setupWake" value="07:00"></div>
         </div>
         <div class="info-box"><strong>💡 Cómo funciona</strong>Si sigues tu rutina = registro automático. Si cambias = te preguntamos.</div>
         <button class="btn btn-success btn-full" onclick="saveSleepSetup()">Guardar Rutina</button>
     </div>
 </div>
 
-<!-- ═══════════════ SLEEP POPUP ═══════════════ -->
+<!-- ═══ SLEEP POPUP ═══ -->
 <div class="sleep-popup" id="sleepPopup">
-    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
-        <span style="font-size:1.5rem">😴</span>
-        <div>
-            <div style="font-weight:700">¿Cómo dormiste anoche?</div>
-            <div style="font-size:.82rem;color:var(--text2)">Detectamos un cambio en tu rutina</div>
-        </div>
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.9rem">
+        <span style="font-size:1.4rem">😴</span>
+        <div><div style="font-weight:700;font-size:.95rem">¿Cómo dormiste anoche?</div>
+        <div style="font-size:.78rem;color:var(--text2)">Detectamos un cambio en tu rutina</div></div>
     </div>
-    <div class="row-2" style="margin-bottom:1rem">
-        <div class="form-group"><label>Dormí a:</label><input type="time" id="popupSleepTime"></div>
-        <div class="form-group"><label>Desperté a:</label><input type="time" id="popupWakeTime"></div>
+    <div class="row2" style="margin-bottom:.9rem">
+        <div class="fg"><label>Dormí a:</label><input type="time" id="popSleep"></div>
+        <div class="fg"><label>Desperté a:</label><input type="time" id="popWake"></div>
     </div>
     <div style="display:flex;gap:.5rem">
         <button class="btn btn-success btn-full btn-sm" onclick="saveSleepPopup()">Guardar</button>
-        <button class="btn btn-ghost btn-sm" onclick="closeSleepPopup()">Ignorar</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeEl('sleepPopup')">Ignorar</button>
     </div>
 </div>
 
-<!-- ═══════════════ APP HEADER ═══════════════ -->
+<!-- ═══ MANTRA EDIT ═══ -->
+<div class="overlay" id="mantraModal">
+    <div class="modal" style="max-width:420px">
+        <div class="modal-head"><h2>🌟 Tu Mantra</h2><button class="modal-close" onclick="closeModal('mantraModal')">×</button></div>
+        <p style="color:var(--text2);margin-bottom:1.25rem;font-size:.9rem">Esta respuesta quedará fija en tu header como un recordatorio diario.</p>
+        <div class="fg"><label>¿Quién quieres ser?</label><input type="text" id="mantraInput" placeholder="Escribe tu mantra aquí..." maxlength="60"></div>
+        <div class="modal-btns">
+            <button class="btn btn-ghost" onclick="closeModal('mantraModal')">Cancelar</button>
+            <button class="btn" onclick="saveMantra()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ APP HEADER ═══ -->
 <header class="app-header" id="appHeader" style="display:none">
-    <div class="logo-svg">
-        <div class="logo-text">1<span class="logo-mark">4</span>4<span class="logo-mark">0</span></div>
+    <!-- Logo -->
+    <div class="logo-1440">1<span class="logo-zero">4</span>4<span class="logo-zero">0</span></div>
+
+    <!-- Mantra -->
+    <div class="mantra-wrap" onclick="openMantraModal()" title="Click para editar tu mantra">
+        <div class="mantra-question">¿Quién quieres ser?</div>
+        <div id="mantraDisplay" class="mantra-placeholder">Toca para escribir tu mantra...</div>
     </div>
 
-    <div class="header-timer" id="headerTimer">
-        <div class="header-timer-dot"></div>
-        <div class="header-timer-name" id="headerTimerName">Tarea</div>
-        <div class="header-timer-time" id="headerTimerTime">00:00:00</div>
-        <button class="btn btn-danger btn-sm" onclick="stopTimer()" style="padding:.3rem .7rem;font-size:.75rem">⏹</button>
+    <!-- Compact timer -->
+    <div class="h-timer" id="hTimer">
+        <div class="h-dot"></div>
+        <div class="h-tname" id="hTname">—</div>
+        <div class="h-ttime" id="hTtime">00:00:00</div>
+        <button class="btn btn-danger btn-sm" onclick="stopTimer()" style="padding:.3rem .65rem;font-size:.72rem">⏹</button>
     </div>
 
-    <div class="header-actions">
-        <button class="btn btn-ghost btn-sm" onclick="openModal('manualModal')">➕ Manual</button>
+    <div class="h-actions">
         <button class="btn btn-ghost btn-sm" onclick="exportCSV()">📊 CSV</button>
         <button class="btn btn-ghost btn-sm" onclick="exportPDF()">📄 PDF</button>
         <button class="btn btn-danger btn-sm" onclick="doLogout()">🚪 Salir</button>
     </div>
 </header>
 
-<!-- ═══════════════ MAIN APP ═══════════════ -->
+<!-- ═══ MAIN ═══ -->
 <main class="main" id="mainApp" style="display:none">
 
     <!-- Progress 1440 -->
-    <div class="card progress-1440">
+    <div class="progress-bar-wrap">
         <div class="progress-top">
             <span>Hoy: <strong id="progMin">0</strong> / 1440 min registrados</span>
             <span id="progPct" style="color:var(--text2)">0%</span>
@@ -679,23 +378,32 @@
         <div class="progress-track"><div class="progress-fill" id="progBar" style="width:0%"></div></div>
     </div>
 
-    <!-- Active Timer Banner (full, above fold) -->
+    <!-- Active Timer Banner -->
     <div class="timer-banner" id="timerBanner">
-        <div class="tb-top">
-            <div class="tb-dot"></div>
-            <div class="tb-label">Tracking ahora</div>
-        </div>
+        <div class="tb-row"><div class="tb-dot"></div><div class="tb-badge">Tracking ahora</div></div>
         <div class="tb-name" id="tbName">—</div>
         <div class="tb-meta" id="tbMeta">—</div>
         <div class="tb-time" id="tbTime">00:00:00</div>
-        <div class="tb-actions">
+        <div class="tb-btns">
             <button class="btn btn-danger" onclick="stopTimer()">⏹ Detener</button>
-            <button class="btn btn-ghost" onclick="openManualQuickSwitch()">🔄 Cambiar</button>
+            <button class="btn btn-ghost" onclick="switchActivity()">🔄 Cambiar actividad</button>
+        </div>
+    </div>
+
+    <!-- Registro Manual (prominent) -->
+    <div class="reg-manual-bar" onclick="openModal('manualModal')">
+        <div class="reg-manual-icon">📝</div>
+        <div class="reg-manual-text">
+            <h4>Registro Manual</h4>
+            <p>Agrega tiempo de actividades pasadas que no trackeaste</p>
+        </div>
+        <div class="reg-manual-btn">
+            <button class="btn btn-reg btn-sm">+ Agregar</button>
         </div>
     </div>
 
     <!-- Quick Track -->
-    <div class="card quick-track">
+    <div class="qt-wrap">
         <div class="section-title">⚡ Quick Track — 1 click</div>
         <div class="qt-grid" id="qtGrid"></div>
     </div>
@@ -704,44 +412,43 @@
     <div class="tabs">
         <button class="tab active" onclick="goTab('timeline',this)">📅 Timeline</button>
         <button class="tab" onclick="goTab('areas',this)">📁 Áreas</button>
-        <button class="tab" onclick="goTab('entries',this)">📋 Entradas</button>
+        <button class="tab" onclick="goTab('registros',this)">📋 Registros</button>
         <button class="tab" onclick="goTab('dashboard',this)">📊 Dashboard</button>
     </div>
 
-    <!-- TIMELINE TAB -->
+    <!-- TIMELINE -->
     <div class="tab-pane active" id="tab-timeline">
-        <div class="card">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-                <h3 id="timelineDate" style="font-size:1.1rem">Hoy</h3>
-                <div style="display:flex;gap:.5rem">
-                    <input type="date" id="tlDatePicker" onchange="renderTimeline()" style="background:var(--bg3);border:2px solid var(--border);border-radius:8px;padding:.4rem .7rem;color:var(--text);font-family:inherit;font-size:.85rem">
+        <div style="background:var(--bg2);border:2px solid var(--border);border-radius:16px;padding:1.25rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem">
+                <h3 id="tlTitle" style="font-size:1.05rem">Hoy</h3>
+                <div style="display:flex;gap:.5rem;align-items:center">
+                    <button class="btn btn-ghost btn-sm" onclick="openModal('sleepEditModal')">😴 Editar sueño</button>
+                    <input type="date" id="tlDate" onchange="renderTimeline()" style="background:var(--bg3);border:2px solid var(--border);border-radius:8px;padding:.4rem .7rem;color:var(--text);font-family:inherit;font-size:.82rem">
                 </div>
             </div>
-            <div class="timeline-wrap" id="timelineWrap"></div>
+            <div class="tl-wrap" id="tlWrap"></div>
         </div>
     </div>
 
-    <!-- AREAS TAB -->
+    <!-- AREAS -->
     <div class="tab-pane" id="tab-areas">
-        <div class="section-bar">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
             <h2>Áreas de Vida</h2>
             <div style="display:flex;gap:.5rem">
                 <button class="btn btn-ghost btn-sm" onclick="openModal('areaModal')">➕ Área</button>
                 <button class="btn btn-sm" onclick="openModal('projectModal')">➕ Proyecto</button>
             </div>
         </div>
-        <div id="areasContainer"></div>
+        <div id="areasC"></div>
     </div>
 
-    <!-- ENTRIES TAB -->
-    <div class="tab-pane" id="tab-entries">
-        <div class="section-bar">
-            <h2>Registro de Tiempo</h2>
+    <!-- REGISTROS -->
+    <div class="tab-pane" id="tab-registros">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
+            <h2>Registros de Tiempo</h2>
             <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-                <select id="filterArea" onchange="renderEntries()" style="background:var(--bg3);border:2px solid var(--border);border-radius:8px;padding:.4rem .7rem;color:var(--text);font-family:inherit;font-size:.85rem">
-                    <option value="">Todas las áreas</option>
-                </select>
-                <select id="filterPeriod" onchange="renderEntries()" style="background:var(--bg3);border:2px solid var(--border);border-radius:8px;padding:.4rem .7rem;color:var(--text);font-family:inherit;font-size:.85rem">
+                <select id="fArea" onchange="renderRegistros()" style="background:var(--bg3);border:2px solid var(--border);border-radius:8px;padding:.4rem .7rem;color:var(--text);font-family:inherit;font-size:.82rem"><option value="">Todas las áreas</option></select>
+                <select id="fPeriod" onchange="renderRegistros()" style="background:var(--bg3);border:2px solid var(--border);border-radius:8px;padding:.4rem .7rem;color:var(--text);font-family:inherit;font-size:.82rem">
                     <option value="today">Hoy</option>
                     <option value="week">Esta semana</option>
                     <option value="month">Este mes</option>
@@ -749,10 +456,10 @@
                 </select>
             </div>
         </div>
-        <div class="entries-list" id="entriesList"></div>
+        <div class="reg-list" id="regList"></div>
     </div>
 
-    <!-- DASHBOARD TAB -->
+    <!-- DASHBOARD -->
     <div class="tab-pane" id="tab-dashboard">
         <h2 style="margin-bottom:1.25rem">Dashboard</h2>
         <div class="dash-grid">
@@ -760,122 +467,101 @@
                 <h3>Distribución 1440</h3>
                 <div class="pie-wrap">
                     <svg class="pie-svg" id="pieSvg" viewBox="0 0 100 100"></svg>
-                    <div class="pie-center">
-                        <div class="pie-center-val" id="pieCenterVal">0%</div>
-                        <div class="pie-center-sub">registrado</div>
-                    </div>
+                    <div class="pie-center"><div class="pie-cval" id="piePct">0%</div><div class="pie-csub">registrado</div></div>
                 </div>
                 <div id="pieLegend"></div>
             </div>
-
-            <div class="dash-card">
-                <h3>😴 Sueño Promedio</h3>
-                <div class="dash-val" id="dashSleep">0h</div>
-                <div class="dash-sub">Últimos 7 días</div>
-            </div>
-
-            <div class="dash-card">
-                <h3>🕳 Vacío Hoy</h3>
-                <div class="dash-val" id="dashEmpty">24h</div>
-                <div class="dash-sub">Sin registrar</div>
-            </div>
-
-            <div class="dash-card">
-                <h3>📅 Tiempo Trackeado</h3>
-                <div class="dash-val" id="dashTracked">0h</div>
-                <div class="dash-sub">Hoy (excluyendo sueño)</div>
-            </div>
-
-            <div class="dash-card">
-                <h3>⚖️ Balance</h3>
-                <div class="dash-val" id="dashBalance">—</div>
-                <div class="dash-sub">Trabajo vs Personal</div>
-            </div>
+            <div class="dash-card"><h3>😴 Sueño Promedio</h3><div class="dash-val" id="dSleep">0h</div><div class="dash-sub">Últimos 7 días</div></div>
+            <div class="dash-card"><h3>🕳 Vacío Hoy</h3><div class="dash-val" id="dEmpty">24h</div><div class="dash-sub">Sin registrar</div></div>
+            <div class="dash-card"><h3>⏱ Trackeado Hoy</h3><div class="dash-val" id="dTracked">0h</div><div class="dash-sub">Excluyendo sueño</div></div>
+            <div class="dash-card"><h3>⚖️ Balance</h3><div class="dash-val" id="dBalance">—</div><div class="dash-sub">Trabajo vs Personal</div></div>
         </div>
     </div>
-
 </main>
 
-<!-- ═══════════════ MODALS ═══════════════ -->
-
-<!-- Area Modal -->
+<!-- ═══ MODALS ═══ -->
+<!-- Area -->
 <div class="overlay" id="areaModal">
     <div class="modal">
-        <div class="modal-head">
-            <h2>Nueva Área de Vida</h2>
-            <button class="modal-close" onclick="closeModal('areaModal')">×</button>
+        <div class="modal-head"><h2>Nueva Área de Vida</h2><button class="modal-close" onclick="closeModal('areaModal')">×</button></div>
+        <div class="fg"><label>Nombre</label><input type="text" id="aName" placeholder="Trabajo, Salud, Familia..."></div>
+        <div class="row2">
+            <div class="fg"><label>Emoji</label><input type="text" id="aIcon" placeholder="💼" maxlength="2"></div>
+            <div class="fg"><label>Color</label><input type="color" id="aColor" value="#00ffff"></div>
         </div>
-        <div class="form-group"><label>Nombre</label><input type="text" id="areaName" placeholder="Ej: Trabajo, Salud, Familia"></div>
-        <div class="row-2">
-            <div class="form-group"><label>Emoji</label><input type="text" id="areaIcon" placeholder="💼" maxlength="2"></div>
-            <div class="form-group"><label>Color</label><input type="color" id="areaColor" value="#00ffff"></div>
-        </div>
-        <div class="modal-actions">
+        <div class="modal-btns">
             <button class="btn btn-ghost" onclick="closeModal('areaModal')">Cancelar</button>
             <button class="btn" onclick="saveArea()">Guardar</button>
         </div>
     </div>
 </div>
 
-<!-- Project Modal -->
+<!-- Project -->
 <div class="overlay" id="projectModal">
     <div class="modal">
-        <div class="modal-head">
-            <h2>Nuevo Proyecto</h2>
-            <button class="modal-close" onclick="closeModal('projectModal')">×</button>
-        </div>
-        <div class="form-group"><label>Área de Vida</label>
-            <select id="projectArea"><option value="">Sin área</option></select>
-        </div>
-        <div class="form-group"><label>Nombre</label><input type="text" id="projectName" placeholder="Ej: Cliente ABC"></div>
-        <div class="form-group"><label>Color</label><input type="color" id="projectColor" value="#0066ff"></div>
-        <div class="modal-actions">
+        <div class="modal-head"><h2>Nuevo Proyecto</h2><button class="modal-close" onclick="closeModal('projectModal')">×</button></div>
+        <div class="fg"><label>Área de Vida</label><select id="pArea"><option value="">Sin área</option></select></div>
+        <div class="fg"><label>Nombre</label><input type="text" id="pName" placeholder="Ej: Cliente ABC"></div>
+        <div class="fg"><label>Color</label><input type="color" id="pColor" value="#0066ff"></div>
+        <div class="modal-btns">
             <button class="btn btn-ghost" onclick="closeModal('projectModal')">Cancelar</button>
             <button class="btn" onclick="saveProject()">Guardar</button>
         </div>
     </div>
 </div>
 
-<!-- Manual Entry Modal -->
+<!-- Manual Entry -->
 <div class="overlay" id="manualModal">
     <div class="modal">
-        <div class="modal-head">
-            <h2>Entrada Manual</h2>
-            <button class="modal-close" onclick="closeModal('manualModal')">×</button>
+        <div class="modal-head"><h2>📝 Registro Manual</h2><button class="modal-close" onclick="closeModal('manualModal')">×</button></div>
+        <div class="fg"><label>¿Qué hiciste?</label><input type="text" id="mDesc" placeholder="Descripción..."></div>
+        <div class="row2">
+            <div class="fg"><label>Área</label><select id="mArea" onchange="updateMProj()"><option value="">Sin área</option></select></div>
+            <div class="fg"><label>Proyecto</label><select id="mProj"><option value="">Sin proyecto</option></select></div>
         </div>
-        <div class="form-group"><label>¿Qué hiciste?</label><input type="text" id="manDesc" placeholder="Descripción..."></div>
-        <div class="row-2">
-            <div class="form-group"><label>Área</label>
-                <select id="manArea" onchange="updateManProjects()"><option value="">Sin área</option></select>
-            </div>
-            <div class="form-group"><label>Proyecto</label>
-                <select id="manProject"><option value="">Sin proyecto</option></select>
-            </div>
+        <div class="fg"><label>Fecha</label><input type="date" id="mDate"></div>
+        <div class="row2">
+            <div class="fg"><label>Inicio</label><input type="time" id="mStart"></div>
+            <div class="fg"><label>Fin</label><input type="time" id="mEnd"></div>
         </div>
-        <div class="form-group"><label>Fecha</label><input type="date" id="manDate"></div>
-        <div class="row-2">
-            <div class="form-group"><label>Inicio</label><input type="time" id="manStart"></div>
-            <div class="form-group"><label>Fin</label><input type="time" id="manEnd"></div>
-        </div>
-        <div class="modal-actions">
+        <div class="modal-btns">
             <button class="btn btn-ghost" onclick="closeModal('manualModal')">Cancelar</button>
-            <button class="btn" onclick="saveManual()">Guardar</button>
+            <button class="btn btn-reg" onclick="saveManual()">Guardar Registro</button>
         </div>
     </div>
 </div>
 
-<!-- Edit Sleep Routine Modal -->
-<div class="overlay" id="sleepEditModal">
+<!-- Edit Entry -->
+<div class="overlay" id="editRegModal">
     <div class="modal">
-        <div class="modal-head">
-            <h2>😴 Editar Rutina de Sueño</h2>
-            <button class="modal-close" onclick="closeModal('sleepEditModal')">×</button>
+        <div class="modal-head"><h2>✏️ Editar Registro</h2><button class="modal-close" onclick="closeModal('editRegModal')">×</button></div>
+        <input type="hidden" id="editId">
+        <div class="fg"><label>Descripción</label><input type="text" id="editDesc"></div>
+        <div class="row2">
+            <div class="fg"><label>Área</label><select id="editArea" onchange="updateEditProj()"><option value="">Sin área</option></select></div>
+            <div class="fg"><label>Proyecto</label><select id="editProj"><option value="">Sin proyecto</option></select></div>
         </div>
-        <div class="row-2">
-            <div class="form-group"><label>🌙 Me duermo a:</label><input type="time" id="editSleepTime"></div>
-            <div class="form-group"><label>☀️ Me despierto a:</label><input type="time" id="editWakeTime"></div>
+        <div class="fg"><label>Fecha</label><input type="date" id="editDate"></div>
+        <div class="row2">
+            <div class="fg"><label>Inicio</label><input type="time" id="editStart"></div>
+            <div class="fg"><label>Fin</label><input type="time" id="editEnd"></div>
         </div>
-        <div class="modal-actions">
+        <div class="modal-btns">
+            <button class="btn btn-ghost" onclick="closeModal('editRegModal')">Cancelar</button>
+            <button class="btn" onclick="updateEntry()">Guardar Cambios</button>
+        </div>
+    </div>
+</div>
+
+<!-- Sleep Edit Routine -->
+<div class="overlay" id="sleepEditModal">
+    <div class="modal" style="max-width:420px">
+        <div class="modal-head"><h2>😴 Editar Rutina de Sueño</h2><button class="modal-close" onclick="closeModal('sleepEditModal')">×</button></div>
+        <div class="row2">
+            <div class="fg"><label>🌙 Me duermo a:</label><input type="time" id="editSleepT"></div>
+            <div class="fg"><label>☀️ Me despierto a:</label><input type="time" id="editWakeT"></div>
+        </div>
+        <div class="modal-btns">
             <button class="btn btn-ghost" onclick="closeModal('sleepEditModal')">Cancelar</button>
             <button class="btn btn-success" onclick="updateSleepRoutine()">Guardar</button>
         </div>
@@ -885,744 +571,663 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ─── SUPABASE ───
-const SB_URL = 'https://ilzxgnqylmycktwsrfcr.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsenhnbnF5bG15Y2t0d3NyZmNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3NTg0OTAsImV4cCI6MjA4NjMzNDQ5MH0.MkXUo8CjpH2QTUuLpoqA0LRHwTzC9p4WiFn1lFmk0d4';
-const { createClient } = supabase;
-const sb = createClient(SB_URL, SB_KEY);
+const SB_URL='https://ilzxgnqylmycktwsrfcr.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsenhnbnF5bG15Y2t0d3NyZmNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3NTg0OTAsImV4cCI6MjA4NjMzNDQ5MH0.MkXUo8CjpH2QTUuLpoqA0LRHwTzC9p4WiFn1lFmk0d4';
+const {createClient}=supabase;
+const sb=createClient(SB_URL,SB_KEY);
 
-// ─── STATE ───
-let user = null;
-let db = { areas: [], projects: [], entries: [] };
-let timer = null; // { id, type, name, meta, start, elapsed }
-let timerInterval = null;
+let user=null,db={areas:[],projects:[],entries:[]},timer=null,timerIv=null;
 
-// ─── AUTH ───
-function switchTab_login(t) {
-    document.querySelectorAll('.login-tab').forEach(e => e.classList.remove('active'));
-    document.querySelectorAll('.login-form').forEach(e => e.classList.remove('active'));
+// ── AUTH ──
+function switchLoginTab(t){
+    document.querySelectorAll('.login-tab').forEach(e=>e.classList.remove('active'));
+    document.querySelectorAll('.login-form').forEach(e=>e.classList.remove('active'));
     event.target.classList.add('active');
-    document.getElementById('lf-' + t).classList.add('active');
-    document.getElementById(t === 'login' ? 'lp1' : 'rp1').focus();
+    document.getElementById('lf-'+t).classList.add('active');
+    document.getElementById(t==='login'?'lp1':'rp1').focus();
+}
+function pf(el,nid){if(el.value.length===1)document.getElementById(nid)?.focus()}
+function getPin(p){return['1','2','3','4'].map(i=>document.getElementById(p+i).value).join('')}
+function autoLogin(){setTimeout(()=>{if(getPin('lp').length===4)doLogin()},80)}
+
+async function doRegister(){
+    const pin=getPin('rp');
+    if(pin.length!==4)return showMsg('regErr','PIN incompleto');
+    setBL('rTxt','rSpin',true);
+    try{
+        const{data:ex}=await sb.from('users').select('id').eq('pin',pin).maybeSingle();
+        if(ex)return showMsg('regErr','PIN ya en uso');
+        const{data:u,error}=await sb.from('users').insert([{pin}]).select().single();
+        if(error)throw error;
+        user=u;
+        showMsg('regOk','¡Cuenta creada!',true);
+        setTimeout(()=>{clearPins('rp');document.getElementById('sleepSetup').classList.add('open')},1200);
+    }catch(e){showMsg('regErr','Error: '+e.message)}
+    finally{setBL('rTxt','rSpin',false)}
 }
 
-function pinFocus(el, nextId) {
-    if (el.value.length === 1) document.getElementById(nextId)?.focus();
-}
-
-function getPin(prefix) {
-    return ['1','2','3','4'].map(i => document.getElementById(prefix+i).value).join('');
-}
-
-function autoLogin() {
-    setTimeout(() => { if (getPin('lp').length === 4) doLogin(); }, 80);
-}
-
-async function doRegister() {
-    const pin = getPin('rp');
-    if (pin.length !== 4) return showMsg('regErr','PIN incompleto');
-    setBtnLoading('rBtnTxt','rBtnSpin',true);
-    try {
-        const { data: ex } = await sb.from('users').select('id').eq('pin',pin).maybeSingle();
-        if (ex) return showMsg('regErr','PIN ya en uso');
-        const { data: u, error } = await sb.from('users').insert([{pin}]).select().single();
-        if (error) throw error;
-        user = u;
-        showMsg('regOk','¡Cuenta creada! Configurando sueño...',true);
-        setTimeout(() => {
-            clearPins('rp');
-            document.getElementById('sleepSetup').classList.add('open');
-        }, 1200);
-    } catch(e) {
-        showMsg('regErr','Error: '+e.message);
-    } finally { setBtnLoading('rBtnTxt','rBtnSpin',false); }
-}
-
-async function doLogin() {
-    const pin = getPin('lp');
-    if (pin.length !== 4) return showMsg('loginErr','PIN incompleto');
-    setBtnLoading('lBtnTxt','lBtnSpin',true);
-    try {
-        const { data: u } = await sb.from('users').select('*').eq('pin',pin).maybeSingle();
-        if (!u) { clearPins('lp'); document.getElementById('lp1').focus(); return showMsg('loginErr','PIN incorrecto'); }
-        user = u;
+async function doLogin(){
+    const pin=getPin('lp');
+    if(pin.length!==4)return showMsg('loginErr','PIN incompleto');
+    setBL('lTxt','lSpin',true);
+    try{
+        const{data:u}=await sb.from('users').select('*').eq('pin',pin).maybeSingle();
+        if(!u){clearPins('lp');document.getElementById('lp1').focus();return showMsg('loginErr','PIN incorrecto')}
+        user=u;
         await loadAll();
         launchApp();
-        if (!u.sleep_routine?.enabled) document.getElementById('sleepSetup').classList.add('open');
+        if(!u.sleep_routine?.enabled)document.getElementById('sleepSetup').classList.add('open');
         else await processDailySleep();
-    } catch(e) {
-        showMsg('loginErr','Error de conexión');
-    } finally { setBtnLoading('lBtnTxt','lBtnSpin',false); }
+    }catch(e){showMsg('loginErr','Error de conexión')}
+    finally{setBL('lTxt','lSpin',false)}
 }
 
-function launchApp() {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('appHeader').style.display = 'flex';
-    document.getElementById('mainApp').style.display = 'block';
-    // Set timeline date to today
-    document.getElementById('tlDatePicker').value = todayStr();
+function launchApp(){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('appHeader').style.display='flex';
+    document.getElementById('mainApp').style.display='block';
+    document.getElementById('tlDate').value=today();
+    loadMantra();
     renderAll();
 }
 
-function doLogout() {
-    if (!confirm('¿Cerrar sesión?')) return;
-    if (timerInterval) clearInterval(timerInterval);
-    user = null; timer = null; db = { areas:[], projects:[], entries:[] };
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('appHeader').style.display = 'none';
-    document.getElementById('mainApp').style.display = 'none';
-    clearPins('lp');
-    document.getElementById('lp1').focus();
+function doLogout(){
+    if(!confirm('¿Cerrar sesión?'))return;
+    if(timerIv)clearInterval(timerIv);
+    user=null;timer=null;db={areas:[],projects:[],entries:[]};
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('appHeader').style.display='none';
+    document.getElementById('mainApp').style.display='none';
+    clearPins('lp');document.getElementById('lp1').focus();
 }
 
-// ─── SLEEP SETUP ───
-async function saveSleepSetup() {
-    const st = document.getElementById('setupSleepTime').value;
-    const wt = document.getElementById('setupWakeTime').value;
-    if (!st || !wt) return alert('Completa ambos horarios');
-    try {
-        const { error } = await sb.from('users').update({ sleep_routine: { enabled:true, sleep_time:st, wake_time:wt } }).eq('id', user.id);
-        if (error) throw error;
-        user.sleep_routine = { enabled:true, sleep_time:st, wake_time:wt };
+// ── SLEEP ──
+async function saveSleepSetup(){
+    const st=document.getElementById('setupSleep').value;
+    const wt=document.getElementById('setupWake').value;
+    if(!st||!wt)return alert('Completa ambos horarios');
+    try{
+        await sb.from('users').update({sleep_routine:{enabled:true,sleep_time:st,wake_time:wt}}).eq('id',user.id);
+        user.sleep_routine={enabled:true,sleep_time:st,wake_time:wt};
         document.getElementById('sleepSetup').classList.remove('open');
-        if (document.getElementById('mainApp').style.display === 'none') launchApp();
+        if(document.getElementById('mainApp').style.display==='none')launchApp();
         await processDailySleep();
-    } catch(e) { alert('Error al guardar: ' + e.message); }
+    }catch(e){alert('Error: '+e.message)}
 }
 
-async function processDailySleep() {
-    if (!user?.sleep_routine?.enabled) return;
-    const r = user.sleep_routine;
-    const today = new Date();
-    const yesterday = new Date(today); yesterday.setDate(yesterday.getDate()-1);
-    const yStr = yesterday.toISOString().split('T')[0];
-
-    const { data: ex } = await sb.from('time_entries').select('id').eq('user_id',user.id).eq('type','sleep').eq('date',yStr).maybeSingle();
-    if (ex) return;
-
-    // Check if there was late-night activity
-    const sleepStart = new Date(yStr + 'T' + r.sleep_time);
-    const wakeEnd = new Date(todayStr() + 'T' + r.wake_time);
-    const { data: lateActivity } = await sb.from('time_entries')
-        .select('end_time').eq('user_id',user.id).eq('type','tracked')
-        .gte('end_time', sleepStart.toISOString()).lte('end_time', wakeEnd.toISOString()).limit(1);
-
-    if (lateActivity && lateActivity.length > 0) {
-        // Show popup — detect approximate sleep
-        const lastActivity = new Date(lateActivity[lateActivity.length - 1].end_time);
-        const approxSleep = new Date(lastActivity.getTime() + 30 * 60000);
-        document.getElementById('popupSleepTime').value = approxSleep.toTimeString().slice(0,5);
-        document.getElementById('popupWakeTime').value = r.wake_time;
+async function processDailySleep(){
+    if(!user?.sleep_routine?.enabled)return;
+    const r=user.sleep_routine;
+    const todayD=new Date(),yest=new Date(todayD);yest.setDate(yest.getDate()-1);
+    const yStr=yest.toISOString().split('T')[0];
+    const{data:ex}=await sb.from('time_entries').select('id').eq('user_id',user.id).eq('type','sleep').eq('date',yStr).maybeSingle();
+    if(ex)return;
+    const sleepStart=new Date(yStr+'T'+r.sleep_time);
+    const wakeEnd=new Date(today()+'T'+r.wake_time);
+    // Check for late night activity
+    const{data:late}=await sb.from('time_entries').select('end_time')
+        .eq('user_id',user.id).eq('type','tracked')
+        .gte('end_time',sleepStart.toISOString())
+        .lte('end_time',wakeEnd.toISOString())
+        .order('end_time',{ascending:false}).limit(1);
+    if(late&&late.length>0){
+        const lastAct=new Date(late[0].end_time);
+        const approx=new Date(lastAct.getTime()+30*60000);
+        document.getElementById('popSleep').value=approx.toTimeString().slice(0,5);
+        document.getElementById('popWake').value=r.wake_time;
         document.getElementById('sleepPopup').classList.add('open');
-    } else {
-        // Auto apply routine
-        const dur = Math.floor((wakeEnd - sleepStart) / 1000);
-        if (dur > 0 && dur < 86400) {
-            await sb.from('time_entries').insert([{
-                user_id: user.id, type:'sleep', description:'Sueño',
-                start_time: sleepStart.toISOString(),
-                end_time: wakeEnd.toISOString(),
-                duration: dur, date: yStr, auto_detected: true
-            }]);
-            await loadAll(); renderAll();
+    }else{
+        const dur=Math.floor((wakeEnd-sleepStart)/1000);
+        if(dur>0&&dur<86400){
+            const{data}=await sb.from('time_entries').insert([{
+                user_id:user.id,type:'sleep',description:'Sueño',
+                start_time:sleepStart.toISOString(),end_time:wakeEnd.toISOString(),
+                duration:dur,date:yStr,auto_detected:true
+            }]).select().single();
+            if(data){db.entries.unshift(data);renderAll()}
         }
     }
 }
 
-async function saveSleepPopup() {
-    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
-    const yStr = yesterday.toISOString().split('T')[0];
-    const st = document.getElementById('popupSleepTime').value;
-    const wt = document.getElementById('popupWakeTime').value;
-    if (!st || !wt) return;
-    const start = new Date(yStr + 'T' + st);
-    const end = new Date(todayStr() + 'T' + wt);
-    const dur = Math.floor((end - start) / 1000);
-    if (dur <= 0) return;
-    await sb.from('time_entries').insert([{
-        user_id: user.id, type:'sleep', description:'Sueño',
-        start_time: start.toISOString(), end_time: end.toISOString(),
-        duration: dur, date: yStr, auto_detected: false
-    }]);
-    closeSleepPopup();
-    await loadAll(); renderAll();
+async function saveSleepPopup(){
+    const yest=new Date();yest.setDate(yest.getDate()-1);
+    const yStr=yest.toISOString().split('T')[0];
+    const st=document.getElementById('popSleep').value;
+    const wt=document.getElementById('popWake').value;
+    if(!st||!wt)return;
+    const start=new Date(yStr+'T'+st);
+    const end=new Date(today()+'T'+wt);
+    const dur=Math.floor((end-start)/1000);
+    if(dur<=0)return;
+    const{data}=await sb.from('time_entries').insert([{
+        user_id:user.id,type:'sleep',description:'Sueño',
+        start_time:start.toISOString(),end_time:end.toISOString(),
+        duration:dur,date:yStr,auto_detected:false
+    }]).select().single();
+    if(data){db.entries.unshift(data)}
+    closeEl('sleepPopup');renderAll();
 }
 
-function closeSleepPopup() { document.getElementById('sleepPopup').classList.remove('open'); }
-
-async function updateSleepRoutine() {
-    const st = document.getElementById('editSleepTime').value;
-    const wt = document.getElementById('editWakeTime').value;
-    if (!st || !wt) return;
-    await sb.from('users').update({ sleep_routine: { enabled:true, sleep_time:st, wake_time:wt } }).eq('id', user.id);
-    user.sleep_routine = { enabled:true, sleep_time:st, wake_time:wt };
+async function updateSleepRoutine(){
+    const st=document.getElementById('editSleepT').value;
+    const wt=document.getElementById('editWakeT').value;
+    if(!st||!wt)return;
+    await sb.from('users').update({sleep_routine:{enabled:true,sleep_time:st,wake_time:wt}}).eq('id',user.id);
+    user.sleep_routine={enabled:true,sleep_time:st,wake_time:wt};
     closeModal('sleepEditModal');
 }
 
-// ─── DATA LOAD ───
-async function loadAll() {
-    const [a, p, e] = await Promise.all([
+// ── MANTRA ──
+function loadMantra(){
+    const saved=localStorage.getItem('1440_mantra_'+user.id)||'';
+    const el=document.getElementById('mantraDisplay');
+    if(saved){el.textContent=saved;el.className='mantra-answer'}
+    else{el.textContent='Toca para escribir tu mantra...';el.className='mantra-placeholder'}
+}
+
+function openMantraModal(){
+    const saved=localStorage.getItem('1440_mantra_'+user.id)||'';
+    document.getElementById('mantraInput').value=saved;
+    openModal('mantraModal');
+}
+
+function saveMantra(){
+    const val=document.getElementById('mantraInput').value.trim();
+    if(val){
+        localStorage.setItem('1440_mantra_'+user.id,val);
+        document.getElementById('mantraDisplay').textContent=val;
+        document.getElementById('mantraDisplay').className='mantra-answer';
+    }
+    closeModal('mantraModal');
+}
+
+// ── DATA ──
+async function loadAll(){
+    const[a,p,e]=await Promise.all([
         sb.from('categories').select('*').eq('user_id',user.id).order('created_at'),
         sb.from('projects').select('*').eq('user_id',user.id).order('created_at'),
         sb.from('time_entries').select('*').eq('user_id',user.id).order('start_time',{ascending:false}).limit(300)
     ]);
-    db.areas = a.data || [];
-    db.projects = p.data || [];
-    db.entries = e.data || [];
+    db.areas=a.data||[];db.projects=p.data||[];db.entries=e.data||[];
 }
 
-function renderAll() {
-    renderQuickTrack();
-    renderTimeline();
-    renderAreas();
-    renderEntries();
-    renderDashboard();
-    updateProgress();
-    updateSelects();
+function renderAll(){
+    updateProgress();renderQT();renderTimeline();renderAreas();renderRegistros();renderDashboard();updateSelects();
 }
 
-// ─── PROGRESS ───
-function updateProgress() {
-    const mins = todayTrackedMinutes();
-    const pct = Math.min((mins/1440)*100, 100);
-    document.getElementById('progMin').textContent = mins;
-    document.getElementById('progPct').textContent = Math.floor(pct)+'%';
-    document.getElementById('progBar').style.width = pct+'%';
+// ── PROGRESS ──
+function updateProgress(){
+    const mins=db.entries.filter(e=>e.date===today()).reduce((s,e)=>s+Math.floor(e.duration/60),0);
+    const pct=Math.min((mins/1440)*100,100);
+    document.getElementById('progMin').textContent=mins;
+    document.getElementById('progPct').textContent=Math.floor(pct)+'%';
+    document.getElementById('progBar').style.width=pct+'%';
 }
 
-function todayTrackedMinutes() {
-    return db.entries.filter(e => e.date === todayStr()).reduce((s,e) => s + Math.floor(e.duration/60), 0);
-}
-
-// ─── TIMER ───
-function startTimer(id, type, name, meta) {
-    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-    timer = { id, type, name, meta, start: new Date(), elapsed: 0 };
-
-    // Update UI
-    document.getElementById('timerBanner').classList.add('visible');
-    document.getElementById('tbName').textContent = name;
-    document.getElementById('tbMeta').textContent = meta;
-    document.getElementById('headerTimer').classList.add('visible');
-    document.getElementById('headerTimerName').textContent = name;
-
-    timerInterval = setInterval(() => {
+// ── TIMER ──
+function startTimer(id,type,name,meta){
+    if(timerIv){clearInterval(timerIv);timerIv=null}
+    timer={id,type,name,meta,start:new Date(),elapsed:0};
+    document.getElementById('timerBanner').classList.add('on');
+    document.getElementById('tbName').textContent=name;
+    document.getElementById('tbMeta').textContent=meta;
+    document.getElementById('hTimer').classList.add('on');
+    document.getElementById('hTname').textContent=name;
+    timerIv=setInterval(()=>{
         timer.elapsed++;
-        const t = fmtSeconds(timer.elapsed);
-        document.getElementById('tbTime').textContent = t;
-        document.getElementById('headerTimerTime').textContent = t;
-    }, 1000);
-
-    renderQuickTrack();
+        const t=fmtS(timer.elapsed);
+        document.getElementById('tbTime').textContent=t;
+        document.getElementById('hTtime').textContent=t;
+    },1000);
+    renderQT();
 }
 
-async function stopTimer() {
-    if (!timer || !timerInterval) return;
-    clearInterval(timerInterval); timerInterval = null;
-
-    const end = new Date();
-    try {
-        const payload = {
-            user_id: user.id, type:'tracked',
-            description: timer.name,
-            start_time: timer.start.toISOString(),
-            end_time: end.toISOString(),
-            duration: timer.elapsed,
-            date: todayStr()
-        };
-        if (timer.type === 'project') payload.project_id = timer.id;
-        if (timer.type === 'area') payload.category_id = timer.id;
-
-        const { data, error } = await sb.from('time_entries').insert([payload]).select().single();
-        if (error) throw error;
-        db.entries.unshift(data);
-    } catch(e) { console.error(e); }
-
-    timer = null;
-    document.getElementById('timerBanner').classList.remove('visible');
-    document.getElementById('headerTimer').classList.remove('visible');
+async function stopTimer(){
+    if(!timer||!timerIv)return;
+    clearInterval(timerIv);timerIv=null;
+    const end=new Date();
+    const payload={user_id:user.id,type:'tracked',description:timer.name,
+        start_time:timer.start.toISOString(),end_time:end.toISOString(),
+        duration:timer.elapsed,date:today()};
+    if(timer.type==='project')payload.project_id=timer.id;
+    if(timer.type==='area')payload.category_id=timer.id;
+    const{data}=await sb.from('time_entries').insert([payload]).select().single();
+    if(data)db.entries.unshift(data);
+    timer=null;
+    document.getElementById('timerBanner').classList.remove('on');
+    document.getElementById('hTimer').classList.remove('on');
     renderAll();
 }
 
-function openManualQuickSwitch() {
+function switchActivity(){
+    // Stop current, show QT for fast switch
     stopTimer();
-    // Optionally show quick-switch popup — for now just stop
+    // Scroll to Quick Track
+    document.querySelector('.qt-wrap').scrollIntoView({behavior:'smooth',block:'center'});
 }
 
-// ─── QUICK TRACK ───
-function renderQuickTrack() {
-    const grid = document.getElementById('qtGrid');
-    const items = [
-        ...db.areas.map(a => ({id:a.id, type:'area', name:a.name, icon:a.icon||'📁', color:a.color})),
-        ...db.projects.map(p => {
-            const area = db.areas.find(a => a.id === p.category_id);
-            return {id:p.id, type:'project', name:p.name, icon:area?.icon||'📌', color:p.color, areaNm:area?.name};
+// ── QUICK TRACK ──
+function renderQT(){
+    const grid=document.getElementById('qtGrid');
+    const items=[
+        ...db.areas.map(a=>({id:a.id,type:'area',name:a.name,icon:a.icon||'📁',color:a.color,sub:'Área'})),
+        ...db.projects.map(p=>{
+            const ar=db.areas.find(a=>a.id===p.category_id);
+            return{id:p.id,type:'project',name:p.name,icon:ar?.icon||'📌',color:p.color,sub:ar?.name||'Proyecto'};
         })
     ].slice(0,8);
-
-    if (!items.length) {
-        grid.innerHTML = `<div class="qt-empty">Crea áreas o proyectos para usar Quick Track ⚡<br><br>
-        <button class="btn btn-sm" onclick="openModal('areaModal')">➕ Crear Área</button></div>`;
+    if(!items.length){
+        grid.innerHTML=`<div class="qt-empty">Crea áreas o proyectos para Quick Track ⚡<br><br><button class="btn btn-sm" onclick="openModal('areaModal')">➕ Crear Área</button></div>`;
         return;
     }
-
-    grid.innerHTML = items.map(it => {
-        const running = timer && timer.id === it.id;
-        const todayMin = db.entries.filter(e => e.date === todayStr() && (e.category_id === it.id || e.project_id === it.id)).reduce((s,e) => s + Math.floor(e.duration/60), 0);
-        return `<div class="qt-item ${running?'running':''}" onclick="${running?'stopTimer()':'startTimerFrom(\''+it.id+'\',\''+it.type+'\',\''+escapeSQ(it.name)+'\',\''+escapeSQ(it.areaNm||it.type)+'\')'}" >
-            <div>
-                <div class="qt-label">${it.icon} ${it.name}</div>
-                <div class="qt-sub">${fmtMin(todayMin)} hoy</div>
-            </div>
-            <div class="qt-play">${running?'⏹':'▶'}</div>
+    grid.innerHTML=items.map(it=>{
+        const running=timer&&timer.id===it.id;
+        const mins=db.entries.filter(e=>e.date===today()&&(e.category_id===it.id||e.project_id===it.id)).reduce((s,e)=>s+Math.floor(e.duration/60),0);
+        const borderStyle=it.color?`border-color:${it.color}40`:'';
+        return`<div class="qt-item${running?' running':''}" style="${borderStyle}" onclick="${running?'stopTimer()':'startTimer(\''+it.id+'\',\''+it.type+'\',\''+esc(it.name)+'\',\''+esc(it.sub)+'\')'}" >
+            <div><div class="qt-label">${it.icon} ${it.name}</div><div class="qt-sub">${fmtM(mins)} hoy</div></div>
+            <div class="qt-play" style="${!running&&it.color?'background:linear-gradient(135deg,'+it.color+','+it.color+'aa)':''}">${running?'⏹':'▶'}</div>
         </div>`;
     }).join('');
 }
 
-function startTimerFrom(id, type, name, meta) {
-    startTimer(id, type, name, meta);
-}
-
-// ─── TIMELINE ───
-function renderTimeline() {
-    const dateStr = document.getElementById('tlDatePicker').value || todayStr();
-    document.getElementById('timelineDate').textContent = dateStr === todayStr() ? 'Hoy — ' + fmtDateLabel(dateStr) : fmtDateLabel(dateStr);
-
-    const dayEntries = db.entries.filter(e => e.date === dateStr);
-    const wrap = document.getElementById('timelineWrap');
-    let html = '';
-
-    for (let h = 0; h < 24; h++) {
-        const hLabel = String(h).padStart(2,'0') + ':00';
-        const entriesInHour = dayEntries.filter(e => {
-            const s = new Date(e.start_time).getHours();
-            const en = new Date(e.end_time).getHours();
-            return h >= s && h <= en;
-        });
-
-        let inner = '';
-        if (entriesInHour.length) {
-            inner = entriesInHour.map(e => {
-                const cls = e.type === 'sleep' ? 'sleep' : 'tracked';
-                const proj = db.projects.find(p => p.id === e.project_id);
-                const area = db.areas.find(a => a.id === e.category_id || a.id === proj?.category_id);
-                const label = e.description + (proj ? ' · '+proj.name : '') + (area ? ' · '+area.name : '');
-                return `<div class="tl-entry ${cls}" onclick="editEntry('${e.id}')">${e.type==='sleep'?'😴 ':''} ${label} <span style="font-size:.75rem;opacity:.7">(${fmtSeconds(e.duration)})</span></div>`;
-            }).join('');
-        } else {
-            inner = `<div class="tl-entry gap">Vacío</div>`;
+// ── TIMELINE ──
+function renderTimeline(){
+    const ds=document.getElementById('tlDate').value||today();
+    document.getElementById('tlTitle').textContent=ds===today()?'Hoy — '+fmtDL(ds):fmtDL(ds);
+    const dayE=db.entries.filter(e=>e.date===ds);
+    const routine=user?.sleep_routine;
+    let html='';
+    for(let h=0;h<24;h++){
+        const hLabel=String(h).padStart(2,'0')+':00';
+        // Check if this hour is in sleep routine range
+        let isSleepHour=false;
+        if(routine?.enabled){
+            const sleepH=parseInt(routine.sleep_time?.split(':')[0]||22);
+            const wakeH=parseInt(routine.wake_time?.split(':')[0]||7);
+            // Overnight sleep: sleep > wake means it crosses midnight
+            if(sleepH>wakeH){isSleepHour=(h>=sleepH||h<wakeH)}
+            else{isSleepHour=(h>=sleepH&&h<wakeH)}
         }
-
-        html += `<div class="tl-row">
+        const entriesInHour=dayE.filter(e=>{
+            const s=new Date(e.start_time).getHours();
+            const en=new Date(e.end_time).getHours();
+            return h>=s&&h<=en;
+        });
+        let inner='';
+        if(entriesInHour.length){
+            inner=entriesInHour.map(e=>{
+                const cls=e.type==='sleep'?'tl-sleep':'tl-tracked';
+                const proj=db.projects.find(p=>p.id===e.project_id);
+                const area=db.areas.find(a=>a.id===e.category_id||a.id===proj?.category_id);
+                const lbl=e.description+(proj?' · '+proj.name:'')+(area?' · '+area.name:'');
+                return`<div class="tl-entry ${cls}" onclick="openEditModal('${e.id}')">
+                    ${e.type==='sleep'?'😴 ':area?.icon?area.icon+' ':''}${lbl}
+                    <span class="tl-dur">${fmtS(e.duration)}</span>
+                </div>`;
+            }).join('');
+        }else if(isSleepHour&&ds===today()){
+            inner=`<div class="tl-entry tl-sleep">😴 Sueño (rutina ${routine.sleep_time} – ${routine.wake_time})</div>`;
+        }else{
+            inner=`<div class="tl-entry tl-gap">Vacío</div>`;
+        }
+        html+=`<div class="tl-row">
             <div class="tl-label">${hLabel}</div>
-            <div class="tl-col">
-                ${inner}
-                <button class="tl-add" onclick="openRetroModal('${dateStr}','${h}')">+ Agregar</button>
-            </div>
+            <div class="tl-col">${inner}<button class="tl-add" onclick="openRetro('${ds}',${h})">+ Agregar</button></div>
         </div>`;
     }
-
-    wrap.innerHTML = html;
-
+    document.getElementById('tlWrap').innerHTML=html;
     // Scroll to current hour
-    if (dateStr === todayStr()) {
-        const curHour = new Date().getHours();
-        const rows = wrap.querySelectorAll('.tl-row');
-        const targetRow = rows[Math.max(0, curHour - 1)];
-        if (targetRow) setTimeout(() => targetRow.scrollIntoView({behavior:'smooth', block:'center'}), 100);
+    if(ds===today()){
+        const h=new Date().getHours();
+        const rows=document.querySelectorAll('.tl-row');
+        if(rows[Math.max(0,h-1)])setTimeout(()=>rows[Math.max(0,h-1)].scrollIntoView({behavior:'smooth',block:'center'}),100);
     }
 }
 
-function openRetroModal(date, hour) {
-    document.getElementById('manDate').value = date;
-    document.getElementById('manStart').value = String(hour).padStart(2,'0') + ':00';
-    document.getElementById('manEnd').value = String(parseInt(hour)+1).padStart(2,'0') + ':00';
+function openRetro(date,hour){
+    document.getElementById('mDate').value=date;
+    document.getElementById('mStart').value=String(hour).padStart(2,'0')+':00';
+    document.getElementById('mEnd').value=String(hour+1<24?hour+1:hour).padStart(2,'0')+':00';
+    document.getElementById('mDesc').value='';
+    updateSelects();
     openModal('manualModal');
 }
 
-// ─── AREAS ───
-function renderAreas() {
-    const c = document.getElementById('areasContainer');
-    if (!db.areas.length) {
-        c.innerHTML = `<div class="empty"><div class="empty-icon">📁</div><h3>No hay áreas aún</h3><p>Crea tu primera área de vida</p><br><button class="btn btn-sm" onclick="openModal('areaModal')">➕ Crear Área</button></div>`;
+// ── AREAS ──
+function renderAreas(){
+    const c=document.getElementById('areasC');
+    if(!db.areas.length){
+        c.innerHTML=`<div class="empty"><div class="empty-icon">📁</div><h3>No hay áreas aún</h3><p>Crea tu primera área de vida</p><br><br><button class="btn btn-sm" onclick="openModal('areaModal')">➕ Crear Área</button></div>`;
         return;
     }
-    c.innerHTML = db.areas.map(area => {
-        const projs = db.projects.filter(p => p.category_id === area.id);
-        const totalMins = db.entries.filter(e => e.category_id === area.id || db.projects.find(p => p.id===e.project_id)?.category_id===area.id).reduce((s,e) => s+Math.floor(e.duration/60),0);
-
-        return `<div class="area-block">
-            <div class="area-head">
-                <div class="area-head-left">
-                    <span style="font-size:1.6rem">${area.icon||'📁'}</span>
-                    ${area.name}
-                    <span style="color:var(--text3);font-size:.85rem;font-weight:400">${projs.length} proyectos</span>
+    c.innerHTML=db.areas.map((area,idx)=>{
+        const projs=db.projects.filter(p=>p.category_id===area.id);
+        const totalMins=db.entries.filter(e=>e.category_id===area.id||db.projects.find(p=>p.id===e.project_id)?.category_id===area.id).reduce((s,e)=>s+Math.floor(e.duration/60),0);
+        const color=area.color||'#00ffff';
+        return`<div class="area-block" style="border-color:${color}30">
+            <div class="area-head" onclick="toggleArea('ap-${idx}','chev-${idx}')">
+                <div class="area-left">
+                    <div class="area-color-pill" style="background:${color};box-shadow:0 0 8px ${color}60"></div>
+                    <span class="area-icon">${area.icon||'📁'}</span>
+                    <span class="area-name">${area.name}</span>
+                    <span class="area-count">${projs.length} proyectos</span>
                 </div>
-                <div style="display:flex;align-items:center;gap:.75rem">
-                    <span class="area-time">${fmtMin(totalMins)}</span>
-                    <button class="icon-btn" onclick="deleteArea('${area.id}')">🗑️</button>
+                <div class="area-right">
+                    <span class="area-total" style="color:${color}">${fmtM(totalMins)}</span>
+                    <button class="icon-btn" onclick="event.stopPropagation();deleteArea('${area.id}')">🗑️</button>
+                    <span class="area-chevron" id="chev-${idx}">▶</span>
                 </div>
             </div>
-            ${projs.length ? `<div class="proj-grid">${projs.map(p => projCard(p)).join('')}</div>` : `<p style="color:var(--text3);padding-left:1.5rem;font-size:.9rem">Sin proyectos</p>`}
+            <div class="area-projects" id="ap-${idx}">
+                ${projs.length
+                    ?`<div class="proj-grid">${projs.map(p=>projCard(p,color)).join('')}</div>`
+                    :`<p style="color:var(--text3);font-size:.88rem">Sin proyectos — <button class="btn btn-ghost btn-sm" onclick="openModal('projectModal')" style="text-transform:none;font-size:.82rem;padding:.3rem .7rem">Crear uno</button></p>`}
+            </div>
         </div>`;
     }).join('');
-
-    // Uncategorized projects
-    const uncat = db.projects.filter(p => !p.category_id);
-    if (uncat.length) {
-        document.getElementById('areasContainer').innerHTML += `
-            <div class="area-block">
-                <div class="area-head">
-                    <div class="area-head-left"><span style="font-size:1.6rem">📌</span> Sin Área <span style="color:var(--text3);font-size:.85rem;font-weight:400">${uncat.length}</span></div>
-                </div>
-                <div class="proj-grid">${uncat.map(p => projCard(p)).join('')}</div>
-            </div>`;
+    // Uncategorized
+    const uncat=db.projects.filter(p=>!p.category_id);
+    if(uncat.length){
+        c.innerHTML+=`<div class="area-block">
+            <div class="area-head" onclick="toggleArea('ap-uncat','chev-uncat')">
+                <div class="area-left"><span class="area-icon">📌</span><span class="area-name">Sin Área</span><span class="area-count">${uncat.length}</span></div>
+                <div class="area-right"><span class="area-chevron" id="chev-uncat">▶</span></div>
+            </div>
+            <div class="area-projects" id="ap-uncat"><div class="proj-grid">${uncat.map(p=>projCard(p,'#5580b3')).join('')}</div></div>
+        </div>`;
     }
 }
 
-function projCard(p) {
-    const mins = db.entries.filter(e => e.project_id === p.id).reduce((s,e) => s+Math.floor(e.duration/60),0);
-    const entries = db.entries.filter(e => e.project_id === p.id).length;
-    return `<div class="proj-card">
+function toggleArea(id,chevId){
+    const el=document.getElementById(id);
+    const chev=document.getElementById(chevId);
+    const isOpen=el.classList.contains('open');
+    el.classList.toggle('open',!isOpen);
+    if(chev)chev.classList.toggle('open',!isOpen);
+}
+
+function projCard(p,areaColor){
+    const mins=db.entries.filter(e=>e.project_id===p.id).reduce((s,e)=>s+Math.floor(e.duration/60),0);
+    const cnt=db.entries.filter(e=>e.project_id===p.id).length;
+    return`<div class="proj-card" style="border-color:${p.color}40">
         <div class="proj-top">
             <div class="proj-name">${p.name}</div>
-            <div style="display:flex;align-items:center;gap:.5rem">
-                <span class="proj-dot" style="background:${p.color};box-shadow:0 0 6px ${p.color}"></span>
+            <div style="display:flex;align-items:center;gap:.4rem">
+                <div class="proj-dot" style="background:${p.color};box-shadow:0 0 6px ${p.color}"></div>
                 <button class="icon-btn" onclick="deleteProject('${p.id}')">🗑️</button>
             </div>
         </div>
-        <div class="proj-stat">
-            <span style="color:var(--text2)">Tiempo total</span>
-            <span>${fmtMin(mins)}</span>
-        </div>
-        <div class="proj-stat">
-            <span style="color:var(--text2)">Entradas</span>
-            <span>${entries}</span>
-        </div>
+        <div class="proj-stat"><span style="color:var(--text2)">Total</span><span style="color:${p.color}">${fmtM(mins)}</span></div>
+        <div class="proj-stat"><span style="color:var(--text2)">Registros</span><span>${cnt}</span></div>
         <div style="margin-top:.75rem">
-            <button class="btn btn-sm btn-full" onclick="startTimerFrom('${p.id}','project','${escapeSQ(p.name)}','Proyecto')">▶ Trackear</button>
+            <button class="btn btn-sm btn-full" style="background:linear-gradient(135deg,${p.color},${p.color}aa);color:#000" onclick="startTimer('${p.id}','project','${esc(p.name)}','Proyecto')">▶ Trackear</button>
         </div>
     </div>`;
 }
 
-// ─── ENTRIES ───
-function renderEntries() {
-    const c = document.getElementById('entriesList');
-    let filtered = [...db.entries];
-
-    const areaF = document.getElementById('filterArea').value;
-    if (areaF) {
-        const areaProjs = db.projects.filter(p => p.category_id === areaF).map(p => p.id);
-        filtered = filtered.filter(e => e.category_id === areaF || areaProjs.includes(e.project_id));
+// ── REGISTROS ──
+function renderRegistros(){
+    const c=document.getElementById('regList');
+    let filtered=[...db.entries];
+    const aF=document.getElementById('fArea').value;
+    if(aF){
+        const ps=db.projects.filter(p=>p.category_id===aF).map(p=>p.id);
+        filtered=filtered.filter(e=>e.category_id===aF||ps.includes(e.project_id));
     }
-
-    const period = document.getElementById('filterPeriod').value;
-    const now = new Date(); const today = new Date(now.getFullYear(),now.getMonth(),now.getDate());
-    if (period === 'today') filtered = filtered.filter(e => new Date(e.date) >= today);
-    else if (period === 'week') { const w = new Date(today); w.setDate(w.getDate()-7); filtered = filtered.filter(e => new Date(e.date) >= w); }
-    else if (period === 'month') { const m = new Date(today); m.setMonth(m.getMonth()-1); filtered = filtered.filter(e => new Date(e.date) >= m); }
-
-    if (!filtered.length) {
-        c.innerHTML = `<div class="empty"><div class="empty-icon">⏱️</div><h3>Sin entradas</h3><p>Inicia Quick Track o agrega una entrada manual</p></div>`;
+    const per=document.getElementById('fPeriod').value;
+    const now=new Date(),tod=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    if(per==='today')filtered=filtered.filter(e=>new Date(e.date)>=tod);
+    else if(per==='week'){const w=new Date(tod);w.setDate(w.getDate()-7);filtered=filtered.filter(e=>new Date(e.date)>=w)}
+    else if(per==='month'){const m=new Date(tod);m.setMonth(m.getMonth()-1);filtered=filtered.filter(e=>new Date(e.date)>=m)}
+    if(!filtered.length){
+        c.innerHTML=`<div class="empty"><div class="empty-icon">⏱️</div><h3>Sin registros</h3><p>Usa Quick Track o Registro Manual</p></div>`;
         return;
     }
-
-    c.innerHTML = filtered.map(e => {
-        const proj = db.projects.find(p => p.id === e.project_id);
-        const area = db.areas.find(a => a.id === e.category_id || a.id === proj?.category_id);
-        return `<div class="entry-card">
-            <div class="entry-dur">${fmtSeconds(e.duration)}</div>
+    c.innerHTML=filtered.map(e=>{
+        const proj=db.projects.find(p=>p.id===e.project_id);
+        const area=db.areas.find(a=>a.id===e.category_id||a.id===proj?.category_id);
+        return`<div class="reg-card">
+            <div class="reg-dur">${fmtS(e.duration)}</div>
             <div>
-                <div class="entry-desc">${e.description}</div>
-                <div class="entry-meta">
-                    <span>${fmtDateLabel(e.date)} · ${fmtTime(e.start_time)}–${fmtTime(e.end_time)}</span>
-                    ${area ? `<span class="badge">${area.icon||''} ${area.name}</span>` : ''}
-                    ${proj ? `<span class="badge" style="border-color:${proj.color}">${proj.name}</span>` : ''}
-                    ${e.type === 'sleep' ? `<span class="badge sleep-badge">😴 Sueño</span>` : ''}
+                <div class="reg-desc">${e.description}</div>
+                <div class="reg-meta">
+                    <span>${fmtDL(e.date)} · ${fmtT(e.start_time)}–${fmtT(e.end_time)}</span>
+                    ${area?`<span class="badge" style="border-color:${area.color}60">${area.icon||''} ${area.name}</span>`:''}
+                    ${proj?`<span class="badge" style="border-color:${proj.color}">${proj.name}</span>`:''}
+                    ${e.type==='sleep'?`<span class="badge badge-sleep">😴 Sueño</span>`:''}
                 </div>
             </div>
-            <div class="entry-actions">
+            <div class="reg-actions">
+                ${e.type!=='sleep'?`<button class="icon-btn edit" onclick="openEditModal('${e.id}')">✏️</button>`:''}
                 <button class="icon-btn" onclick="deleteEntry('${e.id}')">🗑️</button>
             </div>
         </div>`;
     }).join('');
 }
 
-// ─── DASHBOARD ───
-function renderDashboard() {
-    renderPie();
-    calcStats();
-}
+// ── DASHBOARD ──
+function renderDashboard(){renderPie();calcStats()}
 
-function renderPie() {
-    const todayE = db.entries.filter(e => e.date === todayStr());
-    const buckets = {};
-    let total = 0;
-
-    todayE.forEach(e => {
-        const mins = Math.floor(e.duration/60);
-        total += mins;
-        if (e.type === 'sleep') { buckets['😴 Sueño'] = (buckets['😴 Sueño']||0)+mins; return; }
-        const proj = db.projects.find(p => p.id===e.project_id);
-        const area = db.areas.find(a => a.id===e.category_id||a.id===proj?.category_id);
-        const label = area ? (area.icon||'')+' '+area.name : '📌 Sin área';
-        buckets[label] = (buckets[label]||0)+mins;
+function renderPie(){
+    const todayE=db.entries.filter(e=>e.date===today());
+    const bk={};let total=0;
+    todayE.forEach(e=>{
+        const m=Math.floor(e.duration/60);total+=m;
+        if(e.type==='sleep'){bk['😴 Sueño']=(bk['😴 Sueño']||0)+m;return}
+        const proj=db.projects.find(p=>p.id===e.project_id);
+        const area=db.areas.find(a=>a.id===e.category_id||a.id===proj?.category_id);
+        const lbl=area?(area.icon||'')+' '+area.name:'📌 Sin área';
+        bk[lbl]=(bk[lbl]||0)+m;
     });
-
-    const empty = 1440 - total;
-    if (empty > 0) buckets['⬛ Vacío'] = empty;
-
-    const COLORS = ['#00ffff','#0066ff','#8b5cf6','#00ff88','#ff3366','#ffaa00','#6366f1','#374151'];
-    let angle = 0;
-    let paths = ''; let legend = '';
-
-    Object.entries(buckets).forEach(([label, mins], i) => {
-        const pct = mins / 1440;
-        const startA = angle;
-        angle += pct * 360;
-        const r = 40, cx = 50, cy = 50, ir = 25;
-        const x1 = cx+r*Math.cos((startA-90)*Math.PI/180);
-        const y1 = cy+r*Math.sin((startA-90)*Math.PI/180);
-        const x2 = cx+r*Math.cos((angle-90)*Math.PI/180);
-        const y2 = cy+r*Math.sin((angle-90)*Math.PI/180);
-        const xi1 = cx+ir*Math.cos((startA-90)*Math.PI/180);
-        const yi1 = cy+ir*Math.sin((startA-90)*Math.PI/180);
-        const xi2 = cx+ir*Math.cos((angle-90)*Math.PI/180);
-        const yi2 = cy+ir*Math.sin((angle-90)*Math.PI/180);
-        const lg = pct > 0.5 ? 1 : 0;
-        const col = COLORS[i % COLORS.length];
-
-        paths += `<path d="M${xi1} ${yi1} L${x1} ${y1} A${r} ${r} 0 ${lg} 1 ${x2} ${y2} L${xi2} ${yi2} A${ir} ${ir} 0 ${lg} 0 ${xi1} ${yi1} Z" fill="${col}" opacity=".85"/>`;
-        legend += `<div class="legend-item"><div class="legend-dot" style="background:${col}"></div><span>${label}</span><span class="legend-val">${fmtMin(mins)}</span></div>`;
+    const empty=1440-total;
+    if(empty>0)bk['⬛ Vacío']=empty;
+    const COLS=['#00ffff','#0066ff','#8b5cf6','#00ff88','#ff3366','#ffaa00','#6366f1','#374151'];
+    let ang=0,paths='',legend='';
+    Object.entries(bk).forEach(([lbl,m],i)=>{
+        const pct=m/1440,sa=ang;ang+=pct*360;
+        const r=40,cx=50,cy=50,ir=22;
+        const x1=cx+r*Math.cos((sa-90)*Math.PI/180),y1=cy+r*Math.sin((sa-90)*Math.PI/180);
+        const x2=cx+r*Math.cos((ang-90)*Math.PI/180),y2=cy+r*Math.sin((ang-90)*Math.PI/180);
+        const xi1=cx+ir*Math.cos((sa-90)*Math.PI/180),yi1=cy+ir*Math.sin((sa-90)*Math.PI/180);
+        const xi2=cx+ir*Math.cos((ang-90)*Math.PI/180),yi2=cy+ir*Math.sin((ang-90)*Math.PI/180);
+        const lg=pct>.5?1:0,col=COLS[i%COLS.length];
+        paths+=`<path d="M${xi1} ${yi1} L${x1} ${y1} A${r} ${r} 0 ${lg} 1 ${x2} ${y2} L${xi2} ${yi2} A${ir} ${ir} 0 ${lg} 0 ${xi1} ${yi1} Z" fill="${col}" opacity=".85"/>`;
+        legend+=`<div class="legend-item"><div class="legend-dot" style="background:${col}"></div><span>${lbl}</span><span class="legend-val">${fmtM(m)}</span></div>`;
     });
-
-    document.getElementById('pieSvg').innerHTML = paths;
-    document.getElementById('pieLegend').innerHTML = legend;
-    document.getElementById('pieCenterVal').textContent = Math.floor((total/1440)*100)+'%';
+    document.getElementById('pieSvg').innerHTML=paths;
+    document.getElementById('pieLegend').innerHTML=legend;
+    document.getElementById('piePct').textContent=Math.floor((total/1440)*100)+'%';
 }
 
-function calcStats() {
-    // Sleep avg last 7 days
-    const w = new Date(); w.setDate(w.getDate()-7);
-    const sleepE = db.entries.filter(e => e.type==='sleep' && new Date(e.date)>=w);
-    const avgSleepMin = sleepE.length ? sleepE.reduce((s,e)=>s+e.duration,0)/sleepE.length/60 : 0;
-    document.getElementById('dashSleep').textContent = fmtMin(Math.round(avgSleepMin));
-
-    // Empty today
-    const tracked = db.entries.filter(e=>e.date===todayStr()).reduce((s,e)=>s+Math.floor(e.duration/60),0);
-    document.getElementById('dashEmpty').textContent = fmtMin(1440-tracked);
-
-    // Tracked (no sleep)
-    const trackedNoSleep = db.entries.filter(e=>e.date===todayStr()&&e.type!=='sleep').reduce((s,e)=>s+Math.floor(e.duration/60),0);
-    document.getElementById('dashTracked').textContent = fmtMin(trackedNoSleep);
-
-    // Balance — first area vs rest
-    if (db.areas.length >= 2) {
-        const a1 = db.areas[0], a1Projs = db.projects.filter(p=>p.category_id===a1.id).map(p=>p.id);
-        const a1Mins = db.entries.filter(e=>e.date===todayStr()&&(e.category_id===a1.id||a1Projs.includes(e.project_id))).reduce((s,e)=>s+Math.floor(e.duration/60),0);
-        const total2 = db.entries.filter(e=>e.date===todayStr()&&e.type!=='sleep').reduce((s,e)=>s+Math.floor(e.duration/60),0);
-        const pct = total2 ? Math.round((a1Mins/total2)*100) : 0;
-        document.getElementById('dashBalance').textContent = `${a1.icon||''} ${pct}%`;
-    } else {
-        document.getElementById('dashBalance').textContent = '—';
-    }
+function calcStats(){
+    const w=new Date();w.setDate(w.getDate()-7);
+    const sleepE=db.entries.filter(e=>e.type==='sleep'&&new Date(e.date)>=w);
+    const avgSleepM=sleepE.length?sleepE.reduce((s,e)=>s+e.duration,0)/sleepE.length/60:0;
+    document.getElementById('dSleep').textContent=fmtM(Math.round(avgSleepM));
+    const tracked=db.entries.filter(e=>e.date===today()).reduce((s,e)=>s+Math.floor(e.duration/60),0);
+    document.getElementById('dEmpty').textContent=fmtM(1440-tracked);
+    const trackedNoSleep=db.entries.filter(e=>e.date===today()&&e.type!=='sleep').reduce((s,e)=>s+Math.floor(e.duration/60),0);
+    document.getElementById('dTracked').textContent=fmtM(trackedNoSleep);
+    if(db.areas.length>=2){
+        const a1=db.areas[0],a1ps=db.projects.filter(p=>p.category_id===a1.id).map(p=>p.id);
+        const a1m=db.entries.filter(e=>e.date===today()&&(e.category_id===a1.id||a1ps.includes(e.project_id))).reduce((s,e)=>s+Math.floor(e.duration/60),0);
+        const tot=db.entries.filter(e=>e.date===today()&&e.type!=='sleep').reduce((s,e)=>s+Math.floor(e.duration/60),0);
+        const pct=tot?Math.round((a1m/tot)*100):0;
+        document.getElementById('dBalance').textContent=`${a1.icon||''} ${pct}%`;
+    }else{document.getElementById('dBalance').textContent='—'}
 }
 
-// ─── SELECTS ───
-function updateSelects() {
-    const areaOpts = '<option value="">Sin área</option>' + db.areas.map(a=>`<option value="${a.id}">${a.icon||''} ${a.name}</option>`).join('');
-    ['projectArea','manArea','filterArea'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) { const v = el.value; el.innerHTML = areaOpts.replace('Sin área','Sin área'); el.value = v; }
+// ── SELECTS ──
+function updateSelects(){
+    const opts='<option value="">Sin área</option>'+db.areas.map(a=>`<option value="${a.id}">${a.icon||''} ${a.name}</option>`).join('');
+    ['pArea','mArea','editArea','fArea'].forEach(id=>{
+        const el=document.getElementById(id);if(!el)return;
+        const v=el.value;el.innerHTML=opts;el.value=v;
     });
-    updateManProjects();
+    updateMProj();updateEditProj();
+}
+function updateMProj(){
+    const aid=document.getElementById('mArea')?.value;
+    const ps=aid?db.projects.filter(p=>p.category_id===aid):db.projects;
+    document.getElementById('mProj').innerHTML='<option value="">Sin proyecto</option>'+ps.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+}
+function updateEditProj(){
+    const aid=document.getElementById('editArea')?.value;
+    const ps=aid?db.projects.filter(p=>p.category_id===aid):db.projects;
+    document.getElementById('editProj').innerHTML='<option value="">Sin proyecto</option>'+ps.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
 }
 
-function updateManProjects() {
-    const areaId = document.getElementById('manArea')?.value;
-    const projs = areaId ? db.projects.filter(p=>p.category_id===areaId) : db.projects;
-    document.getElementById('manProject').innerHTML = '<option value="">Sin proyecto</option>' + projs.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
-}
-
-// ─── AREA CRUD ───
-async function saveArea() {
-    const name = document.getElementById('areaName').value.trim();
-    if (!name) return alert('Ingresa un nombre');
-    const { data, error } = await sb.from('categories').insert([{
-        user_id: user.id, name,
-        icon: document.getElementById('areaIcon').value||'📁',
-        color: document.getElementById('areaColor').value
-    }]).select().single();
-    if (error) { console.error(error); return alert('Error al guardar'); }
-    db.areas.push(data);
-    closeModal('areaModal');
-    document.getElementById('areaName').value=''; document.getElementById('areaIcon').value='';
+// ── AREA CRUD ──
+async function saveArea(){
+    const name=document.getElementById('aName').value.trim();
+    if(!name)return alert('Ingresa un nombre');
+    const{data,error}=await sb.from('categories').insert([{user_id:user.id,name,icon:document.getElementById('aIcon').value||'📁',color:document.getElementById('aColor').value}]).select().single();
+    if(error)return alert('Error: '+error.message);
+    db.areas.push(data);closeModal('areaModal');
+    document.getElementById('aName').value='';document.getElementById('aIcon').value='';
     renderAll();
 }
-
-async function deleteArea(id) {
-    if (!confirm('¿Eliminar área y sus proyectos?')) return;
+async function deleteArea(id){
+    if(!confirm('¿Eliminar área y proyectos?'))return;
     await sb.from('categories').delete().eq('id',id);
-    db.areas = db.areas.filter(a=>a.id!==id);
-    db.projects = db.projects.filter(p=>p.category_id!==id);
+    db.areas=db.areas.filter(a=>a.id!==id);db.projects=db.projects.filter(p=>p.category_id!==id);
     renderAll();
 }
 
-// ─── PROJECT CRUD ───
-async function saveProject() {
-    const name = document.getElementById('projectName').value.trim();
-    if (!name) return alert('Ingresa un nombre');
-    const { data, error } = await sb.from('projects').insert([{
-        user_id: user.id, name,
-        category_id: document.getElementById('projectArea').value||null,
-        color: document.getElementById('projectColor').value
-    }]).select().single();
-    if (error) { console.error(error); return alert('Error al guardar'); }
-    db.projects.push(data);
-    closeModal('projectModal');
-    document.getElementById('projectName').value='';
-    renderAll();
+// ── PROJECT CRUD ──
+async function saveProject(){
+    const name=document.getElementById('pName').value.trim();
+    if(!name)return alert('Ingresa un nombre');
+    const{data,error}=await sb.from('projects').insert([{user_id:user.id,name,category_id:document.getElementById('pArea').value||null,color:document.getElementById('pColor').value}]).select().single();
+    if(error)return alert('Error: '+error.message);
+    db.projects.push(data);closeModal('projectModal');
+    document.getElementById('pName').value='';renderAll();
 }
-
-async function deleteProject(id) {
-    if (!confirm('¿Eliminar proyecto?')) return;
+async function deleteProject(id){
+    if(!confirm('¿Eliminar proyecto?'))return;
     await sb.from('projects').delete().eq('id',id);
-    db.projects = db.projects.filter(p=>p.id!==id);
-    renderAll();
+    db.projects=db.projects.filter(p=>p.id!==id);renderAll();
 }
 
-// ─── MANUAL ENTRY ───
-async function saveManual() {
-    const desc = document.getElementById('manDesc').value.trim();
-    const date = document.getElementById('manDate').value;
-    const st = document.getElementById('manStart').value;
-    const et = document.getElementById('manEnd').value;
-    if (!desc||!date||!st||!et) return alert('Completa todos los campos');
-    const start = new Date(date+'T'+st);
-    const end = new Date(date+'T'+et);
-    const dur = Math.floor((end-start)/1000);
-    if (dur<=0) return alert('El fin debe ser posterior al inicio');
-    const { data, error } = await sb.from('time_entries').insert([{
-        user_id: user.id, type:'tracked', description:desc,
-        project_id: document.getElementById('manProject').value||null,
-        category_id: document.getElementById('manArea').value||null,
-        start_time: start.toISOString(), end_time: end.toISOString(),
-        duration: dur, date
+// ── MANUAL ENTRY ──
+async function saveManual(){
+    const desc=document.getElementById('mDesc').value.trim();
+    const date=document.getElementById('mDate').value;
+    const st=document.getElementById('mStart').value;
+    const et=document.getElementById('mEnd').value;
+    if(!desc||!date||!st||!et)return alert('Completa todos los campos');
+    const start=new Date(date+'T'+st),end=new Date(date+'T'+et);
+    const dur=Math.floor((end-start)/1000);
+    if(dur<=0)return alert('El fin debe ser posterior al inicio');
+    const{data,error}=await sb.from('time_entries').insert([{
+        user_id:user.id,type:'tracked',description:desc,
+        project_id:document.getElementById('mProj').value||null,
+        category_id:document.getElementById('mArea').value||null,
+        start_time:start.toISOString(),end_time:end.toISOString(),duration:dur,date
     }]).select().single();
-    if (error) { console.error(error); return alert('Error al guardar'); }
-    db.entries.unshift(data);
-    closeModal('manualModal');
-    document.getElementById('manDesc').value='';
-    renderAll();
+    if(error)return alert('Error: '+error.message);
+    db.entries.unshift(data);closeModal('manualModal');
+    document.getElementById('mDesc').value='';renderAll();
 }
 
-// ─── ENTRY EDIT/DELETE ───
-async function deleteEntry(id) {
-    if (!confirm('¿Eliminar esta entrada?')) return;
+// ── EDIT ENTRY ──
+function openEditModal(id){
+    const e=db.entries.find(x=>x.id===id);
+    if(!e||e.type==='sleep')return;
+    document.getElementById('editId').value=id;
+    document.getElementById('editDesc').value=e.description;
+    document.getElementById('editDate').value=e.date;
+    document.getElementById('editStart').value=fmtT(e.start_time);
+    document.getElementById('editEnd').value=fmtT(e.end_time);
+    updateSelects();
+    setTimeout(()=>{
+        document.getElementById('editArea').value=e.category_id||'';
+        updateEditProj();
+        setTimeout(()=>document.getElementById('editProj').value=e.project_id||'',50);
+    },50);
+    openModal('editRegModal');
+}
+
+async function updateEntry(){
+    const id=document.getElementById('editId').value;
+    const date=document.getElementById('editDate').value;
+    const st=document.getElementById('editStart').value;
+    const et=document.getElementById('editEnd').value;
+    const desc=document.getElementById('editDesc').value.trim();
+    if(!desc||!date||!st||!et)return alert('Completa todos los campos');
+    const start=new Date(date+'T'+st),end=new Date(date+'T'+et);
+    const dur=Math.floor((end-start)/1000);
+    if(dur<=0)return alert('El fin debe ser posterior al inicio');
+    const updates={description:desc,date,start_time:start.toISOString(),end_time:end.toISOString(),duration:dur,
+        project_id:document.getElementById('editProj').value||null,
+        category_id:document.getElementById('editArea').value||null};
+    const{error}=await sb.from('time_entries').update(updates).eq('id',id);
+    if(error)return alert('Error: '+error.message);
+    const idx=db.entries.findIndex(e=>e.id===id);
+    if(idx>-1)db.entries[idx]={...db.entries[idx],...updates};
+    closeModal('editRegModal');renderAll();
+}
+
+async function deleteEntry(id){
+    if(!confirm('¿Eliminar este registro?'))return;
     await sb.from('time_entries').delete().eq('id',id);
-    db.entries = db.entries.filter(e=>e.id!==id);
-    renderAll();
+    db.entries=db.entries.filter(e=>e.id!==id);renderAll();
 }
 
-function editEntry(id) {
-    // For now: delete and re-enter (future: inline edit)
-    if (confirm('¿Deseas eliminar esta entrada para corregirla?')) deleteEntry(id);
-}
-
-// ─── EXPORT ───
-function exportCSV() {
-    const rows = db.entries.map(e => {
-        const p = db.projects.find(x=>x.id===e.project_id);
-        const a = db.areas.find(x=>x.id===e.category_id||x.id===p?.category_id);
-        return [e.date, e.description, a?.name||'', p?.name||'', fmtTime(e.start_time), fmtTime(e.end_time), (e.duration/3600).toFixed(2), e.type].join(',');
+// ── EXPORT ──
+function exportCSV(){
+    const rows=db.entries.map(e=>{
+        const p=db.projects.find(x=>x.id===e.project_id);
+        const a=db.areas.find(x=>x.id===e.category_id||x.id===p?.category_id);
+        return[e.date,e.description,a?.name||'',p?.name||'',fmtT(e.start_time),fmtT(e.end_time),(e.duration/3600).toFixed(2),e.type].join(',');
     });
-    const csv = 'Fecha,Descripción,Área,Proyecto,Inicio,Fin,Horas,Tipo\n' + rows.join('\n');
-    dlFile(csv, '1440-export-'+todayStr()+'.csv', 'text/csv');
+    dlFile('Fecha,Descripción,Área,Proyecto,Inicio,Fin,Horas,Tipo\n'+rows.join('\n'),'1440-'+today()+'.csv','text/csv');
 }
-
-function exportPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.setFontSize(20); doc.text('1440 — Reporte de Tiempo', 20, 20);
-    doc.setFontSize(10); doc.text('Generado: '+new Date().toLocaleDateString('es'), 20, 30);
-    let y = 45;
-    db.entries.forEach(e => {
-        if (y > 270) { doc.addPage(); y = 20; }
-        const p = db.projects.find(x=>x.id===e.project_id);
-        const a = db.areas.find(x=>x.id===e.category_id||x.id===p?.category_id);
-        doc.setFontSize(9);
-        doc.text(`${e.date}  ${e.description}  [${fmtSeconds(e.duration)}]`, 20, y); y+=5;
-        doc.setFontSize(7.5);
-        doc.text(`${a?.name||'Sin área'} → ${p?.name||'Sin proyecto'}  ·  ${fmtTime(e.start_time)}–${fmtTime(e.end_time)}`, 24, y); y+=6;
+function exportPDF(){
+    const{jsPDF}=window.jspdf;const doc=new jsPDF();
+    doc.setFontSize(20);doc.text('1440 — Reporte de Tiempo',20,20);
+    doc.setFontSize(10);doc.text('Generado: '+new Date().toLocaleDateString('es'),20,30);
+    let y=45;
+    db.entries.forEach(e=>{
+        if(y>270){doc.addPage();y=20}
+        const p=db.projects.find(x=>x.id===e.project_id);
+        const a=db.areas.find(x=>x.id===e.category_id||x.id===p?.category_id);
+        doc.setFontSize(9);doc.text(`${e.date}  ${e.description}  [${fmtS(e.duration)}]`,20,y);y+=5;
+        doc.setFontSize(7.5);doc.text(`${a?.name||'Sin área'} → ${p?.name||'Sin proyecto'}  ·  ${fmtT(e.start_time)}–${fmtT(e.end_time)}`,24,y);y+=6;
     });
-    doc.save('1440-report-'+todayStr()+'.pdf');
+    doc.save('1440-report-'+today()+'.pdf');
 }
+function dlFile(c,n,m){const b=new Blob([c],{type:m});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click();URL.revokeObjectURL(a.href)}
 
-function dlFile(content, filename, mime) {
-    const blob = new Blob([content],{type:mime});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = filename; a.click();
-    URL.revokeObjectURL(a.href);
-}
-
-// ─── TAB SWITCH ───
-function goTab(name, el) {
+// ── TABS/MODALS ──
+function goTab(name,el){
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('tab-'+name).classList.add('active');
-    if (name==='dashboard') renderDashboard();
-    if (name==='timeline') renderTimeline();
+    el.classList.add('active');document.getElementById('tab-'+name).classList.add('active');
+    if(name==='dashboard')renderDashboard();
+    if(name==='timeline')renderTimeline();
 }
-
-// ─── MODALS ───
-function openModal(id) {
-    if (id==='areaModal') { document.getElementById('areaName').value=''; document.getElementById('areaIcon').value=''; }
-    if (id==='projectModal') { document.getElementById('projectName').value=''; updateSelects(); }
-    if (id==='manualModal') {
-        document.getElementById('manDate').value = todayStr();
-        document.getElementById('manStart').value = '';
-        document.getElementById('manEnd').value = '';
-        document.getElementById('manDesc').value = '';
-        updateSelects();
-    }
-    if (id==='sleepEditModal') {
-        document.getElementById('editSleepTime').value = user.sleep_routine?.sleep_time||'22:30';
-        document.getElementById('editWakeTime').value = user.sleep_routine?.wake_time||'07:00';
-    }
+function openModal(id){
+    if(id==='manualModal'){document.getElementById('mDate').value=today();updateSelects()}
+    if(id==='sleepEditModal'){document.getElementById('editSleepT').value=user.sleep_routine?.sleep_time||'22:30';document.getElementById('editWakeT').value=user.sleep_routine?.wake_time||'07:00'}
+    if(id==='projectModal')updateSelects();
     document.getElementById(id).classList.add('open');
 }
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function closeEl(id){document.getElementById(id).classList.remove('open')}
 
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+// ── HELPERS ──
+function today(){return new Date().toISOString().split('T')[0]}
+function fmtS(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`}
+function fmtM(m){if(m<0)m=0;return`${Math.floor(m/60)}h ${String(Math.floor(m%60)).padStart(2,'0')}m`}
+function fmtT(iso){return new Date(iso).toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'})}
+function fmtDL(d){return new Date(d+'T12:00:00').toLocaleDateString('es',{weekday:'short',day:'numeric',month:'short'})}
+function esc(s){return(s||'').replace(/'/g,"\\'")}
+function showMsg(id,txt,isOk=false){const el=document.getElementById(id);if(!el)return;el.textContent=txt;el.className='msg '+(isOk?'ok':'err');el.classList.remove('hidden');setTimeout(()=>el.classList.add('hidden'),3000)}
+function setBL(tid,sid,l){document.getElementById(tid).classList.toggle('hidden',l);document.getElementById(sid).classList.toggle('hidden',!l)}
+function clearPins(p){['1','2','3','4'].forEach(i=>{const el=document.getElementById(p+i);if(el)el.value=''})}
 
-// ─── HELPERS ───
-function todayStr() { return new Date().toISOString().split('T')[0]; }
-function fmtSeconds(s) {
-    const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
-    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
-}
-function fmtMin(m) {
-    if (m < 0) m = 0;
-    return `${Math.floor(m/60)}h ${String(Math.floor(m%60)).padStart(2,'0')}m`;
-}
-function fmtTime(iso) { return new Date(iso).toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'}); }
-function fmtDateLabel(d) { return new Date(d+'T12:00:00').toLocaleDateString('es',{weekday:'short',day:'numeric',month:'short'}); }
-function escapeSQ(s) { return (s||'').replace(/'/g,"\\'"); }
-function showMsg(id,txt,isOk=false) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.textContent=txt; el.className='msg '+(isOk?'ok':'err');
-    el.classList.remove('hidden');
-    setTimeout(()=>el.classList.add('hidden'),3000);
-}
-function setBtnLoading(txtId,spinId,loading) {
-    document.getElementById(txtId).classList.toggle('hidden',loading);
-    document.getElementById(spinId).classList.toggle('hidden',!loading);
-}
-function clearPins(prefix) { ['1','2','3','4'].forEach(i=>{ const el=document.getElementById(prefix+i); if(el) el.value=''; }); }
-
-// ─── INIT ───
 document.getElementById('lp1').focus();
 </script>
 </body>
