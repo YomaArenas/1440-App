@@ -2,486 +2,571 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1440 — Cada minuto cuenta</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>1440</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#050b1f;--bg2:#0a1532;--bg3:#0f1f45;
-  --cyan:#00ffff;--blue:#0066ff;--success:#00ff88;
-  --danger:#ff3366;--warn:#ffaa00;--sleep:#6366f1;
-  --text:#fff;--t2:#99b3d9;--t3:#5580b3;
-  --border:#1a3366;--hh:62px;
+  --cyan:#00ffff;--blue:#0066ff;--ok:#00ff88;
+  --del:#ff3366;--warn:#ffaa00;--sleep:#6366f1;
+  --t:#fff;--t2:#99b3d9;--t3:#4a6a99;
+  --bdr:#1a3366;--hh:58px;
 }
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+html,body{height:100%;overflow-x:hidden}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t);min-height:100vh}
 body::before{content:'';position:fixed;inset:0;
-  background:radial-gradient(circle at 15% 25%,rgba(0,255,255,.07) 0%,transparent 45%),
-             radial-gradient(circle at 85% 75%,rgba(0,102,255,.07) 0%,transparent 45%);
+  background:radial-gradient(ellipse at 10% 20%,rgba(0,255,255,.06) 0%,transparent 50%),
+             radial-gradient(ellipse at 90% 80%,rgba(0,102,255,.06) 0%,transparent 50%);
   pointer-events:none;z-index:0}
 
-/* ── HEADER ── */
+/* ════ HEADER ════ */
 .hdr{position:fixed;top:0;left:0;right:0;height:var(--hh);
-  background:rgba(5,11,31,.97);backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 1.5rem;gap:1rem;z-index:500}
+  background:rgba(5,11,31,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(26,51,102,.6);
+  display:flex;align-items:center;padding:0 1rem;gap:.75rem;z-index:500}
 
-/* Logo — only last 0 has LED dot */
-.logo{font-family:'Space Mono',monospace;font-size:1.55rem;font-weight:700;
+.logo{font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;
   background:linear-gradient(135deg,var(--cyan),var(--blue));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  letter-spacing:.04em;line-height:1;flex-shrink:0;display:flex;align-items:center}
-.led-zero{position:relative;display:inline-block;-webkit-text-fill-color:transparent}
-.led-zero::after{content:'';position:absolute;
-  width:5px;height:5px;background:var(--cyan);border-radius:50%;
-  box-shadow:0 0 6px var(--cyan),0 0 14px rgba(0,255,255,.6);
+  letter-spacing:.04em;line-height:1;flex-shrink:0}
+.led0{position:relative;display:inline-block;-webkit-text-fill-color:transparent}
+.led0::after{content:'';position:absolute;width:5px;height:5px;background:var(--cyan);
+  border-radius:50%;box-shadow:0 0 6px var(--cyan),0 0 12px rgba(0,255,255,.5);
   top:50%;left:50%;transform:translate(-50%,-50%)}
 
-/* Mantra */
-.mantra{flex:1;min-width:0;cursor:pointer;padding:.25rem .5rem;border-radius:8px;transition:background .2s}
+.mantra{flex:1;min-width:0;cursor:pointer;padding:.2rem .4rem;border-radius:7px;
+  transition:background .2s;overflow:hidden}
 .mantra:hover{background:rgba(255,255,255,.04)}
-.mantra-q{font-size:.68rem;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.1em}
-.mantra-a{font-size:.88rem;font-weight:600;color:var(--cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mantra-ph{font-size:.82rem;color:var(--t3);font-style:italic}
-
-/* Compact timer in header */
-.htimer{display:none;align-items:center;gap:.5rem;
-  background:rgba(0,255,255,.08);border:1px solid rgba(0,255,255,.25);
-  border-radius:8px;padding:.3rem .85rem;flex-shrink:0}
-.htimer.on{display:flex}
-.hdot{width:7px;height:7px;background:var(--success);border-radius:50%;
-  box-shadow:0 0 8px var(--success);animation:blink 1.4s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-.htname{font-size:.8rem;font-weight:600;max-width:120px;
+.mantra-q{font-size:.6rem;color:var(--t3);font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;white-space:nowrap}
+.mantra-v{font-size:.82rem;font-weight:600;color:var(--cyan);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.httime{font-family:'Space Mono',monospace;font-size:.82rem;color:var(--cyan)}
+.mantra-ph{font-size:.78rem;color:var(--t3);font-style:italic;white-space:nowrap}
 
-.hactions{display:flex;gap:.4rem;align-items:center;flex-shrink:0}
+/* Header timer pill */
+.ht{display:none;align-items:center;gap:.45rem;
+  background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.3);
+  border-radius:20px;padding:.28rem .75rem;flex-shrink:0;max-width:160px}
+.ht.on{display:flex}
+.ht-dot{width:6px;height:6px;background:var(--ok);border-radius:50%;
+  box-shadow:0 0 6px var(--ok);animation:bl 1.4s ease-in-out infinite;flex-shrink:0}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.2}}
+.ht-name{font-size:.75rem;font-weight:600;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:80px}
+.ht-time{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--cyan);flex-shrink:0}
 
-/* ── BUTTONS ── */
+/* Header actions */
+.hact{display:flex;gap:.35rem;align-items:center;flex-shrink:0}
+
+/* Hamburger menu */
+.hmenu-wrap{position:relative}
+.hmenu-btn{width:34px;height:34px;background:rgba(255,255,255,.05);
+  border:1px solid var(--bdr);border-radius:8px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  transition:all .2s}
+.hmenu-btn:hover{border-color:var(--cyan)}
+.hmenu-btn span{width:14px;height:1.5px;background:var(--t2);border-radius:1px;transition:all .2s}
+.hmenu-drop{display:none;position:absolute;top:calc(100% + 8px);right:0;
+  background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;
+  padding:.4rem;min-width:160px;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:600}
+.hmenu-drop.open{display:block;animation:fadeIn .15s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.hmenu-item{display:flex;align-items:center;gap:.6rem;padding:.6rem .75rem;
+  border-radius:8px;cursor:pointer;font-size:.85rem;color:var(--t2);transition:all .15s}
+.hmenu-item:hover{background:rgba(0,255,255,.08);color:var(--cyan)}
+
+/* Buttons */
 .btn{background:linear-gradient(135deg,var(--cyan),var(--blue));color:var(--bg);
-  border:none;border-radius:10px;padding:.72rem 1.3rem;
-  font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;
-  transition:all .25s;display:inline-flex;align-items:center;
-  justify-content:center;gap:.4rem;letter-spacing:.02em}
-.btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
-.btn:active{transform:translateY(0)}
-.btn-sm{padding:.42rem .82rem;font-size:.77rem}
+  border:none;border-radius:9px;padding:.65rem 1.1rem;
+  font-family:inherit;font-size:.85rem;font-weight:700;cursor:pointer;
+  transition:all .2s;display:inline-flex;align-items:center;
+  justify-content:center;gap:.4rem;letter-spacing:.02em;white-space:nowrap}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.btn:active{transform:scale(.97)}
+.btn-sm{padding:.38rem .75rem;font-size:.76rem}
+.btn-xs{padding:.28rem .55rem;font-size:.7rem}
 .btn-full{width:100%}
-.btn-ok{background:linear-gradient(135deg,var(--success),#00cc70);color:#000}
-.btn-del{background:linear-gradient(135deg,var(--danger),#cc0044);color:#fff}
-.btn-ghost{background:transparent;color:var(--cyan);border:2px solid var(--border)}
+.btn-ok{background:linear-gradient(135deg,var(--ok),#00cc70);color:#000}
+.btn-del{background:linear-gradient(135deg,var(--del),#cc0044);color:#fff}
+.btn-ghost{background:transparent;color:var(--cyan);border:2px solid var(--bdr)}
 .btn-ghost:hover{border-color:var(--cyan)}
 .btn-sleep{background:linear-gradient(135deg,var(--sleep),#4f46e5);color:#fff}
+.btn-icon{width:32px;height:32px;background:rgba(255,255,255,.05);
+  border:1px solid var(--bdr);border-radius:8px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;transition:all .2s;color:var(--t2)}
+.btn-icon:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-icon.del:hover{border-color:var(--del);color:var(--del)}
 
-/* ── MAIN ── */
-.main{max-width:1360px;margin:0 auto;
-  padding:calc(var(--hh) + 1.4rem) 1.75rem 4rem;
+/* ════ MAIN ════ */
+.main{max-width:1200px;margin:0 auto;
+  padding:calc(var(--hh) + 1.2rem) 1rem 5rem;
   position:relative;z-index:1}
 
-/* ── PROGRESS ── */
-.prog-wrap{background:var(--bg2);border:2px solid var(--border);
-  border-radius:14px;padding:1rem 1.25rem;margin-bottom:1.25rem}
-.prog-top{display:flex;justify-content:space-between;
-  align-items:center;margin-bottom:.55rem;font-size:.87rem}
-.prog-top strong{color:var(--cyan);font-family:'Space Mono',monospace;font-size:1rem}
-.prog-track{height:11px;background:var(--bg3);border-radius:6px;overflow:hidden}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));
-  border-radius:6px;transition:width .5s ease;position:relative}
-.prog-fill::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
+/* ════ PROGRESS 1440 — dual segment ════ */
+.prog-card{background:var(--bg2);border:1px solid var(--bdr);
+  border-radius:12px;padding:.9rem 1.1rem;margin-bottom:1rem}
+.prog-labels{display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:.5rem;gap:.5rem;flex-wrap:wrap}
+.prog-main-label{font-size:.82rem;color:var(--t2)}
+.prog-main-label strong{color:var(--cyan);font-family:'Space Mono',monospace}
+.prog-legend{display:flex;gap:.75rem;font-size:.72rem;color:var(--t3)}
+.prog-legend span{display:flex;align-items:center;gap:.3rem}
+.prog-legend span::before{content:'';width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.prog-leg-track::before{background:var(--cyan)}
+.prog-leg-sleep::before{background:var(--sleep)}
+.prog-leg-empty::before{background:var(--bg3);border:1px solid var(--bdr)}
+.prog-track{height:12px;background:var(--bg3);border-radius:6px;
+  overflow:hidden;display:flex;gap:1px}
+.prog-seg-track{height:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));
+  border-radius:6px 0 0 6px;transition:width .5s ease;position:relative;min-width:0}
+.prog-seg-track::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
   animation:shim 2s linear infinite}
 @keyframes shim{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.prog-seg-sleep{height:100%;background:linear-gradient(90deg,var(--sleep),#4f46e5);
+  transition:width .5s ease;min-width:0}
 
-/* ── TOP ROW — Quick track + Register Manual side by side ── */
-.top-row{display:grid;grid-template-columns:1fr auto;gap:1.25rem;
-  align-items:start;margin-bottom:1.25rem}
-
-/* Register Manual button — vertical card style */
-.reg-manual-card{background:linear-gradient(135deg,rgba(0,255,255,.06),rgba(0,102,255,.06));
-  border:2px solid rgba(0,255,255,.3);border-radius:14px;
-  padding:1.1rem 1.25rem;cursor:pointer;transition:all .25s;
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:.6rem;text-align:center;min-width:140px}
-.reg-manual-card:hover{border-color:var(--cyan);transform:translateY(-2px);
-  box-shadow:0 6px 24px rgba(0,255,255,.15)}
-.reg-manual-icon{font-size:2rem}
-.reg-manual-label{font-size:.82rem;font-weight:700;color:var(--cyan);
-  text-transform:uppercase;letter-spacing:.06em}
-.reg-manual-sub{font-size:.72rem;color:var(--t2)}
-
-/* ── QUICK TRACK ── */
-.qt-wrap{background:var(--bg2);border:2px solid var(--border);
-  border-radius:14px;padding:1.1rem 1.25rem;flex:1}
-.sec-title{font-size:.72rem;font-weight:700;text-transform:uppercase;
-  letter-spacing:.1em;color:var(--t3);margin-bottom:.85rem}
-.qt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:.6rem}
-.qt-item{background:var(--bg3);border:2px solid var(--border);
-  border-radius:11px;padding:.8rem 1rem;cursor:pointer;
-  transition:all .25s;display:flex;justify-content:space-between;align-items:center}
-.qt-item:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,255,255,.12)}
-.qt-item.on{border-color:var(--success);background:rgba(0,255,136,.07)}
-.qt-name{font-weight:600;font-size:.9rem;margin-bottom:.18rem}
-.qt-sub{font-size:.75rem;color:var(--t2);font-family:'Space Mono',monospace}
-.qt-play{width:30px;height:30px;background:linear-gradient(135deg,var(--cyan),var(--blue));
-  border-radius:7px;display:flex;align-items:center;justify-content:center;
-  font-size:.9rem;color:var(--bg);font-weight:700;flex-shrink:0}
-
-/* ── ACTIVE TIMER BANNER ── */
-.tbanner{background:linear-gradient(135deg,rgba(0,255,255,.07),rgba(0,102,255,.07));
-  border:2px solid var(--cyan);border-radius:16px;
-  padding:1.2rem 1.5rem;margin-bottom:1.25rem;display:none}
+/* ════ ACTIVE TIMER ════ */
+.tbanner{background:linear-gradient(135deg,rgba(0,255,136,.05),rgba(0,255,255,.05));
+  border:1.5px solid rgba(0,255,255,.4);border-radius:14px;
+  padding:1rem 1.25rem;margin-bottom:1rem;display:none}
 .tbanner.on{display:block}
-.tb-top{display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem}
-.tb-dot{width:10px;height:10px;background:var(--success);border-radius:50%;
-  box-shadow:0 0 10px var(--success);animation:blink 1.4s ease-in-out infinite}
-.tb-badge{font-size:.72rem;font-weight:700;text-transform:uppercase;
-  letter-spacing:.08em;color:var(--success)}
-.tb-name{font-size:1.2rem;font-weight:700}
-.tb-meta{font-size:.8rem;color:var(--t2);margin-top:.1rem}
-.tb-time{font-family:'Space Mono',monospace;font-size:2.6rem;font-weight:700;
-  text-align:center;background:linear-gradient(135deg,var(--cyan),var(--success));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:.5rem 0}
-.tb-btns{display:flex;gap:.65rem}
-.tb-btns .btn{flex:1}
+.tb-row{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap}
+.tb-left{display:flex;align-items:center;gap:.65rem}
+.tb-dot{width:9px;height:9px;background:var(--ok);border-radius:50%;
+  box-shadow:0 0 8px var(--ok);animation:bl 1.4s ease-in-out infinite;flex-shrink:0}
+.tb-info{}
+.tb-name{font-size:1rem;font-weight:700;line-height:1.2}
+.tb-meta{font-size:.75rem;color:var(--t2)}
+.tb-time{font-family:'Space Mono',monospace;font-size:1.8rem;font-weight:700;
+  background:linear-gradient(135deg,var(--cyan),var(--ok));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  white-space:nowrap}
+.tb-acts{display:flex;gap:.5rem;margin-top:.65rem}
+.tb-acts .btn{flex:1}
 
-/* ── TABS ── */
-.tabs{display:flex;gap:.45rem;margin-bottom:1.4rem;overflow-x:auto;padding-bottom:.2rem}
-.tab{background:transparent;color:var(--t2);border:2px solid transparent;
-  border-radius:9px;padding:.62rem 1.1rem;cursor:pointer;transition:all .25s;
-  font-weight:600;font-size:.86rem;white-space:nowrap;font-family:inherit}
-.tab:hover{color:var(--cyan);background:var(--bg2)}
-.tab.active{color:var(--cyan);border-color:var(--cyan);background:rgba(0,255,255,.07)}
+/* ════ TOP ROW 40/60 ════ */
+.top-row{display:grid;grid-template-columns:2fr 3fr;gap:1rem;margin-bottom:1rem}
+
+/* Quick Track — 40% */
+.qt-card{background:var(--bg2);border:1px solid var(--bdr);
+  border-radius:12px;padding:.9rem;height:100%}
+.qt-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.65rem}
+.qt-item{background:var(--bg3);border:1.5px solid var(--bdr);
+  border-radius:9px;padding:.6rem .7rem;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:space-between;gap:.4rem}
+.qt-item:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,255,255,.12)}
+.qt-item.on{border-color:var(--ok);background:rgba(0,255,136,.06)}
+.qt-name{font-weight:600;font-size:.82rem;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:80px}
+.qt-sub{font-size:.68rem;color:var(--t2);font-family:'Space Mono',monospace;white-space:nowrap}
+.qt-play{width:26px;height:26px;background:linear-gradient(135deg,var(--cyan),var(--blue));
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;color:var(--bg);font-weight:700;flex-shrink:0}
+
+/* Registro Manual — 60% */
+.rm-card{background:linear-gradient(135deg,rgba(0,255,255,.05),rgba(0,102,255,.05));
+  border:1.5px solid rgba(0,255,255,.25);border-radius:12px;
+  padding:1rem;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:1rem;height:100%}
+.rm-card:hover{border-color:var(--cyan);box-shadow:0 4px 20px rgba(0,255,255,.12);transform:translateY(-1px)}
+.rm-icon{font-size:2.2rem;flex-shrink:0}
+.rm-text h4{font-size:.95rem;font-weight:700;color:var(--cyan);margin-bottom:.2rem}
+.rm-text p{font-size:.78rem;color:var(--t2);line-height:1.4}
+.rm-arr{margin-left:auto;font-size:1.3rem;color:var(--cyan);opacity:.5;flex-shrink:0}
+
+/* ════ TABS ════ */
+.tabs{display:flex;gap:.4rem;margin-bottom:1.1rem;overflow-x:auto;
+  padding-bottom:.2rem;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;color:var(--t3);border:1.5px solid transparent;
+  border-radius:8px;padding:.55rem 1rem;cursor:pointer;transition:all .2s;
+  font-weight:600;font-size:.82rem;white-space:nowrap;font-family:inherit}
+.tab:hover{color:var(--cyan)}
+.tab.active{color:var(--cyan);border-color:rgba(0,255,255,.4);
+  background:rgba(0,255,255,.07)}
 .tab-pane{display:none}
 .tab-pane.active{display:block}
 
-/* ── TIMELINE ── */
-.tl-scroll{overflow-y:auto;max-height:68vh}
-.tl-row{display:grid;grid-template-columns:54px 1fr;
-  min-height:70px;border-bottom:1px solid rgba(26,51,102,.35);position:relative}
-.tl-lbl{padding:.4rem .4rem 0 0;font-size:.72rem;color:var(--t3);
-  font-family:'Space Mono',monospace;text-align:right}
-.tl-col{position:relative;padding:3px 5px;min-height:70px}
-.tl-e{border-radius:7px;padding:.4rem .7rem;font-size:.81rem;font-weight:600;
-  margin-bottom:3px;cursor:pointer;transition:filter .2s;
-  display:flex;align-items:center;gap:.45rem}
-.tl-e:hover{filter:brightness(1.2)}
-.tl-tracked{background:rgba(0,255,255,.1);border-left:3px solid var(--cyan);color:var(--cyan)}
-.tl-sleep{background:rgba(99,102,241,.15);border-left:3px solid var(--sleep);color:#a5b4fc}
-.tl-gap{background:rgba(55,65,81,.15);border-left:3px dashed #2d3748;
-  color:var(--t3);font-weight:400;cursor:default}
-.tl-dur{font-size:.7rem;opacity:.65;margin-left:auto;
-  font-family:'Space Mono',monospace;white-space:nowrap}
-.tl-add{position:absolute;right:5px;top:5px;background:transparent;
-  border:1px dashed var(--border);color:var(--t3);border-radius:5px;
-  padding:.18rem .45rem;font-size:.7rem;cursor:pointer;transition:all .2s;font-family:inherit}
+/* ════ TIMELINE ════ */
+.tl-reflection{background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(0,102,255,.08));
+  border:1px solid rgba(99,102,241,.3);border-radius:10px;
+  padding:.75rem 1rem;margin-bottom:.9rem;font-size:.82rem;
+  color:#a5b4fc;font-style:italic;line-height:1.5;text-align:center}
+.tl-reflection strong{display:block;font-size:.7rem;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--sleep);
+  margin-bottom:.3rem;font-style:normal}
+
+.tl-scroll{overflow-y:auto;max-height:65vh}
+.tl-row{display:grid;grid-template-columns:48px 1fr;
+  min-height:64px;border-bottom:1px solid rgba(26,51,102,.3)}
+.tl-lbl{padding:.4rem .35rem 0 0;font-size:.68rem;color:var(--t3);
+  font-family:'Space Mono',monospace;text-align:right;padding-top:.5rem}
+.tl-col{position:relative;padding:3px 4px;min-height:64px}
+.tl-e{border-radius:6px;padding:.35rem .6rem;font-size:.78rem;font-weight:600;
+  margin-bottom:2px;cursor:pointer;transition:filter .15s;
+  display:flex;align-items:center;gap:.4rem}
+.tl-e:hover{filter:brightness(1.15)}
+.tl-tracked{background:rgba(0,255,255,.09);border-left:2.5px solid var(--cyan);color:var(--cyan)}
+.tl-sleep{background:rgba(99,102,241,.12);border-left:2.5px solid var(--sleep);color:#a5b4fc}
+.tl-gap{background:rgba(255,255,255,.02);border-left:2px dashed rgba(26,51,102,.6);
+  color:var(--t3);font-weight:400;cursor:default;font-size:.73rem}
+.tl-dur{font-size:.67rem;opacity:.6;margin-left:auto;
+  font-family:'Space Mono',monospace;white-space:nowrap;flex-shrink:0}
+.tl-add{position:absolute;right:4px;top:4px;background:transparent;
+  border:1px dashed var(--bdr);color:var(--t3);border-radius:5px;
+  padding:.15rem .4rem;font-size:.67rem;cursor:pointer;transition:all .15s;
+  font-family:inherit;opacity:0}
+.tl-row:hover .tl-add{opacity:1}
 .tl-add:hover{border-color:var(--cyan);color:var(--cyan)}
 
-/* ── AREAS — more visual, less horizontal ── */
-.areas-masonry{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.1rem}
-.area-card{background:var(--bg2);border:2px solid var(--border);
-  border-radius:16px;overflow:hidden;transition:all .25s}
+/* Sleep edit inline */
+.sleep-edit-btn{background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.4);
+  color:#a5b4fc;border-radius:5px;padding:.15rem .45rem;
+  font-size:.67rem;cursor:pointer;transition:all .15s;font-family:inherit;
+  margin-left:.4rem}
+.sleep-edit-btn:hover{background:rgba(99,102,241,.3)}
+
+/* ════ AREAS ════ */
+.areas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:.9rem}
+.area-card{background:var(--bg2);border:1.5px solid var(--bdr);
+  border-radius:14px;overflow:hidden;transition:all .2s}
 .area-card:hover{transform:translateY(-2px)}
-.area-card-top{padding:1.1rem 1.25rem;cursor:pointer;
-  display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid var(--border)}
-.area-left{display:flex;align-items:center;gap:.75rem}
-.area-stripe{width:6px;height:36px;border-radius:3px;flex-shrink:0}
-.area-icon{font-size:1.35rem}
-.area-info{}
-.area-name{font-size:1rem;font-weight:700;line-height:1.2}
-.area-cnt{font-size:.75rem;color:var(--t3)}
-.area-right{display:flex;align-items:center;gap:.6rem}
-.area-total{font-family:'Space Mono',monospace;font-size:.85rem;font-weight:700}
-.area-chev{font-size:.85rem;color:var(--t3);transition:transform .3s}
+.area-head{padding:.9rem 1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between}
+.area-hl{display:flex;align-items:center;gap:.65rem}
+.area-stripe{width:5px;height:32px;border-radius:3px;flex-shrink:0}
+.area-icon-big{font-size:1.25rem}
+.area-nm{font-size:.95rem;font-weight:700;line-height:1.2}
+.area-cnt{font-size:.7rem;color:var(--t3)}
+.area-hr{display:flex;align-items:center;gap:.5rem}
+.area-tot{font-family:'Space Mono',monospace;font-size:.8rem;font-weight:700}
+.area-chev{font-size:.75rem;color:var(--t3);transition:transform .25s}
 .area-chev.open{transform:rotate(90deg)}
-.area-body{padding:0 1.1rem 1.1rem;display:none}
+.area-body{display:none;padding:0 .9rem .9rem}
 .area-body.open{display:block}
-.proj-stack{display:flex;flex-direction:column;gap:.5rem;margin-top:.85rem}
-.proj-row{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
-  padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;transition:all .2s}
+.proj-stack{display:flex;flex-direction:column;gap:.4rem;margin-top:.6rem}
+.proj-row{background:var(--bg3);border:1px solid var(--bdr);
+  border-radius:8px;padding:.6rem .8rem;
+  display:flex;align-items:center;gap:.6rem;transition:all .15s}
 .proj-row:hover{border-color:rgba(255,255,255,.15)}
-.proj-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.proj-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .proj-info{flex:1;min-width:0}
-.proj-name{font-weight:600;font-size:.9rem}
-.proj-stat{font-size:.75rem;color:var(--t2);font-family:'Space Mono',monospace}
-.proj-actions{display:flex;gap:.35rem}
-.area-footer{display:flex;gap:.5rem;margin-top:.85rem}
+.proj-nm{font-weight:600;font-size:.85rem;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.proj-st{font-size:.7rem;color:var(--t2);font-family:'Space Mono',monospace}
+.proj-acts{display:flex;gap:.3rem;flex-shrink:0}
 
-/* ── REGISTROS ── */
-.reg-list{display:flex;flex-direction:column;gap:.7rem}
-.reg-card{background:var(--bg2);border:2px solid var(--border);
-  border-radius:13px;padding:.95rem 1.15rem;
-  display:grid;grid-template-columns:80px 1fr auto;
-  gap:.9rem;align-items:center;transition:all .25s}
-.reg-card:hover{border-color:rgba(0,255,255,.25);transform:translateY(-1px)}
-.reg-dur{font-family:'Space Mono',monospace;font-size:1.2rem;
+/* ════ REGISTROS / HISTORIAL ════ */
+.hist-filters{display:flex;gap:.5rem;margin-bottom:.9rem;flex-wrap:wrap;align-items:center}
+.hist-search{flex:1;min-width:160px;background:var(--bg2);
+  border:1.5px solid var(--bdr);border-radius:8px;
+  padding:.5rem .85rem;color:var(--t);font-family:inherit;font-size:.83rem}
+.hist-search:focus{outline:none;border-color:var(--cyan)}
+.hist-sel{background:var(--bg2);border:1.5px solid var(--bdr);border-radius:8px;
+  padding:.5rem .7rem;color:var(--t);font-family:inherit;font-size:.8rem;cursor:pointer}
+.hist-sel:focus{outline:none;border-color:var(--cyan)}
+.reg-list{display:flex;flex-direction:column;gap:.6rem}
+.reg-card{background:var(--bg2);border:1.5px solid var(--bdr);
+  border-radius:11px;padding:.85rem 1rem;
+  display:grid;grid-template-columns:72px 1fr auto;
+  gap:.75rem;align-items:center;transition:all .2s}
+.reg-card:hover{border-color:rgba(0,255,255,.2)}
+.reg-dur{font-family:'Space Mono',monospace;font-size:1.1rem;
   font-weight:700;color:var(--cyan)}
-.reg-desc{font-weight:600;margin-bottom:.2rem;font-size:.93rem}
-.reg-meta{font-size:.78rem;color:var(--t2);
-  display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
-.badge{padding:.15rem .5rem;background:var(--bg3);
-  border:1px solid var(--border);border-radius:5px;font-size:.74rem}
-.badge-sleep{border-color:var(--sleep);color:#a5b4fc}
-.reg-acts{display:flex;gap:.35rem}
+.reg-desc{font-weight:600;font-size:.88rem;margin-bottom:.18rem}
+.reg-meta{font-size:.73rem;color:var(--t2);
+  display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+.badge{padding:.12rem .45rem;background:var(--bg3);
+  border:1px solid var(--bdr);border-radius:4px;font-size:.7rem}
+.badge-sl{border-color:var(--sleep);color:#a5b4fc}
+.reg-acts{display:flex;gap:.3rem}
 
-/* ── DASHBOARD GRID — asymmetric ── */
-.dash-grid{
-  display:grid;
-  grid-template-columns:1.4fr 1fr 1fr;
-  grid-template-rows:auto auto;
-  gap:1.1rem;margin-bottom:1.5rem}
-.dash-card{background:var(--bg2);border:2px solid var(--border);
-  border-radius:16px;padding:1.4rem}
-.dash-card h3{font-size:.73rem;text-transform:uppercase;
-  letter-spacing:.09em;color:var(--t2);margin-bottom:.85rem}
-.dash-val{font-family:'Space Mono',monospace;font-size:2.3rem;font-weight:800;
+/* ════ DASHBOARD ════ */
+.dash-top{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:.9rem}
+.dash-pie-wrap{background:var(--bg2);border:1.5px solid var(--bdr);
+  border-radius:14px;padding:1.1rem;grid-column:span 2}
+.dash-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.7rem}
+.dstat{background:var(--bg2);border:1.5px solid var(--bdr);
+  border-radius:12px;padding:1rem 1.1rem}
+.dstat h4{font-size:.68rem;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--t3);margin-bottom:.5rem}
+.dstat-val{font-family:'Space Mono',monospace;font-size:1.9rem;font-weight:800;
   background:linear-gradient(135deg,var(--cyan),var(--blue));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.dash-sub{font-size:.8rem;color:var(--t3);margin-top:.2rem}
-.pie-wrap{position:relative;width:160px;height:160px;margin:.6rem auto}
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.dstat-sub{font-size:.72rem;color:var(--t3);margin-top:.2rem}
+.pie-wrap{position:relative;width:150px;height:150px;margin:.5rem auto}
 .pie-svg{width:100%;height:100%}
-.pie-center{position:absolute;top:50%;left:50%;
+.pie-ctr{position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);text-align:center}
-.pie-cv{font-family:'Space Mono',monospace;font-size:1.3rem;
+.pie-pct{font-family:'Space Mono',monospace;font-size:1.2rem;
   font-weight:700;color:var(--cyan)}
-.pie-cs{font-size:.68rem;color:var(--t3)}
-.legend-item{display:flex;align-items:center;gap:.5rem;
-  margin-bottom:.38rem;font-size:.8rem}
-.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
-.legend-val{margin-left:auto;font-family:'Space Mono',monospace;
-  font-size:.75rem;color:var(--cyan)}
-.dash-span2{grid-row:span 2}
+.pie-sub{font-size:.65rem;color:var(--t3)}
+.pie-layout{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+.legend-item{display:flex;align-items:center;gap:.45rem;font-size:.78rem;margin-bottom:.35rem}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.legend-val{margin-left:auto;padding-left:.75rem;font-family:'Space Mono',monospace;
+  font-size:.72rem;color:var(--cyan)}
 
-@media(max-width:900px){
-  .dash-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
-  .dash-span2{grid-row:span 1}
-}
-@media(max-width:600px){.dash-grid{grid-template-columns:1fr}}
-
-/* ── MODALS ── */
+/* ════ MODALS ════ */
 .overlay{display:none;position:fixed;inset:0;
-  background:rgba(5,11,31,.93);backdrop-filter:blur(10px);
+  background:rgba(5,11,31,.9);backdrop-filter:blur(10px);
   z-index:900;align-items:center;justify-content:center;padding:1rem}
 .overlay.open{display:flex}
-.modal{background:var(--bg2);border:2px solid var(--border);
-  border-radius:20px;padding:1.75rem;
-  max-width:490px;width:100%;max-height:92vh;overflow-y:auto}
-.mhead{display:flex;justify-content:space-between;
-  align-items:center;margin-bottom:1.35rem}
-.mhead h2{font-size:1.3rem;font-weight:700}
-.mclose{width:29px;height:29px;background:var(--bg3);
-  border:1px solid var(--border);border-radius:7px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--t2);font-size:1.05rem;transition:all .2s}
+.modal{background:var(--bg2);border:1.5px solid var(--bdr);
+  border-radius:18px;padding:1.5rem;
+  max-width:460px;width:100%;max-height:92vh;overflow-y:auto}
+.mhd{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem}
+.mhd h2{font-size:1.2rem;font-weight:700}
+.mclose{width:28px;height:28px;background:var(--bg3);border:1px solid var(--bdr);
+  border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--t2);font-size:1rem;transition:all .15s}
 .mclose:hover{border-color:var(--cyan);color:var(--cyan)}
-.fg{margin-bottom:1rem}
-.fg label{display:block;font-size:.81rem;font-weight:600;
-  color:var(--t2);margin-bottom:.38rem}
+.fg{margin-bottom:.9rem}
+.fg label{display:block;font-size:.78rem;font-weight:600;color:var(--t2);margin-bottom:.35rem}
 .fg input,.fg select,.fg textarea{width:100%;background:var(--bg3);
-  border:2px solid var(--border);border-radius:9px;
-  padding:.72rem 1rem;color:var(--text);font-family:inherit;
-  font-size:.92rem;transition:all .25s}
-.fg input:focus,.fg select:focus,.fg textarea:focus{
-  outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,255,255,.1)}
-.fg textarea{min-height:72px;resize:vertical}
-input[type=color]{height:42px;cursor:pointer}
+  border:1.5px solid var(--bdr);border-radius:8px;
+  padding:.68rem .9rem;color:var(--t);font-family:inherit;font-size:.88rem;transition:all .2s}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--cyan);
+  box-shadow:0 0 0 3px rgba(0,255,255,.08)}
+input[type=color]{height:40px;cursor:pointer;padding:.2rem}
 input[type=time]{font-family:'Space Mono',monospace}
-.r2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
-.mbtns{display:flex;gap:.7rem;margin-top:1.2rem}
+input[type=range]{width:100%;accent-color:var(--cyan)}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.mbtns{display:flex;gap:.6rem;margin-top:1.1rem}
 .mbtns .btn{flex:1}
 
-/* ── LOGIN ── */
-.login-scr{position:fixed;inset:0;background:var(--bg);
+/* Emoji picker */
+.emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:.35rem;
+  margin-top:.45rem;max-height:160px;overflow-y:auto;
+  background:var(--bg3);border-radius:8px;padding:.5rem}
+.emoji-pick{font-size:1.3rem;width:32px;height:32px;display:flex;
+  align-items:center;justify-content:center;border-radius:6px;
+  cursor:pointer;transition:background .15s;border:1.5px solid transparent}
+.emoji-pick:hover{background:rgba(0,255,255,.12);border-color:var(--cyan)}
+.emoji-pick.sel{background:rgba(0,255,255,.15);border-color:var(--cyan)}
+
+/* ── Manual Registro — simplified ── */
+.dur-tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.9rem}
+.dur-tab{background:var(--bg3);border:1.5px solid var(--bdr);
+  border-radius:7px;padding:.45rem .8rem;cursor:pointer;
+  font-size:.82rem;font-weight:600;transition:all .15s;color:var(--t2)}
+.dur-tab:hover{border-color:var(--cyan);color:var(--cyan)}
+.dur-tab.sel{background:rgba(0,255,255,.1);border-color:var(--cyan);color:var(--cyan)}
+.slider-wrap{margin:.5rem 0 1rem}
+.slider-val{text-align:center;font-family:'Space Mono',monospace;
+  font-size:1.4rem;font-weight:700;color:var(--cyan);margin-bottom:.4rem}
+.slider-labels{display:flex;justify-content:space-between;
+  font-size:.68rem;color:var(--t3);margin-top:.2rem}
+
+/* Sleep routine modal — quick adjust */
+.tl-sleep-quick{background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.3);
+  border-radius:8px;padding:.6rem .85rem;margin-bottom:.7rem;
+  display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.tsq-info{font-size:.78rem;color:#a5b4fc}
+.tsq-info strong{display:block;font-size:.7rem;
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:.1rem;opacity:.7}
+
+/* ════ LOGIN ════ */
+.lscr{position:fixed;inset:0;background:var(--bg);
   display:flex;align-items:center;justify-content:center;
   padding:1rem;z-index:1000}
-.login-box{background:var(--bg2);border:2px solid var(--border);
-  border-radius:20px;padding:2rem;max-width:390px;width:100%;
-  box-shadow:0 0 60px rgba(0,255,255,.06)}
-.login-logo{text-align:center;margin-bottom:1.4rem}
-.login-title{font-family:'Space Mono',monospace;font-size:2.8rem;
-  font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--blue));
+.lbox{background:var(--bg2);border:1.5px solid var(--bdr);
+  border-radius:18px;padding:1.75rem;max-width:360px;width:100%;
+  box-shadow:0 0 60px rgba(0,255,255,.05)}
+.llogo{text-align:center;margin-bottom:1.25rem}
+.ltitle{font-family:'Space Mono',monospace;font-size:2.5rem;font-weight:700;
+  background:linear-gradient(135deg,var(--cyan),var(--blue));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   line-height:1;display:inline-flex;align-items:center;letter-spacing:.05em}
-.led-zero-lg{position:relative;display:inline-block;-webkit-text-fill-color:transparent}
-.led-zero-lg::after{content:'';position:absolute;
-  width:7px;height:7px;background:var(--cyan);border-radius:50%;
-  box-shadow:0 0 8px var(--cyan),0 0 18px rgba(0,255,255,.5);
+.led0-lg{position:relative;display:inline-block;-webkit-text-fill-color:transparent}
+.led0-lg::after{content:'';position:absolute;width:7px;height:7px;
+  background:var(--cyan);border-radius:50%;
+  box-shadow:0 0 8px var(--cyan),0 0 16px rgba(0,255,255,.4);
   top:50%;left:50%;transform:translate(-50%,-50%)}
-.login-sub{color:var(--t2);font-size:.81rem;margin-top:.45rem}
-.ltabs{display:flex;gap:.35rem;background:var(--bg3);
-  padding:.28rem;border-radius:9px;margin-bottom:1.35rem}
+.lsub{color:var(--t2);font-size:.78rem;margin-top:.4rem}
+.ltabs{display:flex;gap:.3rem;background:var(--bg3);
+  padding:.25rem;border-radius:8px;margin-bottom:1.2rem}
 .ltab{flex:1;background:transparent;border:none;border-radius:7px;
-  padding:.58rem;cursor:pointer;font-family:inherit;font-weight:600;
-  font-size:.86rem;color:var(--t2);transition:all .25s}
+  padding:.55rem;cursor:pointer;font-family:inherit;font-weight:600;
+  font-size:.84rem;color:var(--t2);transition:all .2s}
 .ltab.active{background:linear-gradient(135deg,var(--cyan),var(--blue));color:var(--bg)}
 .lform{display:none}
 .lform.active{display:block}
-.pin-row{display:flex;gap:.55rem;justify-content:center;margin:1rem 0}
-.pin-d{width:50px;height:58px;background:var(--bg3);border:2px solid var(--border);
-  border-radius:10px;color:var(--cyan);font-size:1.55rem;font-weight:700;
-  text-align:center;font-family:'Space Mono',monospace;transition:all .25s}
-.pin-d:focus{outline:none;border-color:var(--cyan);transform:scale(1.06)}
+.pin-row{display:flex;gap:.5rem;justify-content:center;margin:.85rem 0}
+.pin-d{width:48px;height:56px;background:var(--bg3);border:2px solid var(--bdr);
+  border-radius:9px;color:var(--cyan);font-size:1.5rem;font-weight:700;
+  text-align:center;font-family:'Space Mono',monospace;transition:all .2s}
+.pin-d:focus{outline:none;border-color:var(--cyan);transform:scale(1.05)}
 .ibox{background:rgba(0,255,255,.04);border-left:3px solid var(--cyan);
-  padding:.8rem .95rem;border-radius:8px;margin:.8rem 0;
-  font-size:.81rem;color:var(--t2)}
+  padding:.7rem .85rem;border-radius:7px;margin:.7rem 0;font-size:.78rem;color:var(--t2)}
 .ibox.warn{border-left-color:var(--warn)}
-.ibox strong{display:block;margin-bottom:.22rem;color:var(--cyan)}
+.ibox strong{display:block;margin-bottom:.2rem;color:var(--cyan)}
 .ibox.warn strong{color:var(--warn)}
-.msg{padding:.7rem;border-radius:8px;margin:.6rem 0;
-  text-align:center;font-weight:600;font-size:.83rem}
-.msg.err{background:rgba(255,51,102,.1);border:2px solid var(--danger);color:var(--danger)}
-.msg.ok{background:rgba(0,255,136,.1);border:2px solid var(--success);color:var(--success)}
+.fmsg{padding:.65rem;border-radius:7px;margin:.55rem 0;
+  text-align:center;font-weight:600;font-size:.8rem}
+.fmsg.err{background:rgba(255,51,102,.1);border:1.5px solid var(--del);color:var(--del)}
+.fmsg.ok{background:rgba(0,255,136,.1);border:1.5px solid var(--ok);color:var(--ok)}
 .hidden{display:none!important}
-.spin{display:inline-block;width:13px;height:13px;
-  border:2px solid rgba(255,255,255,.3);border-top-color:currentColor;
-  border-radius:50%;animation:spinA .7s linear infinite}
-@keyframes spinA{to{transform:rotate(360deg)}}
+.spin{display:inline-block;width:12px;height:12px;
+  border:2px solid rgba(255,255,255,.25);border-top-color:currentColor;
+  border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
 
-/* Sleep setup overlay */
-.sleep-ov{display:none;position:fixed;inset:0;
+/* Sleep overlay */
+.sl-ov{display:none;position:fixed;inset:0;
   background:rgba(5,11,31,.97);backdrop-filter:blur(10px);
   z-index:1100;align-items:center;justify-content:center;padding:1rem}
-.sleep-ov.open{display:flex}
+.sl-ov.open{display:flex}
 
-/* Sleep smart popup */
-.sleep-pop{display:none;position:fixed;bottom:1.5rem;right:1.5rem;
-  background:var(--bg2);border:2px solid var(--sleep);border-radius:16px;
-  padding:1.3rem;max-width:300px;width:100%;z-index:600;
+/* Sleep popup */
+.sl-pop{display:none;position:fixed;bottom:1.25rem;right:1rem;left:1rem;
+  background:var(--bg2);border:1.5px solid var(--sleep);border-radius:14px;
+  padding:1.1rem;z-index:600;max-width:340px;margin:0 auto;
   box-shadow:0 8px 32px rgba(99,102,241,.3)}
-.sleep-pop.open{display:block;animation:slideUp .35s ease}
-@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.sl-pop.open{display:block;animation:slUp .3s ease}
+@keyframes slUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-/* Icon btn */
-.ibtn{width:28px;height:28px;background:var(--bg3);border:1px solid var(--border);
-  border-radius:6px;display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all .2s;font-size:.82rem;color:var(--t2)}
-.ibtn:hover{border-color:var(--danger);color:var(--danger)}
-.ibtn.edit:hover{border-color:var(--cyan);color:var(--cyan)}
+/* Empty */
+.empty{text-align:center;padding:2rem 1rem;color:var(--t3)}
+.empty-ic{font-size:2.2rem;opacity:.2;margin-bottom:.5rem}
+.empty h3{font-size:.95rem;color:var(--t);margin-bottom:.25rem}
+.empty p{font-size:.8rem}
 
-.empty{text-align:center;padding:2.5rem 1rem;color:var(--t3)}
-.empty-ic{font-size:2.5rem;opacity:.25;margin-bottom:.6rem}
-.empty h3{font-size:1rem;color:var(--text);margin-bottom:.3rem}
-
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--blue);border-radius:3px}
-
-@media(max-width:768px){
-  .main{padding:calc(var(--hh)+1rem) 1rem 4rem}
-  .hdr{padding:0 1rem}
+/* ════ RESPONSIVE ════ */
+@media(max-width:640px){
+  :root{--hh:54px}
+  .main{padding:calc(var(--hh)+.9rem) .75rem 4.5rem}
   .top-row{grid-template-columns:1fr;grid-template-rows:auto auto}
-  .reg-manual-card{flex-direction:row;text-align:left;min-width:unset}
-  .reg-card{grid-template-columns:1fr}
-  .tb-time{font-size:2rem}
-  .areas-masonry{grid-template-columns:1fr}
+  .rm-card{padding:.75rem}
+  .qt-grid{grid-template-columns:1fr 1fr}
+  .reg-card{grid-template-columns:60px 1fr auto}
+  .reg-dur{font-size:.95rem}
+  .areas-grid{grid-template-columns:1fr}
+  .dash-pie-wrap{grid-column:span 1}
+  .dash-top{grid-template-columns:1fr}
+  .r2{grid-template-columns:1fr}
+  .tbanner .tb-row{flex-direction:column;align-items:flex-start}
+  .tb-time{font-size:1.4rem}
+  .pie-layout{gap:.75rem}
+  .mantra{display:none}
+  .logo{font-size:1.25rem}
+  .dur-tabs{gap:.3rem}
+  .dur-tab{padding:.4rem .6rem;font-size:.78rem}
 }
+@media(max-width:380px){
+  .qt-grid{grid-template-columns:1fr}
+  .hact .btn-sleep,.hact .btn-dash{display:none}
+}
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
 </style>
 </head>
 <body>
 
+<!-- ══ AUDIO ══ -->
+<audio id="sndStart" preload="auto">
+  <source src="data:audio/wav;base64,UklGRnoAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YUoAAAB/gH+Af4B/gH+Af4ByZVlOSEdHS1NdaHJ8gH+Af4B/gH+Af4B/gH+Af4B/gH+Af4B/gH+Af4B/gH+Af4B/gA==" type="audio/wav">
+</audio>
+<audio id="sndSwitch" preload="auto">
+  <source src="data:audio/wav;base64,UklGRnoAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YUoAAAB/gFtAJBAIECRAfoBgQCgUDBAoQGCAYEAoFBAsQGCAYEAoFBAsQGCAYEAoFBAsQGCAYEAoFBAsQGCA" type="audio/wav">
+</audio>
+
 <!-- ══ LOGIN ══ -->
-<div class="login-scr" id="loginScr">
-  <div class="login-box">
-    <div class="login-logo">
-      <div class="login-title">144<span class="led-zero-lg">0</span></div>
-      <div class="login-sub">Cada minuto cuenta</div>
+<div class="lscr" id="lscr">
+  <div class="lbox">
+    <div class="llogo">
+      <div class="ltitle">144<span class="led0-lg">0</span></div>
+      <div class="lsub">Cada minuto cuenta</div>
     </div>
     <div class="ltabs">
-      <button class="ltab active" onclick="swLTab('login')">Ingresar</button>
-      <button class="ltab" onclick="swLTab('register')">Crear Cuenta</button>
+      <button class="ltab active" onclick="swLT('login')">Ingresar</button>
+      <button class="ltab" onclick="swLT('register')">Crear Cuenta</button>
     </div>
-
-    <!-- Login form -->
     <div class="lform active" id="lf-login">
-      <div class="ibox"><strong>👤 Usuario + PIN</strong>Ingresa tu nombre de usuario y PIN</div>
-      <div class="fg"><label>Nombre de usuario</label>
-        <input type="text" id="l-user" placeholder="tu_usuario" autocomplete="off" style="text-transform:lowercase">
-      </div>
-      <div class="fg"><label>PIN de 4 dígitos</label>
+      <div class="fg"><label>Usuario</label>
+        <input type="text" id="l-u" placeholder="tu_usuario" autocomplete="off" autocapitalize="none"></div>
+      <div class="fg"><label>PIN</label>
         <div class="pin-row">
-          <input type="password" maxlength="1" class="pin-d" id="lp1" oninput="pf(this,'lp2')">
-          <input type="password" maxlength="1" class="pin-d" id="lp2" oninput="pf(this,'lp3')">
-          <input type="password" maxlength="1" class="pin-d" id="lp3" oninput="pf(this,'lp4')">
-          <input type="password" maxlength="1" class="pin-d" id="lp4" oninput="autoLogin()">
+          <input type="password" maxlength="1" class="pin-d" id="lp1" oninput="pf(this,'lp2')" inputmode="numeric">
+          <input type="password" maxlength="1" class="pin-d" id="lp2" oninput="pf(this,'lp3')" inputmode="numeric">
+          <input type="password" maxlength="1" class="pin-d" id="lp3" oninput="pf(this,'lp4')" inputmode="numeric">
+          <input type="password" maxlength="1" class="pin-d" id="lp4" oninput="autoLogin()" inputmode="numeric">
         </div>
       </div>
-      <div id="loginErr" class="msg err hidden"></div>
+      <div id="lErr" class="fmsg err hidden"></div>
       <button class="btn btn-full" onclick="doLogin()">
-        <span id="lTxt">Ingresar</span><span id="lSpin" class="spin hidden"></span>
+        <span id="lT">Ingresar</span><span id="lS" class="spin hidden"></span>
       </button>
     </div>
-
-    <!-- Register form -->
     <div class="lform" id="lf-register">
-      <div class="fg"><label>Nombre de usuario</label>
-        <input type="text" id="r-user" placeholder="elige_tu_usuario" autocomplete="off" style="text-transform:lowercase">
-      </div>
+      <div class="fg"><label>Elige un usuario</label>
+        <input type="text" id="r-u" placeholder="tu_usuario_unico" autocomplete="off" autocapitalize="none"></div>
       <div class="fg"><label>PIN de 4 dígitos</label>
         <div class="pin-row">
-          <input type="password" maxlength="1" class="pin-d" id="rp1" oninput="pf(this,'rp2')">
-          <input type="password" maxlength="1" class="pin-d" id="rp2" oninput="pf(this,'rp3')">
-          <input type="password" maxlength="1" class="pin-d" id="rp3" oninput="pf(this,'rp4')">
-          <input type="password" maxlength="1" class="pin-d" id="rp4">
+          <input type="password" maxlength="1" class="pin-d" id="rp1" oninput="pf(this,'rp2')" inputmode="numeric">
+          <input type="password" maxlength="1" class="pin-d" id="rp2" oninput="pf(this,'rp3')" inputmode="numeric">
+          <input type="password" maxlength="1" class="pin-d" id="rp3" oninput="pf(this,'rp4')" inputmode="numeric">
+          <input type="password" maxlength="1" class="pin-d" id="rp4" inputmode="numeric">
         </div>
       </div>
-      <div class="ibox warn"><strong>⚠️ Importante</strong>El usuario debe ser único · El PIN es personal · Sin recuperación</div>
-      <div id="regErr" class="msg err hidden"></div>
-      <div id="regOk" class="msg ok hidden"></div>
-      <button class="btn btn-ok btn-full" onclick="doRegister()">
-        <span id="rTxt">Crear Cuenta</span><span id="rSpin" class="spin hidden"></span>
+      <div class="ibox warn"><strong>⚠️ Recuerda</strong>Usuario único · PIN personal · Sin recuperación</div>
+      <div id="rErr" class="fmsg err hidden"></div>
+      <div id="rOk" class="fmsg ok hidden"></div>
+      <button class="btn btn-ok btn-full" onclick="doReg()">
+        <span id="rT">Crear Cuenta</span><span id="rS" class="spin hidden"></span>
       </button>
     </div>
   </div>
 </div>
 
 <!-- ══ SLEEP SETUP ══ -->
-<div class="sleep-ov" id="sleepOv">
-  <div class="modal" style="max-width:430px">
-    <div style="text-align:center;margin-bottom:1.4rem">
-      <div style="font-size:2.5rem;margin-bottom:.4rem">😴</div>
-      <h2 style="font-size:1.35rem;background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent">
-        Configura tu Sueño</h2>
-      <p style="color:var(--t2);margin-top:.4rem;font-size:.86rem">
-        Una vez configurado, 1440 lo registra automáticamente cada día</p>
+<div class="sl-ov" id="slOv">
+  <div class="modal" style="max-width:400px">
+    <div style="text-align:center;margin-bottom:1.2rem">
+      <div style="font-size:2.2rem;margin-bottom:.35rem">😴</div>
+      <h2 style="font-size:1.25rem;background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Configura tu Sueño</h2>
+      <p style="color:var(--t2);font-size:.8rem;margin-top:.3rem">Una vez configurado, 1440 lo registra automáticamente</p>
     </div>
     <div class="r2">
-      <div class="fg"><label>🌙 Me duermo a:</label><input type="time" id="ss-sleep" value="22:30"></div>
-      <div class="fg"><label>☀️ Me despierto a:</label><input type="time" id="ss-wake" value="07:00"></div>
+      <div class="fg"><label>🌙 Me duermo</label><input type="time" id="ss-sl" value="22:30"></div>
+      <div class="fg"><label>☀️ Me despierto</label><input type="time" id="ss-wk" value="07:00"></div>
     </div>
-    <div class="ibox"><strong>💡 Cómo funciona</strong>Rutina normal = registro automático. Cambios = te preguntamos.</div>
-    <button class="btn btn-ok btn-full" onclick="saveSleepSetup()">Guardar Rutina de Sueño</button>
+    <button class="btn btn-ok btn-full" onclick="saveSleepSetup()">Guardar Rutina</button>
   </div>
 </div>
 
-<!-- ══ SLEEP SMART POPUP ══ -->
-<div class="sleep-pop" id="sleepPop">
-  <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.85rem">
-    <span style="font-size:1.35rem">😴</span>
-    <div><div style="font-weight:700;font-size:.92rem">¿Cómo dormiste anoche?</div>
-    <div style="font-size:.75rem;color:var(--t2)">Detectamos actividad fuera de tu rutina</div></div>
+<!-- ══ SLEEP POPUP ══ -->
+<div class="sl-pop" id="slPop">
+  <div style="display:flex;align-items:center;gap:.55rem;margin-bottom:.75rem">
+    <span style="font-size:1.25rem">😴</span>
+    <div><div style="font-weight:700;font-size:.88rem">¿Cómo dormiste?</div>
+    <div style="font-size:.72rem;color:var(--t2)">Actividad fuera de tu rutina</div></div>
   </div>
-  <div class="r2" style="margin-bottom:.85rem">
-    <div class="fg"><label>Dormí a:</label><input type="time" id="pop-sleep"></div>
-    <div class="fg"><label>Desperté a:</label><input type="time" id="pop-wake"></div>
+  <div class="r2" style="margin-bottom:.75rem">
+    <div class="fg"><label>Dormí a:</label><input type="time" id="pop-sl"></div>
+    <div class="fg"><label>Desperté a:</label><input type="time" id="pop-wk"></div>
   </div>
-  <div style="display:flex;gap:.45rem">
+  <div style="display:flex;gap:.4rem">
     <button class="btn btn-ok btn-full btn-sm" onclick="saveSleepPop()">Guardar</button>
-    <button class="btn btn-ghost btn-sm" onclick="closeEl('sleepPop')">Ignorar</button>
+    <button class="btn btn-ghost btn-sm" onclick="closeEl('slPop')">Ignorar</button>
   </div>
 </div>
 
 <!-- ══ MANTRA MODAL ══ -->
-<div class="overlay" id="mantraModal">
-  <div class="modal" style="max-width:400px">
-    <div class="mhead"><h2>🌟 Tu Mantra</h2>
-      <button class="mclose" onclick="closeM('mantraModal')">×</button></div>
-    <p style="color:var(--t2);margin-bottom:1.1rem;font-size:.88rem">
-      Esta respuesta quedará fija en tu header como recordatorio diario.</p>
+<div class="overlay" id="mantraM">
+  <div class="modal" style="max-width:380px">
+    <div class="mhd"><h2>🌟 Tu Mantra</h2><button class="mclose" onclick="closeM('mantraM')">×</button></div>
+    <p style="color:var(--t2);font-size:.83rem;margin-bottom:1rem">Quedará fijo en tu header como recordatorio diario.</p>
     <div class="fg"><label>¿Quién quieres ser?</label>
-      <input type="text" id="mantraIn" placeholder="Tu mantra aquí..." maxlength="60"></div>
+      <input type="text" id="manIn" placeholder="Escribe tu mantra..." maxlength="60"></div>
     <div class="mbtns">
-      <button class="btn btn-ghost" onclick="closeM('mantraModal')">Cancelar</button>
+      <button class="btn btn-ghost" onclick="closeM('mantraM')">Cancelar</button>
       <button class="btn" onclick="saveMantra()">Guardar</button>
     </div>
   </div>
@@ -489,227 +574,294 @@ input[type=time]{font-family:'Space Mono',monospace}
 
 <!-- ══ APP HEADER ══ -->
 <header class="hdr" id="appHdr" style="display:none">
-  <div class="logo">144<span class="led-zero">0</span></div>
+  <div class="logo">144<span class="led0">0</span></div>
 
-  <div class="mantra" onclick="openMantraModal()" title="Click para editar tu mantra">
+  <div class="mantra" onclick="openMantraM()" title="Click para editar">
     <div class="mantra-q">¿Quién quieres ser?</div>
-    <div id="mantraDisp" class="mantra-ph">Toca para escribir tu mantra...</div>
+    <div id="manDisp" class="mantra-ph">Escribe tu mantra...</div>
   </div>
 
-  <div class="htimer" id="hTimer">
-    <div class="hdot"></div>
-    <div class="htname" id="hTName">—</div>
-    <div class="httime" id="hTTime">00:00:00</div>
-    <button class="btn btn-del btn-sm" onclick="stopTimer()" style="padding:.28rem .6rem;font-size:.7rem">⏹</button>
+  <div class="ht" id="ht">
+    <div class="ht-dot"></div>
+    <div class="ht-name" id="htN">—</div>
+    <div class="ht-time" id="htT">00:00</div>
+    <button class="btn btn-del btn-xs" onclick="stopTimer()" style="padding:.22rem .5rem;font-size:.68rem">⏹</button>
   </div>
 
-  <div class="hactions">
-    <button class="btn btn-sleep btn-sm" onclick="openM('sleepEditModal')" title="Editar rutina de sueño">😴</button>
-    <button class="btn btn-sm" onclick="openDash()">📊</button>
-    <button class="btn btn-ghost btn-sm" onclick="exportCSV()">CSV</button>
-    <button class="btn btn-ghost btn-sm" onclick="exportPDF()">PDF</button>
-    <button class="btn btn-del btn-sm" onclick="doLogout()">🚪</button>
+  <div class="hact">
+    <button class="btn btn-sleep btn-sm" onclick="openSleepEdit()" title="Rutina sueño">😴</button>
+    <button class="btn btn-sm btn-dash" onclick="openDash()" title="Dashboard">📊</button>
+    <div class="hmenu-wrap">
+      <div class="hmenu-btn" id="hmBtn" onclick="toggleHMenu()">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="hmenu-drop" id="hmDrop">
+        <div class="hmenu-item" onclick="exportCSV();closeHMenu()">📊 Exportar CSV</div>
+        <div class="hmenu-item" onclick="exportPDF();closeHMenu()">📄 Exportar PDF</div>
+        <div class="hmenu-item" onclick="openSleepEdit();closeHMenu()">😴 Editar sueño</div>
+        <div class="hmenu-item" onclick="openMantraM();closeHMenu()">🌟 Mi mantra</div>
+        <div class="hmenu-item" style="border-top:1px solid var(--bdr);margin-top:.3rem;padding-top:.6rem;color:#ff6b6b" onclick="doLogout()">🚪 Cerrar sesión</div>
+      </div>
+    </div>
   </div>
 </header>
 
-<!-- ══ MAIN ══ -->
+<!-- ══ MAIN APP ══ -->
 <main class="main" id="mainApp" style="display:none">
 
-  <!-- Progress 1440 -->
-  <div class="prog-wrap">
-    <div class="prog-top">
-      <span>Hoy: <strong id="progMin">0</strong> / 1440 min</span>
-      <span id="progPct" style="color:var(--t2)">0%</span>
+  <!-- Progress 1440 dual -->
+  <div class="prog-card">
+    <div class="prog-labels">
+      <div class="prog-main-label">
+        <strong id="progMin">0</strong><span style="color:var(--t3)"> / 1440 min</span>
+        &nbsp;<span id="progPct" style="font-size:.75rem;color:var(--t3)">0%</span>
+      </div>
+      <div class="prog-legend">
+        <span class="prog-leg-track">Activo <strong id="legTrack" style="color:var(--cyan);font-family:'Space Mono',monospace">0m</strong></span>
+        <span class="prog-leg-sleep">Sueño <strong id="legSleep" style="color:#a5b4fc;font-family:'Space Mono',monospace">0m</strong></span>
+      </div>
     </div>
-    <div class="prog-track"><div class="prog-fill" id="progBar" style="width:0%"></div></div>
-  </div>
-
-  <!-- Active Timer Banner -->
-  <div class="tbanner" id="tBanner">
-    <div class="tb-top"><div class="tb-dot"></div><div class="tb-badge">Tracking ahora</div></div>
-    <div class="tb-name" id="tbName">—</div>
-    <div class="tb-meta" id="tbMeta">—</div>
-    <div class="tb-time" id="tbTime">00:00:00</div>
-    <div class="tb-btns">
-      <button class="btn btn-del" onclick="stopTimer()">⏹ Detener</button>
-      <button class="btn btn-ghost" onclick="switchAct()">🔄 Cambiar</button>
+    <div class="prog-track">
+      <div class="prog-seg-track" id="progTrack" style="width:0%"></div>
+      <div class="prog-seg-sleep" id="progSleep" style="width:0%"></div>
     </div>
   </div>
 
-  <!-- Top Row: Quick Track + Registro Manual -->
+  <!-- Active timer banner -->
+  <div class="tbanner" id="tBan">
+    <div class="tb-row">
+      <div class="tb-left">
+        <div class="tb-dot"></div>
+        <div class="tb-info">
+          <div class="tb-name" id="tbN">—</div>
+          <div class="tb-meta" id="tbM">—</div>
+        </div>
+      </div>
+      <div class="tb-time" id="tbT">00:00:00</div>
+    </div>
+    <div class="tb-acts">
+      <button class="btn btn-del btn-sm" onclick="stopTimer()">⏹ Detener</button>
+      <button class="btn btn-ghost btn-sm" onclick="switchAct()">🔄 Cambiar</button>
+    </div>
+  </div>
+
+  <!-- Top row 40/60 -->
   <div class="top-row">
-    <div class="qt-wrap">
-      <div class="sec-title">⚡ Quick Track — 1 click</div>
-      <div class="qt-grid" id="qtGrid"></div>
+    <!-- Quick Track 40% -->
+    <div class="qt-card">
+      <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--t3)">⚡ Quick Track</div>
+      <div class="qt-grid" id="qtG"></div>
     </div>
-
-    <div class="reg-manual-card" onclick="openM('manualModal')">
-      <div class="reg-manual-icon">📝</div>
-      <div class="reg-manual-label">Registro<br>Manual</div>
-      <div class="reg-manual-sub">Tiempo pasado</div>
+    <!-- Registro Manual 60% -->
+    <div class="rm-card" onclick="openM('manM')">
+      <div class="rm-icon">📝</div>
+      <div class="rm-text">
+        <h4>Registro Manual</h4>
+        <p>Agrega tiempo de actividades pasadas que no trackeaste en el momento</p>
+      </div>
+      <div class="rm-arr">→</div>
     </div>
   </div>
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab active" onclick="goTab('timeline',this)">📅 Timeline</button>
+    <button class="tab active" onclick="goTab('tl',this)">📅 Timeline</button>
     <button class="tab" onclick="goTab('areas',this)">📁 Áreas</button>
-    <button class="tab" onclick="goTab('registros',this)">📋 Registros</button>
-    <button class="tab" onclick="goTab('dashboard',this)">📊 Dashboard</button>
+    <button class="tab" onclick="goTab('hist',this)">📋 Historial</button>
+    <button class="tab" onclick="goTab('dash',this)">📊 Dashboard</button>
   </div>
 
   <!-- TIMELINE -->
-  <div class="tab-pane active" id="tab-timeline">
-    <div style="background:var(--bg2);border:2px solid var(--border);border-radius:16px;padding:1.2rem">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.65rem">
-        <h3 id="tlTitle" style="font-size:1rem">Hoy</h3>
-        <input type="date" id="tlDate" onchange="renderTimeline()"
-          style="background:var(--bg3);border:2px solid var(--border);border-radius:8px;padding:.38rem .65rem;color:var(--text);font-family:inherit;font-size:.8rem">
+  <div class="tab-pane active" id="tab-tl">
+    <div class="tl-reflection">
+      <strong>💭 Reflexión del día</strong>
+      "Si hoy fuera el último día de mi vida, ¿estaría orgulloso de lo que voy a hacer hoy?"
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;gap:.5rem">
+        <h3 id="tlTit" style="font-size:.95rem">Hoy</h3>
+        <input type="date" id="tlDate" onchange="renderTL()"
+          style="background:var(--bg3);border:1.5px solid var(--bdr);border-radius:7px;padding:.35rem .6rem;color:var(--t);font-family:inherit;font-size:.78rem">
       </div>
-      <div class="tl-scroll" id="tlWrap"></div>
+      <div class="tl-scroll" id="tlW"></div>
     </div>
   </div>
 
   <!-- AREAS -->
   <div class="tab-pane" id="tab-areas">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;flex-wrap:wrap;gap:.65rem">
-      <h2>Áreas de Vida</h2>
-      <div style="display:flex;gap:.5rem">
-        <button class="btn btn-ghost btn-sm" onclick="openM('areaModal')">➕ Área</button>
-        <button class="btn btn-sm" onclick="openM('projectModal')">➕ Proyecto</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+      <h2 style="font-size:1.05rem">Áreas de Vida</h2>
+      <div style="display:flex;gap:.4rem">
+        <button class="btn btn-ghost btn-sm" onclick="openNewArea()">➕ Área</button>
+        <button class="btn btn-sm" onclick="openNewProj()">➕ Proyecto</button>
       </div>
     </div>
-    <div class="areas-masonry" id="areasC"></div>
+    <div class="areas-grid" id="areasC"></div>
   </div>
 
-  <!-- REGISTROS -->
-  <div class="tab-pane" id="tab-registros">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;flex-wrap:wrap;gap:.65rem">
-      <h2>Registros de Tiempo</h2>
-      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-        <select id="fArea" onchange="renderRegs()"
-          style="background:var(--bg3);border:2px solid var(--border);border-radius:8px;padding:.38rem .65rem;color:var(--text);font-family:inherit;font-size:.8rem">
-          <option value="">Todas las áreas</option></select>
-        <select id="fPer" onchange="renderRegs()"
-          style="background:var(--bg3);border:2px solid var(--border);border-radius:8px;padding:.38rem .65rem;color:var(--text);font-family:inherit;font-size:.8rem">
-          <option value="today">Hoy</option>
-          <option value="week">Esta semana</option>
-          <option value="month">Este mes</option>
-          <option value="all">Todo</option>
-        </select>
+  <!-- HISTORIAL -->
+  <div class="tab-pane" id="tab-hist">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem;flex-wrap:wrap;gap:.5rem">
+      <h2 style="font-size:1.05rem">Historial de Registros</h2>
+      <div style="display:flex;gap:.4rem">
+        <button class="btn btn-ghost btn-sm" onclick="exportCSV()">📊 CSV</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportPDF()">📄 PDF</button>
       </div>
     </div>
-    <div class="reg-list" id="regList"></div>
+    <div class="hist-filters">
+      <input class="hist-search" type="text" id="hSearch" placeholder="🔍 Buscar..." oninput="renderHist()">
+      <select class="hist-sel" id="hArea" onchange="renderHist()">
+        <option value="">Todas las áreas</option>
+      </select>
+      <select class="hist-sel" id="hPer" onchange="renderHist()">
+        <option value="today">Hoy</option>
+        <option value="week">Esta semana</option>
+        <option value="month">Este mes</option>
+        <option value="all">Todo</option>
+      </select>
+      <select class="hist-sel" id="hType" onchange="renderHist()">
+        <option value="">Todo tipo</option>
+        <option value="tracked">Solo activo</option>
+        <option value="sleep">Solo sueño</option>
+      </select>
+    </div>
+    <div class="reg-list" id="histL"></div>
   </div>
 
   <!-- DASHBOARD -->
-  <div class="tab-pane" id="tab-dashboard">
-    <h2 style="margin-bottom:1.2rem">Dashboard</h2>
-    <div class="dash-grid">
-      <div class="dash-card dash-span2">
-        <h3>Distribución 1440</h3>
-        <div class="pie-wrap">
-          <svg class="pie-svg" id="pieSvg" viewBox="0 0 100 100"></svg>
-          <div class="pie-center"><div class="pie-cv" id="piePct">0%</div><div class="pie-cs">registrado</div></div>
+  <div class="tab-pane" id="tab-dash">
+    <h2 style="font-size:1.05rem;margin-bottom:.9rem">Dashboard</h2>
+    <div class="dash-top">
+      <div class="dash-pie-wrap">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:.6rem">Distribución 1440</div>
+        <div class="pie-layout">
+          <div class="pie-wrap">
+            <svg class="pie-svg" id="pieSvg" viewBox="0 0 100 100"></svg>
+            <div class="pie-ctr">
+              <div class="pie-pct" id="piePct">0%</div>
+              <div class="pie-sub">registrado</div>
+            </div>
+          </div>
+          <div id="pieLeg" style="flex:1;min-width:160px"></div>
         </div>
-        <div id="pieLeg"></div>
       </div>
-      <div class="dash-card"><h3>😴 Sueño Promedio</h3><div class="dash-val" id="dSleep">0h</div><div class="dash-sub">Últimos 7 días</div></div>
-      <div class="dash-card"><h3>🕳 Vacío Hoy</h3><div class="dash-val" id="dEmpty">24h</div><div class="dash-sub">Sin registrar</div></div>
-      <div class="dash-card"><h3>⏱ Trackeado Hoy</h3><div class="dash-val" id="dTrack">0h</div><div class="dash-sub">Excluyendo sueño</div></div>
-      <div class="dash-card"><h3>⚖️ Balance</h3><div class="dash-val" id="dBal">—</div><div class="dash-sub" id="dBalSub">Área 1 vs resto</div></div>
+    </div>
+    <div class="dash-stats">
+      <div class="dstat"><h4>😴 Sueño promedio</h4><div class="dstat-val" id="dSleep">0h</div><div class="dstat-sub">Últimos 7 días</div></div>
+      <div class="dstat"><h4>🕳 Vacío hoy</h4><div class="dstat-val" id="dEmpty">24h</div><div class="dstat-sub">Sin registrar</div></div>
+      <div class="dstat"><h4>⏱ Activo hoy</h4><div class="dstat-val" id="dTrack">0h</div><div class="dstat-sub">Excluyendo sueño</div></div>
+      <div class="dstat">
+        <h4>⚖️ Balance área 1</h4>
+        <div class="dstat-val" id="dBal">—</div>
+        <div class="dstat-sub" id="dBalSub">% del tiempo activo</div>
+        <div style="margin-top:.5rem;font-size:.72rem;color:var(--t3);line-height:1.4">
+          Porcentaje que tu primera área representa sobre el total trackeado (sin sueño)</div>
+      </div>
+      <div class="dstat"><h4>📅 Días trackeados</h4><div class="dstat-val" id="dDays">0</div><div class="dstat-sub">Con al menos 1 registro</div></div>
+      <div class="dstat"><h4>🔥 Racha actual</h4><div class="dstat-val" id="dStreak">0</div><div class="dstat-sub">Días consecutivos</div></div>
     </div>
   </div>
 
 </main>
 
-<!-- ══ MODALS ══ -->
-<!-- Area -->
-<div class="overlay" id="areaModal">
+<!-- ══ AREA MODAL ══ -->
+<div class="overlay" id="areaM">
   <div class="modal">
-    <div class="mhead"><h2 id="areaMTitle">Nueva Área</h2><button class="mclose" onclick="closeM('areaModal')">×</button></div>
-    <input type="hidden" id="aEditId">
-    <div class="fg"><label>Nombre</label><input type="text" id="aName" placeholder="Trabajo, Salud, Familia..."></div>
-    <div class="r2">
-      <div class="fg"><label>Emoji</label><input type="text" id="aIcon" placeholder="💼" maxlength="2"></div>
-      <div class="fg"><label>Color</label><input type="color" id="aColor" value="#00ffff"></div>
+    <div class="mhd"><h2 id="aMTit">Nueva Área</h2><button class="mclose" onclick="closeM('areaM')">×</button></div>
+    <input type="hidden" id="aEId">
+    <div class="fg"><label>Nombre</label><input type="text" id="aNm" placeholder="Trabajo, Salud, Familia..."></div>
+    <div class="fg">
+      <label>Emoji</label>
+      <input type="text" id="aIc" placeholder="💼" maxlength="2" style="margin-bottom:.4rem">
+      <div class="emoji-grid" id="emojiGrid"></div>
     </div>
+    <div class="fg"><label>Color</label><input type="color" id="aCl" value="#00ffff"></div>
     <div class="mbtns">
-      <button class="btn btn-ghost" onclick="closeM('areaModal')">Cancelar</button>
+      <button class="btn btn-ghost" onclick="closeM('areaM')">Cancelar</button>
       <button class="btn" onclick="saveArea()">Guardar</button>
     </div>
   </div>
 </div>
 
-<!-- Project -->
-<div class="overlay" id="projectModal">
+<!-- ══ PROJECT MODAL ══ -->
+<div class="overlay" id="projM">
   <div class="modal">
-    <div class="mhead"><h2 id="projMTitle">Nuevo Proyecto</h2><button class="mclose" onclick="closeM('projectModal')">×</button></div>
-    <input type="hidden" id="pEditId">
-    <div class="fg"><label>Área de Vida</label><select id="pArea"><option value="">Sin área</option></select></div>
-    <div class="fg"><label>Nombre</label><input type="text" id="pName" placeholder="Ej: Cliente ABC"></div>
-    <div class="fg"><label>Color</label><input type="color" id="pColor" value="#0066ff"></div>
+    <div class="mhd"><h2 id="pMTit">Nuevo Proyecto</h2><button class="mclose" onclick="closeM('projM')">×</button></div>
+    <input type="hidden" id="pEId">
+    <div class="fg"><label>Área</label><select id="pAr"><option value="">Sin área</option></select></div>
+    <div class="fg"><label>Nombre</label><input type="text" id="pNm" placeholder="Ej: Cliente ABC"></div>
+    <div class="fg"><label>Color</label><input type="color" id="pCl" value="#0066ff"></div>
     <div class="mbtns">
-      <button class="btn btn-ghost" onclick="closeM('projectModal')">Cancelar</button>
-      <button class="btn" onclick="saveProject()">Guardar</button>
+      <button class="btn btn-ghost" onclick="closeM('projM')">Cancelar</button>
+      <button class="btn" onclick="saveProj()">Guardar</button>
     </div>
   </div>
 </div>
 
-<!-- Manual Registro -->
-<div class="overlay" id="manualModal">
+<!-- ══ MANUAL REGISTRO — simplified ══ -->
+<div class="overlay" id="manM">
   <div class="modal">
-    <div class="mhead"><h2>📝 Registro Manual</h2><button class="mclose" onclick="closeM('manualModal')">×</button></div>
-    <div class="fg"><label>¿Qué hiciste?</label><input type="text" id="mDesc" placeholder="Descripción..."></div>
+    <div class="mhd"><h2>📝 Registro Manual</h2><button class="mclose" onclick="closeM('manM')">×</button></div>
+    <div class="fg"><label>¿Qué hiciste?</label>
+      <input type="text" id="mDes" placeholder="Descripción de la actividad..."></div>
     <div class="r2">
-      <div class="fg"><label>Área</label><select id="mArea" onchange="updMProj()"><option value="">Sin área</option></select></div>
-      <div class="fg"><label>Proyecto</label><select id="mProj"><option value="">Sin proyecto</option></select></div>
+      <div class="fg"><label>Área</label><select id="mAr" onchange="updMPr()"><option value="">Sin área</option></select></div>
+      <div class="fg"><label>Proyecto</label><select id="mPr"><option value="">Sin proyecto</option></select></div>
     </div>
-    <div class="fg"><label>Fecha</label><input type="date" id="mDate"></div>
+    <div class="fg">
+      <label>Duración</label>
+      <div class="dur-tabs" id="durTabs">
+        <div class="dur-tab" onclick="setDurTab(15)">15m</div>
+        <div class="dur-tab" onclick="setDurTab(30)">30m</div>
+        <div class="dur-tab" onclick="setDurTab(45)">45m</div>
+        <div class="dur-tab" onclick="setDurTab(60)">1h</div>
+        <div class="dur-tab" onclick="setDurTab(90)">1h30</div>
+        <div class="dur-tab" onclick="setDurTab(120)">2h</div>
+      </div>
+      <div class="slider-wrap">
+        <div class="slider-val" id="sliderVal">30 minutos</div>
+        <input type="range" id="durSlider" min="5" max="240" step="5" value="30"
+          oninput="onSlider(this.value)">
+        <div class="slider-labels"><span>5m</span><span>1h</span><span>2h</span><span>4h</span></div>
+      </div>
+    </div>
+    <button class="btn btn-full" onclick="saveManual()" style="margin-top:.25rem">+ Registrar</button>
+  </div>
+</div>
+
+<!-- ══ EDIT REGISTRO ══ -->
+<div class="overlay" id="editRM">
+  <div class="modal">
+    <div class="mhd"><h2>✏️ Editar Registro</h2><button class="mclose" onclick="closeM('editRM')">×</button></div>
+    <input type="hidden" id="eRId">
+    <div class="fg"><label>Descripción</label><input type="text" id="eRDes"></div>
     <div class="r2">
-      <div class="fg"><label>Inicio</label><input type="time" id="mStart"></div>
-      <div class="fg"><label>Fin</label><input type="time" id="mEnd"></div>
+      <div class="fg"><label>Área</label><select id="eRAr" onchange="updERPr()"><option value="">Sin área</option></select></div>
+      <div class="fg"><label>Proyecto</label><select id="eRPr"><option value="">Sin proyecto</option></select></div>
+    </div>
+    <div class="fg"><label>Fecha</label><input type="date" id="eRDt"></div>
+    <div class="r2">
+      <div class="fg"><label>Inicio</label><input type="time" id="eRSt"></div>
+      <div class="fg"><label>Fin</label><input type="time" id="eREn"></div>
     </div>
     <div class="mbtns">
-      <button class="btn btn-ghost" onclick="closeM('manualModal')">Cancelar</button>
-      <button class="btn" onclick="saveManual()">Guardar Registro</button>
+      <button class="btn btn-ghost" onclick="closeM('editRM')">Cancelar</button>
+      <button class="btn" onclick="updateReg()">Guardar</button>
     </div>
   </div>
 </div>
 
-<!-- Edit Registro -->
-<div class="overlay" id="editRegModal">
-  <div class="modal">
-    <div class="mhead"><h2>✏️ Editar Registro</h2><button class="mclose" onclick="closeM('editRegModal')">×</button></div>
-    <input type="hidden" id="eId">
-    <div class="fg"><label>Descripción</label><input type="text" id="eDesc"></div>
+<!-- ══ SLEEP EDIT MODAL ══ -->
+<div class="overlay" id="sleepEM">
+  <div class="modal" style="max-width:380px">
+    <div class="mhd"><h2>😴 Rutina de Sueño</h2><button class="mclose" onclick="closeM('sleepEM')">×</button></div>
     <div class="r2">
-      <div class="fg"><label>Área</label><select id="eArea" onchange="updEProj()"><option value="">Sin área</option></select></div>
-      <div class="fg"><label>Proyecto</label><select id="eProj"><option value="">Sin proyecto</option></select></div>
-    </div>
-    <div class="fg"><label>Fecha</label><input type="date" id="eDate"></div>
-    <div class="r2">
-      <div class="fg"><label>Inicio</label><input type="time" id="eStart"></div>
-      <div class="fg"><label>Fin</label><input type="time" id="eEnd"></div>
+      <div class="fg"><label>🌙 Duermo a:</label><input type="time" id="eSl"></div>
+      <div class="fg"><label>☀️ Despierto a:</label><input type="time" id="eWk"></div>
     </div>
     <div class="mbtns">
-      <button class="btn btn-ghost" onclick="closeM('editRegModal')">Cancelar</button>
-      <button class="btn" onclick="updateReg()">Guardar Cambios</button>
-    </div>
-  </div>
-</div>
-
-<!-- Sleep Edit -->
-<div class="overlay" id="sleepEditModal">
-  <div class="modal" style="max-width:400px">
-    <div class="mhead"><h2>😴 Rutina de Sueño</h2><button class="mclose" onclick="closeM('sleepEditModal')">×</button></div>
-    <div class="r2">
-      <div class="fg"><label>🌙 Me duermo a:</label><input type="time" id="esSleep"></div>
-      <div class="fg"><label>☀️ Me despierto a:</label><input type="time" id="esWake"></div>
-    </div>
-    <div class="mbtns">
-      <button class="btn btn-ghost" onclick="closeM('sleepEditModal')">Cancelar</button>
-      <button class="btn btn-ok" onclick="updSleepRoutine()">Guardar</button>
+      <button class="btn btn-ghost" onclick="closeM('sleepEM')">Cancelar</button>
+      <button class="btn btn-ok" onclick="updSleepR()">Guardar</button>
     </div>
   </div>
 </div>
@@ -717,94 +869,127 @@ input[type=time]{font-family:'Space Mono',monospace}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SB_URL='https://ilzxgnqylmycktwsrfcr.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsenhnbnF5bG15Y2t0d3NyZmNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3NTg0OTAsImV4cCI6MjA4NjMzNDQ5MH0.MkXUo8CjpH2QTUuLpoqA0LRHwTzC9p4WiFn1lFmk0d4';
-const{createClient}=supabase;const sb=createClient(SB_URL,SB_KEY);
-let user=null,db={areas:[],projects:[],entries:[]},timer=null,timerIv=null;
+const SB='https://ilzxgnqylmycktwsrfcr.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsenhnbnF5bG15Y2t0d3NyZmNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3NTg0OTAsImV4cCI6MjA4NjMzNDQ5MH0.MkXUo8CjpH2QTUuLpoqA0LRHwTzC9p4WiFn1lFmk0d4';
+const{createClient}=supabase;const sb=createClient(SB,SK);
+
+let user=null,db={areas:[],projects:[],entries:[]};
+let timerIv=null,timerStart=null,timerElapsed=0;
+
+// ── EMOJIS ──
+const EMOJIS=['💼','💻','📱','🎯','🏋️','❤️','🏠','📚','🎨','🎵','🌱','✈️','🍎','💡','🔬','🎮','💰','🤝','🌍','⚡','🔥','💪','🧘','👨‍👩‍👧','🎓','🛠️','📊','🌙','☀️','⭐','🚀','🎭'];
+function buildEmojiGrid(){
+  document.getElementById('emojiGrid').innerHTML=EMOJIS.map(e=>
+    `<div class="emoji-pick" onclick="pickEmoji('${e}')" data-e="${e}">${e}</div>`
+  ).join('');
+}
+function pickEmoji(e){
+  document.getElementById('aIc').value=e;
+  document.querySelectorAll('.emoji-pick').forEach(el=>el.classList.toggle('sel',el.dataset.e===e));
+}
+
+// ── SOUNDS ──
+function playSound(id){try{const a=document.getElementById(id);if(a){a.currentTime=0;a.volume=.4;a.play().catch(()=>{})}}catch(e){}}
+function beep(freq=800,dur=100,vol=0.3){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const osc=ctx.createOscillator();const gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.frequency.value=freq;osc.type='sine';
+    gain.gain.setValueAtTime(vol,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur/1000);
+    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+dur/1000);
+    setTimeout(()=>ctx.close(),dur+100);
+  }catch(e){}
+}
 
 // ── AUTH ──
-function swLTab(t){
+function swLT(t){
   document.querySelectorAll('.ltab').forEach(e=>e.classList.remove('active'));
   document.querySelectorAll('.lform').forEach(e=>e.classList.remove('active'));
   event.target.classList.add('active');
   document.getElementById('lf-'+t).classList.add('active');
-  document.getElementById(t==='login'?'l-user':'r-user').focus();
+  document.getElementById(t==='login'?'l-u':'r-u').focus();
 }
 function pf(el,nid){if(el.value.length===1)document.getElementById(nid)?.focus()}
 function getPin(p){return['1','2','3','4'].map(i=>document.getElementById(p+i).value).join('')}
 function autoLogin(){setTimeout(()=>{if(getPin('lp').length===4)doLogin()},80)}
 
-async function doRegister(){
-  const uname=document.getElementById('r-user').value.trim().toLowerCase();
+async function doReg(){
+  const u=document.getElementById('r-u').value.trim().toLowerCase();
   const pin=getPin('rp');
-  if(!uname)return showMsg('regErr','Ingresa un nombre de usuario');
-  if(pin.length!==4)return showMsg('regErr','PIN incompleto');
-  if(!/^[a-z0-9_]{3,20}$/.test(uname))return showMsg('regErr','Usuario: 3-20 caracteres, solo letras, números y _');
-  setBL('rTxt','rSpin',true);
+  if(!u)return smsg('rErr','Ingresa un nombre de usuario');
+  if(pin.length!==4)return smsg('rErr','PIN incompleto');
+  if(!/^[a-z0-9_]{3,20}$/.test(u))return smsg('rErr','3-20 caracteres: letras, números y _');
+  setBL('rT','rS',true);
   try{
-    const{data:ex}=await sb.from('users').select('id').eq('username',uname).maybeSingle();
-    if(ex)return showMsg('regErr','Nombre de usuario ya en uso');
-    const{data:u,error}=await sb.from('users').insert([{username:uname,pin}]).select().single();
+    const{data:ex}=await sb.from('users').select('id').eq('username',u).maybeSingle();
+    if(ex)return smsg('rErr','Usuario ya en uso');
+    const{data:nd,error}=await sb.from('users').insert([{username:u,pin}]).select().single();
     if(error)throw error;
-    user=u;
-    showMsg('regOk','¡Cuenta creada! Configurando sueño...',true);
-    setTimeout(()=>{clearPins('rp');document.getElementById('sleepOv').classList.add('open')},1200);
-  }catch(e){showMsg('regErr','Error: '+e.message)}
-  finally{setBL('rTxt','rSpin',false)}
+    user=nd;smsg('rOk','¡Cuenta creada!',true);
+    setTimeout(()=>{clearPins('rp');document.getElementById('slOv').classList.add('open')},1200);
+  }catch(e){smsg('rErr','Error: '+e.message)}
+  finally{setBL('rT','rS',false)}
 }
 
 async function doLogin(){
-  const uname=document.getElementById('l-user').value.trim().toLowerCase();
+  const u=document.getElementById('l-u').value.trim().toLowerCase();
   const pin=getPin('lp');
-  if(!uname)return showMsg('loginErr','Ingresa tu nombre de usuario');
-  if(pin.length!==4)return showMsg('loginErr','PIN incompleto');
-  setBL('lTxt','lSpin',true);
+  if(!u)return smsg('lErr','Ingresa tu usuario');
+  if(pin.length!==4)return smsg('lErr','PIN incompleto');
+  setBL('lT','lS',true);
   try{
-    const{data:u}=await sb.from('users').select('*').eq('username',uname).eq('pin',pin).maybeSingle();
-    if(!u){clearPins('lp');document.getElementById('lp1').focus();return showMsg('loginErr','Usuario o PIN incorrecto')}
-    user=u;await loadAll();launchApp();
-    if(!u.sleep_routine?.enabled)document.getElementById('sleepOv').classList.add('open');
-    else await procDailySleep();
-  }catch(e){showMsg('loginErr','Error de conexión')}
-  finally{setBL('lTxt','lSpin',false)}
+    const{data:ud}=await sb.from('users').select('*').eq('username',u).eq('pin',pin).maybeSingle();
+    if(!ud){clearPins('lp');document.getElementById('lp1').focus();return smsg('lErr','Usuario o PIN incorrecto')}
+    user=ud;await loadAll();launchApp();
+    if(!ud.sleep_routine?.enabled)document.getElementById('slOv').classList.add('open');
+    else await procSleep();
+    // Restore timer if active
+    if(ud.active_timer?.start){
+      const t=ud.active_timer;
+      timerStart=new Date(t.start);
+      timerElapsed=Math.floor((Date.now()-timerStart.getTime())/1000);
+      startTimerUI(t.id,t.type,t.name,t.meta);
+    }
+  }catch(e){smsg('lErr','Error de conexión')}
+  finally{setBL('lT','lS',false)}
 }
 
 function launchApp(){
-  document.getElementById('loginScr').style.display='none';
+  document.getElementById('lscr').style.display='none';
   document.getElementById('appHdr').style.display='flex';
   document.getElementById('mainApp').style.display='block';
   document.getElementById('tlDate').value=today();
-  loadMantra();renderAll();
+  buildEmojiGrid();loadMantra();renderAll();
 }
 
 function doLogout(){
   if(!confirm('¿Cerrar sesión?'))return;
   if(timerIv)clearInterval(timerIv);
-  user=null;timer=null;db={areas:[],projects:[],entries:[]};
-  document.getElementById('loginScr').style.display='flex';
+  user=null;timerStart=null;timerElapsed=0;
+  db={areas:[],projects:[],entries:[]};
+  document.getElementById('lscr').style.display='flex';
   document.getElementById('appHdr').style.display='none';
   document.getElementById('mainApp').style.display='none';
-  clearPins('lp');document.getElementById('l-user').focus();
+  clearPins('lp');document.getElementById('l-u').focus();
 }
 
 // ── SLEEP ──
 async function saveSleepSetup(){
-  const st=document.getElementById('ss-sleep').value;
-  const wt=document.getElementById('ss-wake').value;
-  if(!st||!wt)return alert('Completa ambos horarios');
-  try{
-    await sb.from('users').update({sleep_routine:{enabled:true,sleep_time:st,wake_time:wt}}).eq('id',user.id);
-    user.sleep_routine={enabled:true,sleep_time:st,wake_time:wt};
-    document.getElementById('sleepOv').classList.remove('open');
-    if(document.getElementById('mainApp').style.display==='none')launchApp();
-    await procDailySleep();
-  }catch(e){alert('Error: '+e.message)}
+  const st=document.getElementById('ss-sl').value,wt=document.getElementById('ss-wk').value;
+  if(!st||!wt)return alert('Completa ambos');
+  await sb.from('users').update({sleep_routine:{enabled:true,sleep_time:st,wake_time:wt}}).eq('id',user.id);
+  user.sleep_routine={enabled:true,sleep_time:st,wake_time:wt};
+  document.getElementById('slOv').classList.remove('open');
+  if(document.getElementById('mainApp').style.display==='none')launchApp();
+  await procSleep();
 }
 
-async function procDailySleep(){
+async function procSleep(){
   if(!user?.sleep_routine?.enabled)return;
   const r=user.sleep_routine;
-  const tod=new Date(),yest=new Date(tod);yest.setDate(yest.getDate()-1);
+  const yest=new Date();yest.setDate(yest.getDate()-1);
   const yStr=yest.toISOString().split('T')[0];
   const{data:ex}=await sb.from('time_entries').select('id').eq('user_id',user.id).eq('type','sleep').eq('date',yStr).maybeSingle();
   if(ex)return;
@@ -815,12 +1000,11 @@ async function procDailySleep(){
     .gte('end_time',sleepStart.toISOString())
     .lte('end_time',wakeEnd.toISOString())
     .order('end_time',{ascending:false}).limit(1);
-  if(late&&late.length>0){
-    const la=new Date(late[0].end_time);
-    const approx=new Date(la.getTime()+30*60000);
-    document.getElementById('pop-sleep').value=approx.toTimeString().slice(0,5);
-    document.getElementById('pop-wake').value=r.wake_time;
-    document.getElementById('sleepPop').classList.add('open');
+  if(late&&late.length){
+    const approx=new Date(new Date(late[0].end_time).getTime()+30*60000);
+    document.getElementById('pop-sl').value=approx.toTimeString().slice(0,5);
+    document.getElementById('pop-wk').value=r.wake_time;
+    document.getElementById('slPop').classList.add('open');
   }else{
     const dur=Math.floor((wakeEnd-sleepStart)/1000);
     if(dur>0&&dur<86400){
@@ -837,8 +1021,7 @@ async function procDailySleep(){
 async function saveSleepPop(){
   const yest=new Date();yest.setDate(yest.getDate()-1);
   const yStr=yest.toISOString().split('T')[0];
-  const st=document.getElementById('pop-sleep').value;
-  const wt=document.getElementById('pop-wake').value;
+  const st=document.getElementById('pop-sl').value,wt=document.getElementById('pop-wk').value;
   if(!st||!wt)return;
   const start=new Date(yStr+'T'+st),end=new Date(today()+'T'+wt);
   const dur=Math.floor((end-start)/1000);if(dur<=0)return;
@@ -847,143 +1030,193 @@ async function saveSleepPop(){
     start_time:start.toISOString(),end_time:end.toISOString(),duration:dur,date:yStr
   }]).select().single();
   if(data)db.entries.unshift(data);
-  closeEl('sleepPop');renderAll();
+  closeEl('slPop');renderAll();
 }
 
-async function updSleepRoutine(){
-  const st=document.getElementById('esSleep').value;
-  const wt=document.getElementById('esWake').value;
+function openSleepEdit(){
+  document.getElementById('eSl').value=user.sleep_routine?.sleep_time||'22:30';
+  document.getElementById('eWk').value=user.sleep_routine?.wake_time||'07:00';
+  openM('sleepEM');
+}
+async function updSleepR(){
+  const st=document.getElementById('eSl').value,wt=document.getElementById('eWk').value;
   if(!st||!wt)return;
   await sb.from('users').update({sleep_routine:{enabled:true,sleep_time:st,wake_time:wt}}).eq('id',user.id);
   user.sleep_routine={enabled:true,sleep_time:st,wake_time:wt};
-  closeM('sleepEditModal');renderTimeline();
+  closeM('sleepEM');renderAll();
+}
+
+// Edit sleep entry directly from timeline
+async function editSleepEntry(id){
+  const e=db.entries.find(x=>x.id===id);if(!e)return;
+  const newSl=prompt('Hora que dormiste (HH:MM):',fmtT(e.start_time));
+  if(!newSl)return;
+  const newWk=prompt('Hora que despertaste (HH:MM):',fmtT(e.end_time));
+  if(!newWk)return;
+  const start=new Date(e.date+'T'+newSl);
+  const end=new Date(e.date+'T'+newWk);
+  let dur=Math.floor((end-start)/1000);
+  if(dur<=0)dur=Math.floor((end.getTime()+86400000-start.getTime())/1000);
+  await sb.from('time_entries').update({start_time:start.toISOString(),end_time:end.toISOString(),duration:dur}).eq('id',id);
+  const i=db.entries.findIndex(x=>x.id===id);
+  if(i>-1)db.entries[i]={...db.entries[i],start_time:start.toISOString(),end_time:end.toISOString(),duration:dur};
+  renderAll();
 }
 
 // ── MANTRA ──
 function loadMantra(){
-  const v=localStorage.getItem('1440_m_'+user.id)||'';
-  const el=document.getElementById('mantraDisp');
-  if(v){el.textContent=v;el.className='mantra-a'}
-  else{el.textContent='Toca para escribir tu mantra...';el.className='mantra-ph'}
+  const v=localStorage.getItem('1440_m_'+(user?.id||'x'))||'';
+  const el=document.getElementById('manDisp');
+  el.textContent=v||'Escribe tu mantra...';
+  el.className=v?'mantra-v':'mantra-ph';
 }
-function openMantraModal(){
-  document.getElementById('mantraIn').value=localStorage.getItem('1440_m_'+user.id)||'';
-  openM('mantraModal');
+function openMantraM(){
+  document.getElementById('manIn').value=localStorage.getItem('1440_m_'+(user?.id||'x'))||'';
+  openM('mantraM');
 }
 function saveMantra(){
-  const v=document.getElementById('mantraIn').value.trim();
-  if(v){
-    localStorage.setItem('1440_m_'+user.id,v);
-    document.getElementById('mantraDisp').textContent=v;
-    document.getElementById('mantraDisp').className='mantra-a';
-  }
-  closeM('mantraModal');
+  const v=document.getElementById('manIn').value.trim();
+  if(v){localStorage.setItem('1440_m_'+(user?.id||'x'),v);}
+  loadMantra();closeM('mantraM');
 }
+
+// ── HAMBURGER ──
+function toggleHMenu(){document.getElementById('hmDrop').classList.toggle('open')}
+function closeHMenu(){document.getElementById('hmDrop').classList.remove('open')}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.hmenu-wrap'))closeHMenu();
+  if(!e.target.closest('.overlay')&&e.target.classList.contains('overlay'))closeM(e.target.id);
+});
+// Close modal on outside click
+document.querySelectorAll('.overlay').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target===el)closeM(el.id)});
+});
 
 // ── DATA ──
 async function loadAll(){
   const[a,p,e]=await Promise.all([
     sb.from('categories').select('*').eq('user_id',user.id).order('created_at'),
     sb.from('projects').select('*').eq('user_id',user.id).order('created_at'),
-    sb.from('time_entries').select('*').eq('user_id',user.id).order('start_time',{ascending:false}).limit(300)
+    sb.from('time_entries').select('*').eq('user_id',user.id).order('start_time',{ascending:false}).limit(500)
   ]);
   db.areas=a.data||[];db.projects=p.data||[];db.entries=e.data||[];
 }
-function renderAll(){updateProg();renderQT();renderTimeline();renderAreas();renderRegs();updSelects()}
+function renderAll(){updProg();renderQT();renderTL();renderAreas();renderHist();updSelects()}
 
-// ── PROGRESS ──
-function updateProg(){
-  const m=db.entries.filter(e=>e.date===today()).reduce((s,e)=>s+Math.floor(e.duration/60),0);
-  const p=Math.min((m/1440)*100,100);
-  document.getElementById('progMin').textContent=m;
-  document.getElementById('progPct').textContent=Math.floor(p)+'%';
-  document.getElementById('progBar').style.width=p+'%';
+// ── PROGRESS DUAL ──
+function updProg(){
+  const dayE=db.entries.filter(e=>e.date===today());
+  const trackM=dayE.filter(e=>e.type!=='sleep').reduce((s,e)=>s+Math.floor(e.duration/60),0);
+  const sleepM=dayE.filter(e=>e.type==='sleep').reduce((s,e)=>s+Math.floor(e.duration/60),0);
+  const total=trackM+sleepM;
+  const trackPct=Math.min((trackM/1440)*100,100);
+  const sleepPct=Math.min((sleepM/1440)*100,100-(trackM/1440)*100);
+  document.getElementById('progMin').textContent=total;
+  document.getElementById('progPct').textContent=Math.floor((total/1440)*100)+'%';
+  document.getElementById('progTrack').style.width=trackPct+'%';
+  document.getElementById('progSleep').style.width=sleepPct+'%';
+  document.getElementById('legTrack').textContent=fmtM(trackM);
+  document.getElementById('legSleep').textContent=fmtM(sleepM);
 }
 
-// ── TIMER ──
-function startTimer(id,type,name,meta){
-  if(timerIv){clearInterval(timerIv);timerIv=null}
-  timer={id,type,name,meta,start:new Date(),elapsed:0};
-  document.getElementById('tBanner').classList.add('on');
-  document.getElementById('tbName').textContent=name;
-  document.getElementById('tbMeta').textContent=meta;
-  document.getElementById('hTimer').classList.add('on');
-  document.getElementById('hTName').textContent=name;
+// ── TIMER (Supabase-synced) ──
+function startTimerUI(id,type,name,meta){
+  if(timerIv)clearInterval(timerIv);
+  document.getElementById('tBan').classList.add('on');
+  document.getElementById('tbN').textContent=name;
+  document.getElementById('tbM').textContent=meta;
+  document.getElementById('ht').classList.add('on');
+  document.getElementById('htN').textContent=name;
   timerIv=setInterval(()=>{
-    timer.elapsed++;
-    const t=fmtS(timer.elapsed);
-    document.getElementById('tbTime').textContent=t;
-    document.getElementById('hTTime').textContent=t;
+    timerElapsed=Math.floor((Date.now()-timerStart.getTime())/1000);
+    const t=fmtS(timerElapsed);
+    document.getElementById('tbT').textContent=t;
+    const hm=String(Math.floor(timerElapsed/3600)).padStart(2,'0')+':'+String(Math.floor((timerElapsed%3600)/60)).padStart(2,'0');
+    document.getElementById('htT').textContent=hm;
   },1000);
   renderQT();
 }
+
+async function startTimer(id,type,name,meta){
+  if(timerIv)clearInterval(timerIv);
+  timerStart=new Date();timerElapsed=0;
+  beep(880,80,.25);beep(1100,80,.2);
+  // Save to Supabase
+  await sb.from('users').update({active_timer:{id,type,name,meta,start:timerStart.toISOString()}}).eq('id',user.id);
+  startTimerUI(id,type,name,meta);
+}
+
 async function stopTimer(){
-  if(!timer||!timerIv)return;
-  clearInterval(timerIv);timerIv=null;
+  if(!timerStart)return;
+  if(timerIv){clearInterval(timerIv);timerIv=null}
+  beep(440,120,.2);
   const end=new Date();
-  const pl={user_id:user.id,type:'tracked',description:timer.name,
-    start_time:timer.start.toISOString(),end_time:end.toISOString(),
-    duration:timer.elapsed,date:today()};
-  if(timer.type==='project')pl.project_id=timer.id;
-  if(timer.type==='area')pl.category_id=timer.id;
-  const{data}=await sb.from('time_entries').insert([pl]).select().single();
-  if(data)db.entries.unshift(data);
-  timer=null;
-  document.getElementById('tBanner').classList.remove('on');
-  document.getElementById('hTimer').classList.remove('on');
+  const dur=Math.floor((end-timerStart)/1000);
+  const t=user.active_timer||{};
+  if(dur>5){
+    const pl={user_id:user.id,type:'tracked',description:t.name||'Actividad',
+      start_time:timerStart.toISOString(),end_time:end.toISOString(),
+      duration:dur,date:today()};
+    if(t.type==='project')pl.project_id=t.id;
+    if(t.type==='area')pl.category_id=t.id;
+    const{data}=await sb.from('time_entries').insert([pl]).select().single();
+    if(data){db.entries.unshift(data);user.active_timer=null;}
+  }
+  await sb.from('users').update({active_timer:null}).eq('id',user.id);
+  timerStart=null;timerElapsed=0;
+  document.getElementById('tBan').classList.remove('on');
+  document.getElementById('ht').classList.remove('on');
   renderAll();
 }
-function switchAct(){
-  stopTimer();
-  document.querySelector('.qt-wrap').scrollIntoView({behavior:'smooth',block:'center'});
-}
+
+function switchAct(){stopTimer();document.querySelector('.qt-card').scrollIntoView({behavior:'smooth',block:'center'})}
 
 // ── QUICK TRACK ──
 function renderQT(){
-  const g=document.getElementById('qtGrid');
+  const g=document.getElementById('qtG');
   const items=[
-    ...db.areas.map(a=>({id:a.id,type:'area',name:a.name,icon:a.icon||'📁',color:a.color,sub:'Área de vida'})),
+    ...db.areas.map(a=>({id:a.id,type:'area',name:a.name,icon:a.icon||'📁',color:a.color,sub:'Área'})),
     ...db.projects.map(p=>{
       const ar=db.areas.find(a=>a.id===p.category_id);
       return{id:p.id,type:'project',name:p.name,icon:ar?.icon||'📌',color:p.color,sub:ar?.name||'Proyecto'};
     })
   ].slice(0,8);
   if(!items.length){
-    g.innerHTML=`<div style="grid-column:1/-1;padding:1.5rem;text-align:center;color:var(--t3);font-size:.88rem">
-      Crea áreas o proyectos ⚡<br><br>
-      <button class="btn btn-sm" onclick="openM('areaModal')">➕ Crear Área</button></div>`;
+    g.innerHTML=`<div style="grid-column:1/-1;padding:.75rem;text-align:center;color:var(--t3);font-size:.78rem">
+      <button class="btn btn-sm" onclick="openNewArea()" style="margin-top:.4rem">➕ Crear Área</button></div>`;
     return;
   }
+  const active=user?.active_timer;
   g.innerHTML=items.map(it=>{
-    const on=timer&&timer.id===it.id;
+    const on=active&&active.id===it.id;
     const m=db.entries.filter(e=>e.date===today()&&(e.category_id===it.id||e.project_id===it.id)).reduce((s,e)=>s+Math.floor(e.duration/60),0);
-    const bc=it.color?`border-color:${it.color}35`:'';
+    const bc=it.color?`border-color:${it.color}40`:'';
     return`<div class="qt-item${on?' on':''}" style="${bc}"
       onclick="${on?'stopTimer()':'startTimer(\''+it.id+'\',\''+it.type+'\',\''+esc(it.name)+'\',\''+esc(it.sub)+'\')'}" >
-      <div><div class="qt-name">${it.icon} ${it.name}</div><div class="qt-sub">${fmtM(m)} hoy</div></div>
-      <div class="qt-play" style="${!on&&it.color?'background:linear-gradient(135deg,'+it.color+','+it.color+'aa)':''}">${on?'⏹':'▶'}</div>
+      <div><div class="qt-name">${it.icon} ${it.name}</div><div class="qt-sub">${fmtM(m)}</div></div>
+      <div class="qt-play" style="${!on&&it.color?'background:linear-gradient(135deg,'+it.color+','+it.color+'99)':''}">${on?'⏹':'▶'}</div>
     </div>`;
   }).join('');
 }
 
 // ── TIMELINE ──
-function renderTimeline(){
+function renderTL(){
   const ds=document.getElementById('tlDate').value||today();
-  document.getElementById('tlTitle').textContent=ds===today()?'Hoy — '+fmtDL(ds):fmtDL(ds);
+  document.getElementById('tlTit').textContent=ds===today()?'Hoy — '+fmtDL(ds):fmtDL(ds);
   const dayE=db.entries.filter(e=>e.date===ds);
   const r=user?.sleep_routine;
   let html='';
   for(let h=0;h<24;h++){
     const lbl=String(h).padStart(2,'0')+':00';
-    let isSleep=false;
+    let isSl=false;
     if(r?.enabled){
       const sh=parseInt(r.sleep_time?.split(':')[0]||22);
       const wh=parseInt(r.wake_time?.split(':')[0]||7);
-      isSleep=sh>wh?(h>=sh||h<wh):(h>=sh&&h<wh);
+      isSl=sh>wh?(h>=sh||h<wh):(h>=sh&&h<wh);
     }
     const inH=dayE.filter(e=>{
-      const s=new Date(e.start_time).getHours();
-      const en=new Date(e.end_time).getHours();
+      if(!e.start_time||!e.end_time)return false;
+      const s=new Date(e.start_time).getHours(),en=new Date(e.end_time).getHours();
       return h>=s&&h<=en;
     });
     let inner='';
@@ -993,92 +1226,86 @@ function renderTimeline(){
         const pj=db.projects.find(p=>p.id===e.project_id);
         const ar=db.areas.find(a=>a.id===e.category_id||a.id===pj?.category_id);
         const lbl2=e.description+(pj?' · '+pj.name:'')+(ar?' · '+ar.name:'');
-        return`<div class="tl-e ${cls}" onclick="openEditReg('${e.id}')">
+        const editBtn=e.type==='sleep'
+          ?`<button class="sleep-edit-btn" onclick="event.stopPropagation();editSleepEntry('${e.id}')">✏️ editar</button>`:'';
+        return`<div class="tl-e ${cls}" onclick="${e.type!=='sleep'?'openEditR(\''+e.id+'\')':''}">
           ${e.type==='sleep'?'😴 ':(ar?.icon?ar.icon+' ':'')}${lbl2}
+          ${editBtn}
           <span class="tl-dur">${fmtS(e.duration)}</span>
         </div>`;
       }).join('');
-    }else if(isSleep&&ds===today()){
-      inner=`<div class="tl-e tl-sleep">😴 Sueño — rutina ${r.sleep_time} – ${r.wake_time}</div>`;
+    }else if(isSl&&ds===today()){
+      inner=`<div class="tl-e tl-sleep">😴 Sueño — rutina ${r.sleep_time}–${r.wake_time}</div>`;
     }else{
       inner=`<div class="tl-e tl-gap">Vacío</div>`;
     }
     html+=`<div class="tl-row">
       <div class="tl-lbl">${lbl}</div>
-      <div class="tl-col">${inner}<button class="tl-add" onclick="openRetro('${ds}',${h})">+ Agregar</button></div>
+      <div class="tl-col">${inner}<button class="tl-add" onclick="openRetro('${ds}',${h})">+</button></div>
     </div>`;
   }
-  document.getElementById('tlWrap').innerHTML=html;
+  const w=document.getElementById('tlW');w.innerHTML=html;
   if(ds===today()){
     const ch=new Date().getHours();
-    const rows=document.querySelectorAll('.tl-row');
+    const rows=w.querySelectorAll('.tl-row');
     if(rows[Math.max(0,ch-1)])setTimeout(()=>rows[Math.max(0,ch-1)].scrollIntoView({behavior:'smooth',block:'center'}),120);
   }
 }
 
 function openRetro(date,hour){
-  document.getElementById('mDate').value=date;
-  document.getElementById('mStart').value=String(hour).padStart(2,'0')+':00';
-  document.getElementById('mEnd').value=String(hour+1<24?hour+1:hour).padStart(2,'0')+':00';
-  document.getElementById('mDesc').value='';
-  updSelects();openM('manualModal');
+  document.getElementById('mDes').value='';
+  updSelects();openM('manM');
 }
 
 // ── AREAS ──
 function renderAreas(){
   const c=document.getElementById('areasC');
   if(!db.areas.length){
-    c.innerHTML=`<div style="grid-column:1/-1"><div class="empty"><div class="empty-ic">📁</div>
-      <h3>No hay áreas aún</h3><p>Crea tu primera área de vida</p><br><br>
-      <button class="btn btn-sm" onclick="openM('areaModal')">➕ Crear Área</button></div></div>`;
+    c.innerHTML=`<div style="grid-column:1/-1"><div class="empty">
+      <div class="empty-ic">📁</div><h3>No hay áreas</h3><p>Crea tu primera área de vida</p><br>
+      <button class="btn btn-sm" onclick="openNewArea()">➕ Crear Área</button></div></div>`;
     return;
   }
   c.innerHTML=db.areas.map((a,i)=>{
     const pjs=db.projects.filter(p=>p.category_id===a.id);
     const tm=db.entries.filter(e=>e.category_id===a.id||db.projects.find(p=>p.id===e.project_id)?.category_id===a.id).reduce((s,e)=>s+Math.floor(e.duration/60),0);
     const col=a.color||'#00ffff';
-    return`<div class="area-card" style="border-color:${col}30">
-      <div class="area-card-top" onclick="toggleArea('ab-${i}','ac-${i}')">
-        <div class="area-left">
-          <div class="area-stripe" style="background:${col};box-shadow:0 0 8px ${col}60"></div>
-          <span class="area-icon">${a.icon||'📁'}</span>
-          <div class="area-info">
-            <div class="area-name">${a.name}</div>
-            <div class="area-cnt">${pjs.length} proyectos</div>
-          </div>
+    return`<div class="area-card" style="border-color:${col}25">
+      <div class="area-head" onclick="togArea('ab${i}','ac${i}')">
+        <div class="area-hl">
+          <div class="area-stripe" style="background:${col}"></div>
+          <span class="area-icon-big">${a.icon||'📁'}</span>
+          <div><div class="area-nm">${a.name}</div><div class="area-cnt">${pjs.length} proyectos</div></div>
         </div>
-        <div class="area-right">
-          <span class="area-total" style="color:${col}">${fmtM(tm)}</span>
-          <button class="ibtn edit" onclick="event.stopPropagation();openEditArea('${a.id}')">✏️</button>
-          <button class="ibtn" onclick="event.stopPropagation();delArea('${a.id}')">🗑️</button>
-          <span class="area-chev" id="ac-${i}">▶</span>
+        <div class="area-hr">
+          <span class="area-tot" style="color:${col}">${fmtM(tm)}</span>
+          <div class="btn-icon" onclick="event.stopPropagation();openEditArea('${a.id}')">✏️</div>
+          <div class="btn-icon del" onclick="event.stopPropagation();delArea('${a.id}')">🗑️</div>
+          <span class="area-chev" id="ac${i}">▶</span>
         </div>
       </div>
-      <div class="area-body" id="ab-${i}">
+      <div class="area-body" id="ab${i}">
         <div class="proj-stack">
           ${pjs.map(p=>projRow(p)).join('')}
         </div>
-        <div class="area-footer">
+        <div style="margin-top:.6rem">
           <button class="btn btn-ghost btn-sm" onclick="openNewProjFor('${a.id}')">➕ Proyecto</button>
         </div>
       </div>
     </div>`;
   }).join('');
-  // Uncategorized
   const uncat=db.projects.filter(p=>!p.category_id);
   if(uncat.length){
     c.innerHTML+=`<div class="area-card">
-      <div class="area-card-top" onclick="toggleArea('ab-uncat','ac-uncat')">
-        <div class="area-left">
+      <div class="area-head" onclick="togArea('ab-un','ac-un')">
+        <div class="area-hl">
           <div class="area-stripe" style="background:#5580b3"></div>
-          <span class="area-icon">📌</span>
-          <div class="area-info"><div class="area-name">Sin Área</div><div class="area-cnt">${uncat.length}</div></div>
+          <span class="area-icon-big">📌</span>
+          <div><div class="area-nm">Sin Área</div><div class="area-cnt">${uncat.length}</div></div>
         </div>
-        <div class="area-right"><span class="area-chev" id="ac-uncat">▶</span></div>
+        <div class="area-hr"><span class="area-chev" id="ac-un">▶</span></div>
       </div>
-      <div class="area-body" id="ab-uncat">
-        <div class="proj-stack">${uncat.map(p=>projRow(p)).join('')}</div>
-      </div>
+      <div class="area-body" id="ab-un"><div class="proj-stack">${uncat.map(p=>projRow(p)).join('')}</div></div>
     </div>`;
   }
 }
@@ -1086,33 +1313,37 @@ function renderAreas(){
 function projRow(p){
   const m=db.entries.filter(e=>e.project_id===p.id).reduce((s,e)=>s+Math.floor(e.duration/60),0);
   return`<div class="proj-row">
-    <div class="proj-dot" style="background:${p.color};box-shadow:0 0 5px ${p.color}"></div>
+    <div class="proj-dot" style="background:${p.color}"></div>
     <div class="proj-info">
-      <div class="proj-name">${p.name}</div>
-      <div class="proj-stat">${fmtM(m)} totales</div>
+      <div class="proj-nm">${p.name}</div>
+      <div class="proj-st">${fmtM(m)}</div>
     </div>
-    <div class="proj-actions">
-      <button class="ibtn" style="background:linear-gradient(135deg,${p.color}33,${p.color}22)"
-        onclick="startTimer('${p.id}','project','${esc(p.name)}','Proyecto')">▶</button>
-      <button class="ibtn edit" onclick="openEditProj('${p.id}')">✏️</button>
-      <button class="ibtn" onclick="delProj('${p.id}')">🗑️</button>
+    <div class="proj-acts">
+      <div class="btn-icon" style="font-size:.8rem" onclick="startTimer('${p.id}','project','${esc(p.name)}','Proyecto')">▶</div>
+      <div class="btn-icon" onclick="openEditProj('${p.id}')">✏️</div>
+      <div class="btn-icon del" onclick="delProj('${p.id}')">🗑️</div>
     </div>
   </div>`;
 }
 
-function toggleArea(bodyId,chevId){
-  const b=document.getElementById(bodyId),c=document.getElementById(chevId);
-  const open=b.classList.contains('open');
-  b.classList.toggle('open',!open);if(c)c.classList.toggle('open',!open);
+function togArea(bid,cid){
+  const b=document.getElementById(bid),c=document.getElementById(cid);
+  if(!b)return;
+  const op=b.classList.contains('open');
+  b.classList.toggle('open',!op);if(c)c.classList.toggle('open',!op);
 }
 
-// ── REGISTROS ──
-function renderRegs(){
-  const c=document.getElementById('regList');
+// ── HISTORIAL ──
+function renderHist(){
+  const c=document.getElementById('histL');
   let f=[...db.entries];
-  const af=document.getElementById('fArea').value;
+  const q=document.getElementById('hSearch').value.trim().toLowerCase();
+  if(q)f=f.filter(e=>e.description?.toLowerCase().includes(q));
+  const af=document.getElementById('hArea').value;
   if(af){const ps=db.projects.filter(p=>p.category_id===af).map(p=>p.id);f=f.filter(e=>e.category_id===af||ps.includes(e.project_id))}
-  const per=document.getElementById('fPer').value;
+  const tp=document.getElementById('hType').value;
+  if(tp)f=f.filter(e=>e.type===tp);
+  const per=document.getElementById('hPer').value;
   const n=new Date(),t=new Date(n.getFullYear(),n.getMonth(),n.getDate());
   if(per==='today')f=f.filter(e=>new Date(e.date)>=t);
   else if(per==='week'){const w=new Date(t);w.setDate(w.getDate()-7);f=f.filter(e=>new Date(e.date)>=w)}
@@ -1129,23 +1360,22 @@ function renderRegs(){
           <span>${fmtDL(e.date)} · ${fmtT(e.start_time)}–${fmtT(e.end_time)}</span>
           ${ar?`<span class="badge" style="border-color:${ar.color}50">${ar.icon||''} ${ar.name}</span>`:''}
           ${pj?`<span class="badge" style="border-color:${pj.color}">${pj.name}</span>`:''}
-          ${e.type==='sleep'?`<span class="badge badge-sleep">😴 Sueño</span>`:''}
+          ${e.type==='sleep'?`<span class="badge badge-sl">😴 Sueño</span>`:''}
         </div>
       </div>
       <div class="reg-acts">
-        ${e.type!=='sleep'?`<button class="ibtn edit" onclick="openEditReg('${e.id}')">✏️</button>`:''}
-        <button class="ibtn" onclick="delEntry('${e.id}')">🗑️</button>
+        ${e.type!=='sleep'?`<div class="btn-icon" onclick="openEditR('${e.id}')">✏️</div>`:''}
+        <div class="btn-icon del" onclick="delEntry('${e.id}')">🗑️</div>
       </div>
     </div>`;
   }).join('');
 }
 
 // ── DASHBOARD ──
-function renderDash(){renderPie();calcStats()}
-function renderPie(){
-  const te=db.entries.filter(e=>e.date===today());
+function renderDash(){
+  const dayE=db.entries.filter(e=>e.date===today());
   const bk={};let tot=0;
-  te.forEach(e=>{
+  dayE.forEach(e=>{
     const m=Math.floor(e.duration/60);tot+=m;
     if(e.type==='sleep'){bk['😴 Sueño']=(bk['😴 Sueño']||0)+m;return}
     const pj=db.projects.find(p=>p.id===e.project_id);
@@ -1154,135 +1384,101 @@ function renderPie(){
     bk[lbl]=(bk[lbl]||0)+m;
   });
   const empty=1440-tot;if(empty>0)bk['⬛ Vacío']=empty;
-  const C=['#00ffff','#0066ff','#8b5cf6','#00ff88','#ff3366','#ffaa00','#6366f1','#374151'];
+  const C=['#00ffff','#6366f1','#0066ff','#00ff88','#ff3366','#ffaa00','#8b5cf6','#374151'];
   let ang=0,paths='',leg='';
   Object.entries(bk).forEach(([lbl,m],i)=>{
     const pc=m/1440,sa=ang;ang+=pc*360;
     const r=40,cx=50,cy=50,ir=22;
-    const x1=cx+r*Math.cos((sa-90)*Math.PI/180),y1=cy+r*Math.sin((sa-90)*Math.PI/180);
-    const x2=cx+r*Math.cos((ang-90)*Math.PI/180),y2=cy+r*Math.sin((ang-90)*Math.PI/180);
-    const xi1=cx+ir*Math.cos((sa-90)*Math.PI/180),yi1=cy+ir*Math.sin((sa-90)*Math.PI/180);
-    const xi2=cx+ir*Math.cos((ang-90)*Math.PI/180),yi2=cy+ir*Math.sin((ang-90)*Math.PI/180);
+    const a1=sa*Math.PI/180-Math.PI/2,a2=ang*Math.PI/180-Math.PI/2;
+    const x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1);
+    const x2=cx+r*Math.cos(a2),y2=cy+r*Math.sin(a2);
+    const xi1=cx+ir*Math.cos(a1),yi1=cy+ir*Math.sin(a1);
+    const xi2=cx+ir*Math.cos(a2),yi2=cy+ir*Math.sin(a2);
     const lg=pc>.5?1:0,col=C[i%C.length];
-    paths+=`<path d="M${xi1} ${yi1} L${x1} ${y1} A${r} ${r} 0 ${lg} 1 ${x2} ${y2} L${xi2} ${yi2} A${ir} ${ir} 0 ${lg} 0 ${xi1} ${yi1} Z" fill="${col}" opacity=".85"/>`;
+    paths+=`<path d="M${xi1} ${yi1} L${x1} ${y1} A${r} ${r} 0 ${lg} 1 ${x2} ${y2} L${xi2} ${yi2} A${ir} ${ir} 0 ${lg} 0 ${xi1} ${yi1} Z" fill="${col}" opacity=".88"/>`;
     leg+=`<div class="legend-item"><div class="legend-dot" style="background:${col}"></div><span>${lbl}</span><span class="legend-val">${fmtM(m)}</span></div>`;
   });
   document.getElementById('pieSvg').innerHTML=paths;
   document.getElementById('pieLeg').innerHTML=leg;
   document.getElementById('piePct').textContent=Math.floor((tot/1440)*100)+'%';
-}
-function calcStats(){
+  // Stats
   const w=new Date();w.setDate(w.getDate()-7);
   const sE=db.entries.filter(e=>e.type==='sleep'&&new Date(e.date)>=w);
-  const avgM=sE.length?sE.reduce((s,e)=>s+e.duration,0)/sE.length/60:0;
-  document.getElementById('dSleep').textContent=fmtM(Math.round(avgM));
-  const tr=db.entries.filter(e=>e.date===today()).reduce((s,e)=>s+Math.floor(e.duration/60),0);
-  document.getElementById('dEmpty').textContent=fmtM(1440-tr);
-  const trNS=db.entries.filter(e=>e.date===today()&&e.type!=='sleep').reduce((s,e)=>s+Math.floor(e.duration/60),0);
+  document.getElementById('dSleep').textContent=fmtM(Math.round(sE.length?sE.reduce((s,e)=>s+e.duration,0)/sE.length/60:0));
+  document.getElementById('dEmpty').textContent=fmtM(1440-tot);
+  const trNS=dayE.filter(e=>e.type!=='sleep').reduce((s,e)=>s+Math.floor(e.duration/60),0);
   document.getElementById('dTrack').textContent=fmtM(trNS);
-  if(db.areas.length>=2){
+  if(db.areas.length){
     const a1=db.areas[0],ps=db.projects.filter(p=>p.category_id===a1.id).map(p=>p.id);
-    const a1m=db.entries.filter(e=>e.date===today()&&(e.category_id===a1.id||ps.includes(e.project_id))).reduce((s,e)=>s+Math.floor(e.duration/60),0);
-    const tot=db.entries.filter(e=>e.date===today()&&e.type!=='sleep').reduce((s,e)=>s+Math.floor(e.duration/60),0);
-    const pct=tot?Math.round((a1m/tot)*100):0;
+    const a1m=dayE.filter(e=>e.type!=='sleep'&&(e.category_id===a1.id||ps.includes(e.project_id))).reduce((s,e)=>s+Math.floor(e.duration/60),0);
+    const pct=trNS?Math.round((a1m/trNS)*100):0;
     document.getElementById('dBal').textContent=`${a1.icon||''} ${pct}%`;
-    document.getElementById('dBalSub').textContent=`${a1.name} vs resto`;
+    document.getElementById('dBalSub').textContent=`${a1.name} del tiempo activo`;
   }
+  // Days tracked
+  const uniqueDays=new Set(db.entries.filter(e=>e.type!=='sleep').map(e=>e.date)).size;
+  document.getElementById('dDays').textContent=uniqueDays;
+  // Streak
+  let streak=0,d=new Date();
+  while(true){
+    const ds=d.toISOString().split('T')[0];
+    if(db.entries.some(e=>e.date===ds&&e.type!=='sleep')){streak++;d.setDate(d.getDate()-1)}else break;
+  }
+  document.getElementById('dStreak').textContent=streak;
 }
 
 // ── SELECTS ──
 function updSelects(){
   const opts='<option value="">Sin área</option>'+db.areas.map(a=>`<option value="${a.id}">${a.icon||''} ${a.name}</option>`).join('');
-  ['pArea','mArea','eArea','fArea'].forEach(id=>{
+  ['pAr','mAr','eRAr','hArea'].forEach(id=>{
     const el=document.getElementById(id);if(!el)return;
     const v=el.value;el.innerHTML=opts;el.value=v;
   });
-  updMProj();updEProj();
+  updMPr();updERPr();
 }
-function updMProj(){
-  const aid=document.getElementById('mArea')?.value;
-  const ps=aid?db.projects.filter(p=>p.category_id===aid):db.projects;
-  document.getElementById('mProj').innerHTML='<option value="">Sin proyecto</option>'+ps.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
-}
-function updEProj(){
-  const aid=document.getElementById('eArea')?.value;
-  const ps=aid?db.projects.filter(p=>p.category_id===aid):db.projects;
-  document.getElementById('eProj').innerHTML='<option value="">Sin proyecto</option>'+ps.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
-}
+function updMPr(){const aid=document.getElementById('mAr')?.value;const ps=aid?db.projects.filter(p=>p.category_id===aid):db.projects;document.getElementById('mPr').innerHTML='<option value="">Sin proyecto</option>'+ps.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}
+function updERPr(){const aid=document.getElementById('eRAr')?.value;const ps=aid?db.projects.filter(p=>p.category_id===aid):db.projects;document.getElementById('eRPr').innerHTML='<option value="">Sin proyecto</option>'+ps.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}
 
 // ── AREA CRUD ──
+function openNewArea(){document.getElementById('aEId').value='';document.getElementById('aMTit').textContent='Nueva Área';document.getElementById('aNm').value='';document.getElementById('aIc').value='';buildEmojiGrid();openM('areaM')}
 function openEditArea(id){
   const a=db.areas.find(x=>x.id===id);if(!a)return;
-  document.getElementById('aEditId').value=id;
-  document.getElementById('areaMTitle').textContent='Editar Área';
-  document.getElementById('aName').value=a.name;
-  document.getElementById('aIcon').value=a.icon||'';
-  document.getElementById('aColor').value=a.color||'#00ffff';
-  openM('areaModal');
+  document.getElementById('aEId').value=id;document.getElementById('aMTit').textContent='Editar Área';
+  document.getElementById('aNm').value=a.name;document.getElementById('aIc').value=a.icon||'';
+  document.getElementById('aCl').value=a.color||'#00ffff';buildEmojiGrid();
+  setTimeout(()=>{if(a.icon)document.querySelectorAll('.emoji-pick').forEach(el=>el.classList.toggle('sel',el.dataset.e===a.icon))},50);
+  openM('areaM');
 }
 async function saveArea(){
-  const name=document.getElementById('aName').value.trim();
-  if(!name)return alert('Ingresa un nombre');
-  const editId=document.getElementById('aEditId').value;
-  const payload={name,icon:document.getElementById('aIcon').value||'📁',color:document.getElementById('aColor').value};
-  if(editId){
-    await sb.from('categories').update(payload).eq('id',editId);
-    const i=db.areas.findIndex(a=>a.id===editId);
-    if(i>-1)db.areas[i]={...db.areas[i],...payload};
-  }else{
-    const{data,error}=await sb.from('categories').insert([{user_id:user.id,...payload}]).select().single();
-    if(error)return alert('Error: '+error.message);
-    db.areas.push(data);
-  }
-  closeM('areaModal');
-  document.getElementById('aName').value='';document.getElementById('aIcon').value='';
-  document.getElementById('aEditId').value='';document.getElementById('areaMTitle').textContent='Nueva Área';
-  renderAll();
+  const nm=document.getElementById('aNm').value.trim();if(!nm)return alert('Ingresa un nombre');
+  const eid=document.getElementById('aEId').value;
+  const pl={name:nm,icon:document.getElementById('aIc').value||'📁',color:document.getElementById('aCl').value};
+  if(eid){await sb.from('categories').update(pl).eq('id',eid);const i=db.areas.findIndex(a=>a.id===eid);if(i>-1)db.areas[i]={...db.areas[i],...pl}}
+  else{const{data,error}=await sb.from('categories').insert([{user_id:user.id,...pl}]).select().single();if(error)return alert(error.message);db.areas.push(data)}
+  closeM('areaM');renderAll();
 }
 async function delArea(id){
-  if(!confirm('¿Eliminar área y sus proyectos?'))return;
+  if(!confirm('¿Eliminar área?'))return;
   await sb.from('categories').delete().eq('id',id);
-  db.areas=db.areas.filter(a=>a.id!==id);db.projects=db.projects.filter(p=>p.category_id!==id);
-  renderAll();
+  db.areas=db.areas.filter(a=>a.id!==id);db.projects=db.projects.filter(p=>p.category_id!==id);renderAll();
 }
 
 // ── PROJECT CRUD ──
-function openNewProjFor(areaId){
-  document.getElementById('pEditId').value='';
-  document.getElementById('projMTitle').textContent='Nuevo Proyecto';
-  document.getElementById('pName').value='';
-  updSelects();
-  setTimeout(()=>document.getElementById('pArea').value=areaId,50);
-  openM('projectModal');
-}
+function openNewProj(){document.getElementById('pEId').value='';document.getElementById('pMTit').textContent='Nuevo Proyecto';document.getElementById('pNm').value='';updSelects();openM('projM')}
+function openNewProjFor(aid){openNewProj();setTimeout(()=>document.getElementById('pAr').value=aid,60)}
 function openEditProj(id){
   const p=db.projects.find(x=>x.id===id);if(!p)return;
-  document.getElementById('pEditId').value=id;
-  document.getElementById('projMTitle').textContent='Editar Proyecto';
-  document.getElementById('pName').value=p.name;
-  document.getElementById('pColor').value=p.color||'#0066ff';
-  updSelects();
-  setTimeout(()=>document.getElementById('pArea').value=p.category_id||'',50);
-  openM('projectModal');
+  document.getElementById('pEId').value=id;document.getElementById('pMTit').textContent='Editar Proyecto';
+  document.getElementById('pNm').value=p.name;document.getElementById('pCl').value=p.color||'#0066ff';
+  updSelects();setTimeout(()=>document.getElementById('pAr').value=p.category_id||'',60);openM('projM');
 }
-async function saveProject(){
-  const name=document.getElementById('pName').value.trim();
-  if(!name)return alert('Ingresa un nombre');
-  const editId=document.getElementById('pEditId').value;
-  const payload={name,category_id:document.getElementById('pArea').value||null,color:document.getElementById('pColor').value};
-  if(editId){
-    await sb.from('projects').update(payload).eq('id',editId);
-    const i=db.projects.findIndex(p=>p.id===editId);
-    if(i>-1)db.projects[i]={...db.projects[i],...payload};
-  }else{
-    const{data,error}=await sb.from('projects').insert([{user_id:user.id,...payload}]).select().single();
-    if(error)return alert('Error: '+error.message);
-    db.projects.push(data);
-  }
-  closeM('projectModal');
-  document.getElementById('pName').value='';document.getElementById('pEditId').value='';
-  document.getElementById('projMTitle').textContent='Nuevo Proyecto';
-  renderAll();
+async function saveProj(){
+  const nm=document.getElementById('pNm').value.trim();if(!nm)return alert('Ingresa un nombre');
+  const eid=document.getElementById('pEId').value;
+  const pl={name:nm,category_id:document.getElementById('pAr').value||null,color:document.getElementById('pCl').value};
+  if(eid){await sb.from('projects').update(pl).eq('id',eid);const i=db.projects.findIndex(p=>p.id===eid);if(i>-1)db.projects[i]={...db.projects[i],...pl}}
+  else{const{data,error}=await sb.from('projects').insert([{user_id:user.id,...pl}]).select().single();if(error)return alert(error.message);db.projects.push(data)}
+  closeM('projM');renderAll();
 }
 async function delProj(id){
   if(!confirm('¿Eliminar proyecto?'))return;
@@ -1290,65 +1486,68 @@ async function delProj(id){
   db.projects=db.projects.filter(p=>p.id!==id);renderAll();
 }
 
-// ── MANUAL ENTRY ──
-async function saveManual(){
-  const desc=document.getElementById('mDesc').value.trim();
-  const date=document.getElementById('mDate').value;
-  const st=document.getElementById('mStart').value;
-  const et=document.getElementById('mEnd').value;
-  if(!desc||!date||!st||!et)return alert('Completa todos los campos');
-  const start=new Date(date+'T'+st),end=new Date(date+'T'+et);
-  const dur=Math.floor((end-start)/1000);
-  if(dur<=0)return alert('El fin debe ser posterior al inicio');
-  const{data,error}=await sb.from('time_entries').insert([{
-    user_id:user.id,type:'tracked',description:desc,
-    project_id:document.getElementById('mProj').value||null,
-    category_id:document.getElementById('mArea').value||null,
-    start_time:start.toISOString(),end_time:end.toISOString(),duration:dur,date
-  }]).select().single();
-  if(error)return alert('Error: '+error.message);
-  db.entries.unshift(data);closeM('manualModal');
-  document.getElementById('mDesc').value='';renderAll();
+// ── MANUAL (simplified) ──
+let selDur=30;
+function setDurTab(min){
+  selDur=min;document.getElementById('durSlider').value=min;
+  onSlider(min);
+  document.querySelectorAll('.dur-tab').forEach(el=>el.classList.toggle('sel',parseInt(el.textContent)===min||(el.textContent.includes('h')&&fmtDurTab(min)===el.textContent)));
+}
+function fmtDurTab(m){if(m===60)return'1h';if(m===90)return'1h30';if(m===120)return'2h';return m+'m'}
+function onSlider(v){
+  v=parseInt(v);selDur=v;
+  const h=Math.floor(v/60),m=v%60;
+  document.getElementById('sliderVal').textContent=h>0?(m>0?`${h}h ${m}min`:`${h} hora${h>1?'s':''}`):v+' minutos';
+  document.querySelectorAll('.dur-tab').forEach(el=>el.classList.remove('sel'));
+  [15,30,45,60,90,120].forEach((t,i)=>{if(t===v)document.querySelectorAll('.dur-tab')[i]?.classList.add('sel')});
 }
 
-// ── EDIT / DELETE ENTRY ──
-function openEditReg(id){
-  const e=db.entries.find(x=>x.id===id);
-  if(!e||e.type==='sleep')return;
-  document.getElementById('eId').value=id;
-  document.getElementById('eDesc').value=e.description;
-  document.getElementById('eDate').value=e.date;
-  document.getElementById('eStart').value=fmtT(e.start_time);
-  document.getElementById('eEnd').value=fmtT(e.end_time);
+async function saveManual(){
+  const desc=document.getElementById('mDes').value.trim();
+  if(!desc)return alert('Describe la actividad');
+  if(!selDur||selDur<5)return alert('Selecciona una duración');
+  const end=new Date();
+  const start=new Date(end.getTime()-selDur*60000);
+  const{data,error}=await sb.from('time_entries').insert([{
+    user_id:user.id,type:'tracked',description:desc,
+    project_id:document.getElementById('mPr').value||null,
+    category_id:document.getElementById('mAr').value||null,
+    start_time:start.toISOString(),end_time:end.toISOString(),
+    duration:selDur*60,date:today()
+  }]).select().single();
+  if(error)return alert('Error: '+error.message);
+  db.entries.unshift(data);closeM('manM');
+  document.getElementById('mDes').value='';renderAll();
+}
+
+// ── EDIT ENTRY ──
+function openEditR(id){
+  const e=db.entries.find(x=>x.id===id);if(!e||e.type==='sleep')return;
+  document.getElementById('eRId').value=id;
+  document.getElementById('eRDes').value=e.description;
+  document.getElementById('eRDt').value=e.date;
+  document.getElementById('eRSt').value=fmtT(e.start_time);
+  document.getElementById('eREn').value=fmtT(e.end_time);
   updSelects();
-  setTimeout(()=>{
-    document.getElementById('eArea').value=e.category_id||'';
-    updEProj();
-    setTimeout(()=>document.getElementById('eProj').value=e.project_id||'',60);
-  },60);
-  openM('editRegModal');
+  setTimeout(()=>{document.getElementById('eRAr').value=e.category_id||'';updERPr();setTimeout(()=>document.getElementById('eRPr').value=e.project_id||'',60)},60);
+  openM('editRM');
 }
 async function updateReg(){
-  const id=document.getElementById('eId').value;
-  const desc=document.getElementById('eDesc').value.trim();
-  const date=document.getElementById('eDate').value;
-  const st=document.getElementById('eStart').value;
-  const et=document.getElementById('eEnd').value;
+  const id=document.getElementById('eRId').value;
+  const desc=document.getElementById('eRDes').value.trim();
+  const date=document.getElementById('eRDt').value;
+  const st=document.getElementById('eRSt').value,et=document.getElementById('eREn').value;
   if(!desc||!date||!st||!et)return alert('Completa todos los campos');
   const start=new Date(date+'T'+st),end=new Date(date+'T'+et);
-  const dur=Math.floor((end-start)/1000);
-  if(dur<=0)return alert('El fin debe ser posterior');
+  const dur=Math.floor((end-start)/1000);if(dur<=0)return alert('Fin debe ser posterior');
   const upd={description:desc,date,start_time:start.toISOString(),end_time:end.toISOString(),duration:dur,
-    project_id:document.getElementById('eProj').value||null,
-    category_id:document.getElementById('eArea').value||null};
-  const{error}=await sb.from('time_entries').update(upd).eq('id',id);
-  if(error)return alert('Error: '+error.message);
-  const i=db.entries.findIndex(e=>e.id===id);
-  if(i>-1)db.entries[i]={...db.entries[i],...upd};
-  closeM('editRegModal');renderAll();
+    project_id:document.getElementById('eRPr').value||null,category_id:document.getElementById('eRAr').value||null};
+  await sb.from('time_entries').update(upd).eq('id',id);
+  const i=db.entries.findIndex(e=>e.id===id);if(i>-1)db.entries[i]={...db.entries[i],...upd};
+  closeM('editRM');renderAll();
 }
 async function delEntry(id){
-  if(!confirm('¿Eliminar este registro?'))return;
+  if(!confirm('¿Eliminar registro?'))return;
   await sb.from('time_entries').delete().eq('id',id);
   db.entries=db.entries.filter(e=>e.id!==id);renderAll();
 }
@@ -1360,60 +1559,68 @@ function exportCSV(){
     const a=db.areas.find(x=>x.id===e.category_id||x.id===p?.category_id);
     return[e.date,`"${e.description}"`,a?.name||'',p?.name||'',fmtT(e.start_time),fmtT(e.end_time),(e.duration/3600).toFixed(2),e.type].join(',');
   });
-  dlFile('Fecha,Descripción,Área,Proyecto,Inicio,Fin,Horas,Tipo\n'+rows.join('\n'),'1440-'+today()+'.csv','text/csv');
+  dlF('Fecha,Descripción,Área,Proyecto,Inicio,Fin,Horas,Tipo\n'+rows.join('\n'),'1440-'+today()+'.csv','text/csv');
 }
 function exportPDF(){
-  const{jsPDF}=window.jspdf;const doc=new jsPDF();
-  doc.setFontSize(20);doc.text('1440 — Reporte de Tiempo',20,20);
-  doc.setFontSize(10);doc.text('Generado: '+new Date().toLocaleDateString('es'),20,30);
-  let y=45;
-  db.entries.forEach(e=>{
-    if(y>270){doc.addPage();y=20}
-    const p=db.projects.find(x=>x.id===e.project_id);
-    const a=db.areas.find(x=>x.id===e.category_id||x.id===p?.category_id);
-    doc.setFontSize(9);doc.text(`${e.date}  ${e.description}  [${fmtS(e.duration)}]`,20,y);y+=5;
-    doc.setFontSize(7.5);doc.text(`${a?.name||'Sin área'} → ${p?.name||'Sin proyecto'}  ·  ${fmtT(e.start_time)}–${fmtT(e.end_time)}`,24,y);y+=6;
-  });
-  doc.save('1440-report-'+today()+'.pdf');
+  try{
+    const{jsPDF}=window.jspdf;const doc=new jsPDF();
+    doc.setFontSize(18);doc.text('1440 — Reporte',20,20);
+    doc.setFontSize(9);doc.text('Generado: '+new Date().toLocaleDateString('es'),20,28);
+    let y=38;
+    db.entries.forEach(e=>{
+      if(y>275){doc.addPage();y=20}
+      const p=db.projects.find(x=>x.id===e.project_id);
+      const a=db.areas.find(x=>x.id===e.category_id||x.id===p?.category_id);
+      doc.setFontSize(8.5);doc.text(`${e.date}  ${e.description}  [${fmtS(e.duration)}]`,20,y);y+=4.5;
+      doc.setFontSize(7);doc.text(`${a?.name||'—'} › ${p?.name||'—'}  ·  ${fmtT(e.start_time)}–${fmtT(e.end_time)}`,24,y);y+=5.5;
+    });
+    doc.save('1440-'+today()+'.pdf');
+  }catch(e){alert('Error PDF: '+e.message)}
 }
-function dlFile(c,n,m){const b=new Blob([c],{type:m});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click();URL.revokeObjectURL(a.href)}
+function dlF(c,n,m){const b=new Blob([c],{type:m});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click();URL.revokeObjectURL(a.href)}
 
-// ── TABS / MODALS ──
+// ── TABS/MODALS ──
 function goTab(name,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');document.getElementById('tab-'+name).classList.add('active');
-  if(name==='dashboard')renderDash();
-  if(name==='timeline')renderTimeline();
+  if(name==='dash')renderDash();
+  if(name==='tl')renderTL();
+  if(name==='hist')renderHist();
 }
 function openDash(){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab')[3].classList.add('active');
-  document.getElementById('tab-dashboard').classList.add('active');
+  document.getElementById('tab-dash').classList.add('active');
   renderDash();
 }
 function openM(id){
-  if(id==='manualModal'){document.getElementById('mDate').value=today();updSelects()}
-  if(id==='sleepEditModal'){document.getElementById('esSleep').value=user.sleep_routine?.sleep_time||'22:30';document.getElementById('esWake').value=user.sleep_routine?.wake_time||'07:00'}
-  if(id==='projectModal')updSelects();
+  if(id==='manM'){updSelects();setDurTab(30)}
+  if(id==='projM')updSelects();
   document.getElementById(id).classList.add('open');
 }
 function closeM(id){document.getElementById(id).classList.remove('open')}
 function closeEl(id){document.getElementById(id).classList.remove('open')}
 
+// Close overlay on outside click
+document.addEventListener('click',e=>{
+  const ov=e.target.closest('.overlay');
+  if(ov&&e.target===ov)closeM(ov.id);
+});
+
 // ── HELPERS ──
 function today(){return new Date().toISOString().split('T')[0]}
-function fmtS(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sc).padStart(2,'0')}`}
-function fmtM(m){if(m<0)m=0;return`${Math.floor(m/60)}h ${String(Math.floor(m%60)).padStart(2,'0')}m`}
-function fmtT(iso){return new Date(iso).toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'})}
-function fmtDL(d){return new Date(d+'T12:00:00').toLocaleDateString('es',{weekday:'short',day:'numeric',month:'short'})}
+function fmtS(s){s=s||0;const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sc).padStart(2,'0')}`}
+function fmtM(m){m=m||0;if(m<0)m=0;return`${Math.floor(m/60)}h ${String(Math.floor(m%60)).padStart(2,'0')}m`}
+function fmtT(iso){try{return new Date(iso).toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'})}catch{return'--:--'}}
+function fmtDL(d){try{return new Date(d+'T12:00:00').toLocaleDateString('es',{weekday:'short',day:'numeric',month:'short'})}catch{return d}}
 function esc(s){return(s||'').replace(/'/g,"\\'")}
-function showMsg(id,txt,ok=false){const el=document.getElementById(id);if(!el)return;el.textContent=txt;el.className='msg '+(ok?'ok':'err');el.classList.remove('hidden');setTimeout(()=>el.classList.add('hidden'),3500)}
+function smsg(id,txt,ok=false){const el=document.getElementById(id);if(!el)return;el.textContent=txt;el.className='fmsg '+(ok?'ok':'err');el.classList.remove('hidden');setTimeout(()=>el.classList.add('hidden'),3500)}
 function setBL(tid,sid,l){document.getElementById(tid).classList.toggle('hidden',l);document.getElementById(sid).classList.toggle('hidden',!l)}
 function clearPins(p){['1','2','3','4'].forEach(i=>{const el=document.getElementById(p+i);if(el)el.value=''})}
 
-document.getElementById('l-user').focus();
+document.getElementById('l-u').focus();
 </script>
 </body>
 </html>
