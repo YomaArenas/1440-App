@@ -93,7 +93,7 @@ body{font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;line-hei
 .layout{margin-left:var(--sb);transition:margin-left .28s cubic-bezier(.4,0,.2,1)}
 .sb:hover~.layout{margin-left:var(--sb-exp)}
 .content{width:100%;padding-top:var(--hh);min-height:100vh}
-.inner{max-width:920px;margin:0 auto;padding:1.875rem 2rem 5rem}
+.inner{max-width:1100px;margin:0 auto;padding:1.875rem 2rem 5rem}
 .page{display:none}.page.active{display:block}
 .page-title{font-size:1.375rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
 /* PROGRESS BAR */
@@ -160,8 +160,14 @@ body{font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;line-hei
 [data-theme="light"] .tl-row{border-bottom-color:rgba(0,80,200,.08)}
 .tl-lbl{padding:.5rem .4rem 0;font-size:.75rem;color:var(--t3);font-family:'Space Mono',monospace;text-align:right}
 .tl-col{position:relative;padding:4px 6px 4px 8px;min-height:68px}
-.tl-e{border-radius:8px;padding:.4rem .75rem;font-size:.875rem;font-weight:600;margin-bottom:3px;cursor:pointer;transition:filter .15s;display:flex;align-items:center;gap:.5rem;min-height:32px}
+.tl-e{border-radius:8px;padding:.4rem .75rem;font-size:.875rem;font-weight:600;margin-bottom:3px;cursor:pointer;transition:filter .15s;display:flex;align-items:center;gap:.5rem;min-height:32px;position:relative}
 .tl-e:hover{filter:brightness(1.15)}
+.tl-acts{display:none;gap:.25rem;margin-left:auto;flex-shrink:0}
+.tl-e:hover .tl-acts{display:flex}
+.tl-abtn{width:24px;height:24px;border-radius:6px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;opacity:.85;transition:opacity .15s;flex-shrink:0}
+.tl-abtn:hover{opacity:1}
+.tl-abtn.edit{background:rgba(0,255,255,.15);color:var(--cyan)}
+.tl-abtn.del{background:rgba(255,51,102,.15);color:var(--del)}
 .tl-tracked{background:rgba(0,255,255,.09);border-left:3px solid var(--cyan);color:var(--cyan)}
 [data-theme="light"] .tl-tracked{background:rgba(0,80,200,.08);border-left-color:var(--blue);color:var(--blue)}
 .tl-sleep{background:rgba(124,58,237,.12);border-left:3px solid var(--sleep);color:#c4b5fd}
@@ -364,7 +370,14 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
 [data-theme="light"] .bn-item.active,[data-theme="light"] .bn-item:hover{color:var(--blue)}
 [data-theme="light"] .bn-item.active{background:rgba(0,80,200,.08)}
 .bn-ic{font-size:1.5rem}.bn-lbl{font-size:.6875rem;font-weight:700;white-space:nowrap;letter-spacing:.02em}
-/* TOAST */
+/* COIN ANIMATION */
+.coin-ic{display:inline-block;font-size:1.25rem;opacity:.85;animation:coinSpin 4s ease-in-out infinite;filter:drop-shadow(0 0 4px rgba(255,210,0,.5));cursor:default}
+@keyframes coinSpin{
+  0%,100%{transform:rotateY(0deg) scale(1);filter:drop-shadow(0 0 4px rgba(255,210,0,.5))}
+  25%{transform:rotateY(60deg) scale(.85);filter:drop-shadow(0 0 8px rgba(255,210,0,.8))}
+  50%{transform:rotateY(90deg) scale(.1);filter:drop-shadow(0 0 2px rgba(255,210,0,.3))}
+  75%{transform:rotateY(60deg) scale(.85);filter:drop-shadow(0 0 8px rgba(255,210,0,.8))}
+}
 .toast{position:fixed;bottom:calc(var(--bn) + 1rem);left:50%;transform:translateX(-50%) translateY(8px);background:var(--ok);color:#000;padding:.65rem 1.5rem;border-radius:12px;font-weight:700;font-size:.9375rem;z-index:9999;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,255,136,.35)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.err{background:var(--del);color:#fff;box-shadow:0 4px 20px rgba(255,51,102,.35)}
@@ -446,7 +459,7 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
       <button class="ltab" onclick="swLT('register',event)">Crear Cuenta</button>
     </div>
     <div class="lform active" id="lf-login">
-      <div class="fg"><label>Usuario</label><input type="text" id="l-u" placeholder="tu_usuario" autocomplete="off" autocapitalize="none"></div>
+      <div class="fg"><label>Usuario</label><input type="text" id="l-u" placeholder="tu_usuario" autocomplete="off" autocapitalize="none" onkeydown="if(event.key==='Enter')document.getElementById('lp1').focus()"></div>
       <div class="fg"><label>PIN</label>
         <div class="pin-row">
           <input type="password" maxlength="1" class="pin-d" id="lp1" oninput="pf(this,'lp2')" inputmode="numeric">
@@ -459,7 +472,7 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
       <button class="btn btn-full" onclick="doLogin()"><span id="lT">Ingresar</span><span id="lS" class="spin hidden"></span></button>
     </div>
     <div class="lform" id="lf-register">
-      <div class="fg"><label>Elige un usuario único</label><input type="text" id="r-u" placeholder="tu_usuario" autocomplete="off" autocapitalize="none"></div>
+      <div class="fg"><label>Elige un usuario único</label><input type="text" id="r-u" placeholder="tu_usuario" autocomplete="off" autocapitalize="none" onkeydown="if(event.key==='Enter')document.getElementById('rp1').focus()"></div>
       <div class="fg"><label>PIN de 4 dígitos</label>
         <div class="pin-row">
           <input type="password" maxlength="1" class="pin-d" id="rp1" oninput="pf(this,'rp2')" inputmode="numeric">
@@ -506,8 +519,8 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
     <div id="hdrM" class="hdr-mph">Escribe tu mantra...</div>
   </div>
   <div class="hstats">
-    <div class="hstat" onclick="openSleepEdit()" title="Ver/editar rutina de sueño"><span class="hstat-ic">⚡</span><span class="hstat-val" id="hs-t">0m</span><span class="hstat-lbl">activo</span></div>
-    <div class="hstat" onclick="openSleepEdit()" title="Editar rutina de sueño"><span class="hstat-ic">😴</span><span class="hstat-val" id="hs-s">0m</span><span class="hstat-lbl">sueño</span></div>
+    <div class="hstat" style="cursor:default"><span class="hstat-ic">⚡</span><span class="hstat-val" id="hs-t">0m</span><span class="hstat-lbl">activo</span></div>
+    <div class="hstat" onclick="openSleepEdit()" title="Editar rutina de sueño" style="cursor:pointer"><span class="hstat-ic">😴</span><span class="hstat-val" id="hs-s">0m</span><span class="hstat-lbl">sueño</span></div>
   </div>
   <div class="ht" id="ht"><div class="ht-dot"></div><div class="ht-nm" id="htN">—</div><div class="ht-t" id="htT">00:00</div><button class="ht-x" onclick="stopTimer()">⏹</button></div>
   <button class="hdr-btn" id="themeBtn" onclick="toggleTheme()" title="Tema">🌙</button>
@@ -524,7 +537,7 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
         <div class="prog-wrap glass">
           <div class="prog-top">
             <div class="prog-left">
-              <span style="font-size:1.1rem;opacity:.7" title="Tu presupuesto diario de tiempo">🪙</span>
+              <span class="coin-ic" title="Tu presupuesto diario de tiempo">🪙</span>
               <span class="prog-num" id="progMin">0</span>
               <span class="prog-of">/ 1440 min</span>
               <span class="prog-pct" id="progPct">0%</span>
@@ -827,6 +840,7 @@ function toggleTheme(){
 function localDate(d){if(!d)d=new Date();return[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
 function today(){return localDate()}
 function fmtT(iso){try{return new Date(iso).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}catch{return'--:--'}}
+function fmtTInput(iso){try{const d=new Date(iso);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}catch{return''}}
 function fmtDay(d){try{return new Date(d+'T12:00:00').toLocaleDateString([],{weekday:'short',day:'numeric',month:'short'})}catch{return d}}
 
 /* ── EMOJIS ── */
@@ -1006,8 +1020,8 @@ async function updSleepR(){
 function openSleepEntryEdit(id){
   const e=db.entries.find(x=>x.id===id);if(!e)return;
   document.getElementById('slEId').value=id;
-  document.getElementById('slESt').value=fmtT(e.start_time);
-  document.getElementById('slEEn').value=fmtT(e.end_time);
+  document.getElementById('slESt').value=fmtTInput(e.start_time);
+  document.getElementById('slEEn').value=fmtTInput(e.end_time);
   openM('sleepEditM');
 }
 async function saveSleepEdit(){
@@ -1153,9 +1167,13 @@ function renderTL(){
         const isSiesta=e.subtype==='siesta';
         const sleepIcon=isSiesta?'💤':'😴';
         const slBtn=e.type==='sleep'?`<button class="sl-edit" onclick="event.stopPropagation();openSleepEntryEdit('${e.id}')">✏️</button>`:'';
-        return`<div class="tl-e ${cls}" onclick="${e.type!=='sleep'?'openEditE(\''+e.id+'\')':''}">
+        const actBtns=e.type!=='sleep'
+          ?`<div class="tl-acts"><button class="tl-abtn edit" onclick="event.stopPropagation();openEditE('${e.id}')" title="Editar">✏️</button><button class="tl-abtn del" onclick="event.stopPropagation();delEntry('${e.id}')" title="Eliminar">🗑️</button></div>`
+          :`<div class="tl-acts"><button class="tl-abtn edit" onclick="event.stopPropagation();openSleepEntryEdit('${e.id}')" title="Editar sueño">✏️</button><button class="tl-abtn del" onclick="event.stopPropagation();delEntry('${e.id}')" title="Eliminar">🗑️</button></div>`;
+        return`<div class="tl-e ${cls}" onclick="${e.type!=='sleep'?'openEditE(\''+e.id+'\')':'openSleepEntryEdit(\''+e.id+'\')'}">
           ${e.type==='sleep'?sleepIcon+' ':(ar?.icon?ar.icon+' ':'')}${txt}${slBtn}
           <span class="tl-dur">${fmtS(e.duration)}</span>
+          ${actBtns}
         </div>`;
       }).join('');
     }else if(isSl&&ds===today()){
@@ -1341,7 +1359,7 @@ async function saveProj(){const nm=document.getElementById('pNm').value.trim();i
 async function delProj(id){const ok=await askConfirm('¿Eliminar este proyecto?','','🗑️','Eliminar');if(!ok)return;await sb.from('projects').delete().eq('id',id);db.projects=db.projects.filter(p=>p.id!==id);renderAll();renderAreas()}
 
 /* ── EDIT / DELETE ENTRIES ── */
-function openEditE(id){const e=db.entries.find(x=>x.id===id);if(!e||e.type==='sleep')return;document.getElementById('eId').value=id;document.getElementById('eDes').value=e.description;document.getElementById('eDt').value=e.date;document.getElementById('eSt').value=fmtT(e.start_time);document.getElementById('eEn').value=fmtT(e.end_time);updSelects();setTimeout(()=>{document.getElementById('eAr').value=e.category_id||'';updEPr();setTimeout(()=>document.getElementById('ePr').value=e.project_id||'',60)},60);openM('editM')}
+function openEditE(id){const e=db.entries.find(x=>x.id===id);if(!e||e.type==='sleep')return;document.getElementById('eId').value=id;document.getElementById('eDes').value=e.description||'';document.getElementById('eDt').value=e.date||today();document.getElementById('eSt').value=fmtTInput(e.start_time);document.getElementById('eEn').value=fmtTInput(e.end_time);updSelects();setTimeout(()=>{document.getElementById('eAr').value=e.category_id||'';updEPr();setTimeout(()=>document.getElementById('ePr').value=e.project_id||'',80)},80);openM('editM')}
 async function updateReg(){const id=document.getElementById('eId').value;const desc=document.getElementById('eDes').value.trim();const date=document.getElementById('eDt').value;const st=document.getElementById('eSt').value,et=document.getElementById('eEn').value;if(!desc||!date||!st||!et)return alert('Completa todos los campos');const start=new Date(date+'T'+st+':00'),end=new Date(date+'T'+et+':00');const dur=Math.floor((end-start)/1000);if(dur<=0)return alert('Fin debe ser posterior');const upd={description:desc,date,start_time:start.toISOString(),end_time:end.toISOString(),duration:dur,project_id:document.getElementById('ePr').value||null,category_id:document.getElementById('eAr').value||null};await sb.from('time_entries').update(upd).eq('id',id);const i=db.entries.findIndex(e=>e.id===id);if(i>-1)db.entries[i]={...db.entries[i],...upd};closeM('editM');renderAll();showToast('Registro actualizado ✓')}
 async function delEntry(id){const ok=await askConfirm('¿Eliminar este registro?','Esta acción no se puede deshacer','🗑️','Eliminar');if(!ok)return;await sb.from('time_entries').delete().eq('id',id);db.entries=db.entries.filter(e=>e.id!==id);renderAll();renderHist()}
 
