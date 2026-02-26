@@ -55,7 +55,7 @@ body{font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;line-hei
 .sb-item:hover,.sb-item.active{color:var(--cyan);background:rgba(0,255,255,.07)}
 [data-theme="light"] .sb-item:hover,[data-theme="light"] .sb-item.active{color:var(--blue);background:rgba(0,80,200,.07)}
 .sb-item.active::before{content:'';position:absolute;left:0;top:18%;bottom:18%;width:3px;background:linear-gradient(180deg,var(--cyan),var(--blue));border-radius:0 3px 3px 0}
-.sb-ic{font-size:1.5rem;width:26px;text-align:center;flex-shrink:0;font-weight:600}
+.sb-ic{font-size:1.5rem;font-weight:600;width:26px;text-align:center;flex-shrink:0}
 .sb-lbl{opacity:0;transition:opacity .2s .04s}
 .sb:hover .sb-lbl{opacity:1}
 .sb-div{height:1px;background:var(--bdr);margin:6px 10px;flex-shrink:0}
@@ -383,17 +383,7 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
 .toast.err{background:var(--del);color:#fff;box-shadow:0 4px 20px rgba(255,51,102,.35)}
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
 @media(max-width:768px){
-  :root{--hh:110px}
-  .hdr{padding:.625rem 1rem;gap:.5rem;flex-wrap:wrap;align-content:flex-start}
-  .hdr-mantra{flex-basis:100%;order:-1;padding:.625rem .75rem;margin-bottom:.375rem;border-radius:9px;background:rgba(0,255,255,.03)}
-  .hdr-mq{font-size:.625rem}
-  .hdr-mv,.hdr-mph{font-size:.875rem}
-  .hstats{gap:.375rem;flex-wrap:wrap}
-  .hstat{padding:.3rem .75rem;font-size:.8125rem}
-  .hstat-lbl{display:none}
-  .ht{padding:.25rem .625rem;font-size:.75rem}
-  .ht-nm{max-width:80px}
-  .hdr-btn{width:36px;height:36px;font-size:1rem}
+  :root{--hh:58px}
   .sb{display:none!important}.hdr{left:0!important}
   .layout{margin-left:0!important}
   .content{padding-bottom:calc(var(--bn) + 1rem)}
@@ -438,27 +428,27 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
   <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem">
     <span style="font-size:2rem">☀️</span>
     <div style="flex:1">
-      <div style="font-weight:700;font-size:1.0625rem">Buenos días</div>
-      <div style="font-size:.8125rem;color:var(--t2);margin-top:.125rem" id="popSleepConfig">—</div>
+      <div style="font-weight:700;font-size:1.125rem">Buenos días</div>
+      <div style="font-size:.8125rem;color:var(--t2);margin-top:.125rem" id="popRoutineInfo">—</div>
     </div>
   </div>
-  <div style="background:rgba(0,255,255,.04);border-left:3px solid var(--cyan);padding:.625rem .875rem;border-radius:8px;margin-bottom:.875rem;font-size:.8125rem">
+  <div style="background:rgba(0,255,255,.05);border-left:3px solid var(--cyan);padding:.75rem 1rem;border-radius:8px;margin-bottom:1rem;font-size:.875rem">
     <strong style="color:var(--cyan)">¿Dormiste según tu rutina?</strong>
   </div>
-  <div id="popQuickConfirm" style="display:flex;gap:.5rem;margin-bottom:.75rem">
-    <button class="btn btn-ok btn-full btn-sm" onclick="confirmSleepRoutine()">✓ Sí</button>
-    <button class="btn btn-ghost btn-sm" onclick="showSleepAdjust()">✏️ Ajustar</button>
+  <div id="popQuick" style="display:flex;gap:.5rem;margin-bottom:.75rem">
+    <button class="btn btn-ok btn-full btn-sm" onclick="confirmRoutineSleep()">✓ Sí, confirmar</button>
+    <button class="btn btn-ghost btn-sm" onclick="showPopAdjust()">✏️ Ajustar</button>
   </div>
-  <div id="popAdjustForm" style="display:none">
+  <div id="popAdjust" style="display:none">
     <div class="r2" style="margin-bottom:.875rem">
       <div class="fg"><label>🌙 Dormí a:</label><input type="time" id="pop-sl"></div>
       <div class="fg"><label>☀️ Desperté a:</label><input type="time" id="pop-wk"></div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:.5rem">
+    <div style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:.75rem">
       <button class="btn btn-ok btn-full btn-sm" onclick="saveSleepPop(false)">Guardar solo hoy</button>
-      <button class="btn btn-sm btn-full" onclick="saveSleepPop(true)">Actualizar rutina</button>
-      <button class="btn btn-ghost btn-xs btn-full" onclick="showQuickConfirm()">← Volver</button>
+      <button class="btn btn-sm btn-full" onclick="saveSleepPop(true)">Actualizar mi rutina</button>
     </div>
+    <button class="btn btn-ghost btn-xs btn-full" onclick="showPopQuick()">← Volver</button>
   </div>
   <button class="btn btn-ghost btn-xs btn-full" onclick="closeEl('slPop')">Ignorar</button>
 </div>
@@ -601,19 +591,21 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
           <div class="rm-card glass" onclick="openM('manM')">
             <div class="rm-ic">📝</div>
             <div><div class="rm-lbl">Registro<br>Manual</div><div class="rm-sub">Tiempo pasado</div></div>
-          
-        <!-- MINI DASHBOARD HOY -->
-        <div class="card" style="border-radius:16px;padding:1.25rem;margin-top:1.125rem">
-          <div style="font-size:.875rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between">
-            <span>📊 Tu día en resumen</span>
-            <button class="btn btn-ghost btn-xs" onclick="goPage('dash')">Ver análisis →</button>
-          </div>
-          <div class="pie-layout">
-            <div class="pie-wrap"><svg class="pie-svg" id="pieSvgHome" viewBox="0 0 100 100"></svg><div class="pie-ctr"><div class="pie-pct" id="piePctHome">0%</div><div class="pie-sub">registrado</div></div></div>
-            <div class="pie-leg" id="pieLegHome"></div>
           </div>
         </div>
-</div>
+      </div>
+
+      </div>
+
+      <!-- MINI DASHBOARD -->
+      <div class="card" style="border-radius:16px;padding:1.5rem;margin-top:1.125rem">
+        <div style="font-size:.875rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:1.125rem;display:flex;align-items:center;justify-content:space-between">
+          <span>📊 TU DÍA EN RESUMEN</span>
+          <button class="btn btn-ghost btn-xs" onclick="goPage('dash')">Ver análisis →</button>
+        </div>
+        <div class="pie-layout">
+          <div class="pie-wrap"><svg class="pie-svg" id="pieSvgHome" viewBox="0 0 100 100"></svg><div class="pie-ctr"><div class="pie-pct" id="piePctHome">0%</div><div class="pie-sub">registrado</div></div></div>
+          <div class="pie-leg" id="pieLegHome"></div>
         </div>
       </div>
 
@@ -663,20 +655,6 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
       <!-- ANÁLISIS -->
       <div class="page" id="page-dash">
         <div class="page-title">📊 Análisis</div>
-
-        <!-- TENDENCIAS SEMANALES -->
-        <div class="card" style="border-radius:16px;padding:1.5rem;margin-bottom:1.125rem">
-          <h3 style="font-size:1.125rem;font-weight:700;margin-bottom:1.25rem">📈 Últimos 7 días</h3>
-          <div id="trendsWeekly"></div>
-        </div>
-
-        <!-- COMPARATIVA SEMANAL -->
-        <div class="card" style="border-radius:16px;padding:1.5rem;margin-bottom:1.125rem">
-          <h3 style="font-size:1.125rem;font-weight:700;margin-bottom:1.25rem">⚖️ Esta semana vs anterior</h3>
-          <div id="weekComparison"></div>
-        </div>
-
-        <!-- STATS ORIGINALES -->
         <div class="card" style="border-radius:16px;padding:1.25rem;margin-bottom:1rem">
           <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:.875rem">Distribución de hoy</div>
           <div class="pie-layout">
@@ -866,18 +844,38 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
 <div class="overlay" id="mantraM">
   <div class="modal" style="max-width:520px">
     <div class="mhd"><h2>🌟 Tu Identidad</h2><button class="mclose" onclick="closeM('mantraM')">×</button></div>
-    <p style="color:var(--t2);font-size:.9375rem;margin-bottom:.75rem">Define quién eres. Tu identidad aparecerá en el header.</p>
+    <p style="color:var(--t2);font-size:.9375rem;margin-bottom:.75rem">Define quién eres.</p>
     <div class="fg">
-      <label style="font-size:1rem;margin-bottom:.625rem">¿Quién eres?</label>
-      <input type="text" id="manIn" placeholder="Ej: Emprendedor imparable" maxlength="80" style="font-size:1.0625rem;padding:.875rem 1.125rem">
+      <label style="font-size:1rem">¿Quién eres?</label>
+      <input type="text" id="manIn" placeholder="Emprendedor imparable" maxlength="80" style="font-size:1.0625rem;padding:.875rem 1.125rem">
     </div>
     <div style="background:rgba(0,255,255,.04);border-left:3px solid var(--cyan);padding:.875rem 1.125rem;border-radius:8px;margin:.875rem 0;font-size:.8125rem;color:var(--t2);line-height:1.6">
-      <strong style="display:block;margin-bottom:.5rem;color:var(--cyan);font-size:.75rem">💡 IDENTIDAD FUERTE + CALENDARIO CLARO = EJECUCIÓN CONSTANTE</strong>
-      <em>"Voy a hacer todas estas cosas con el propósito de no perder el tiempo porque sé que este día no volverá"</em><br><br>
-      <em>"Tengo la responsabilidad de cultivar la gratitud y cuidar el don del tiempo"</em>
+      <strong style="color:var(--cyan);font-size:.75rem">💡 IDENTIDAD FUERTE + CALENDARIO CLARO = EJECUCIÓN CONSTANTE</strong>
     </div>
     <div class="mbtns"><button class="btn btn-ghost" onclick="closeM('mantraM')">Cancelar</button><button class="btn" onclick="saveMantra()">Guardar</button></div>
   </div>
+
+<!-- EDITAR SUEÑO DESDE TIMELINE -->
+<div class="overlay" id="tlSleepEdit">
+  <div class="modal" style="max-width:420px">
+    <div class="mhd"><h2>😴 Ajustar Sueño</h2><button class="mclose" onclick="closeM('tlSleepEdit')">×</button></div>
+    <input type="hidden" id="tlSlpId">
+    <p style="color:var(--t2);font-size:.9375rem;margin-bottom:1rem">Edita las horas reales que dormiste este día específico.</p>
+    <div class="r2" style="margin-bottom:1rem">
+      <div class="fg"><label>🌙 Dormí a:</label><input type="time" id="tlSlpSt"></div>
+      <div class="fg"><label>☀️ Desperté a:</label><input type="time" id="tlSlpEn"></div>
+    </div>
+    <div style="background:rgba(255,170,0,.08);border-left:3px solid #ffaa00;padding:.75rem 1rem;border-radius:8px;margin-bottom:1rem;font-size:.8125rem">
+      <strong style="color:#ffaa00">💡 Solo afecta este día</strong><br>
+      Tu rutina configurada no cambiará
+    </div>
+    <div class="mbtns">
+      <button class="btn btn-ghost" onclick="closeM('tlSleepEdit')">Cancelar</button>
+      <button class="btn btn-ok" onclick="saveTlSleepEdit()">Guardar</button>
+    </div>
+  </div>
+</div>
+
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -890,15 +888,9 @@ let timerIv=null, timerStart=null, selDur=30, manualMode='dur';
 let confirmResolve=null;
 
 
-/* ── FAVICON DINÁMICO ── */
-const FAVICON_NORMAL='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'44\' fill=\'none\' stroke=\'url(%23g)\' stroke-width=\'12\'/%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'19\' fill=\'%2300FFFF\'/%3E%3Cdefs%3E%3ClinearGradient id=\'g\'%3E%3Cstop stop-color=\'%2300FFFF\'/%3E%3Cstop offset=\'1\' stop-color=\'%230066FF\'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E';
-const FAVICON_ACTIVE='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'44\' fill=\'none\' stroke=\'url(%23g)\' stroke-width=\'12\'/%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'19\' fill=\'%2300FF88\'/%3E%3Ccircle cx=\'75\' cy=\'25\' r=\'15\' fill=\'%2300FF88\'/%3E%3Cdefs%3E%3ClinearGradient id=\'g\'%3E%3Cstop stop-color=\'%2300FFFF\'/%3E%3Cstop offset=\'1\' stop-color=\'%230066FF\'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E';
-function updateFavicon(active){
-  const link=document.querySelector('link[rel*="icon"]')||document.createElement('link');
-  link.type='image/svg+xml';link.rel='icon';
-  link.href=active?FAVICON_ACTIVE:FAVICON_NORMAL;
-  document.head.appendChild(link);
-}
+const FAVICON_N='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'44\' fill=\'none\' stroke=\'url(%23g)\' stroke-width=\'12\'/%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'19\' fill=\'%2300FFFF\'/%3E%3Cdefs%3E%3ClinearGradient id=\'g\'%3E%3Cstop stop-color=\'%2300FFFF\'/%3E%3Cstop offset=\'1\' stop-color=\'%230066FF\'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E';
+const FAVICON_A='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'44\' fill=\'none\' stroke=\'url(%23g)\' stroke-width=\'12\'/%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'19\' fill=\'%2300FF88\'/%3E%3Ccircle cx=\'75\' cy=\'25\' r=\'15\' fill=\'%2300FF88\'/%3E%3Cdefs%3E%3ClinearGradient id=\'g\'%3E%3Cstop stop-color=\'%2300FFFF\'/%3E%3Cstop offset=\'1\' stop-color=\'%230066FF\'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E';
+function updateFavicon(active){let link=document.querySelector('link[rel*="icon"]');if(!link){link=document.createElement('link');link.rel='icon';document.head.appendChild(link)}link.type='image/svg+xml';link.href=active?FAVICON_A:FAVICON_N}
 
 /* ── THEME ── */
 function toggleTheme(){
@@ -912,12 +904,11 @@ function toggleTheme(){
 /* ── TZ helpers ── */
 function localDate(d){if(!d)d=new Date();return[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
 function today(){return localDate()}
-function fmtT(iso){try{return new Date(iso).toLocaleTimeString([],{hour:'numeric',minute:'2-digit',hour12:true})}catch{return'--:--'}}
-function fmtTInput(iso){try{const d=new Date(iso);return d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit',hour12:true})}catch{return''}}
+function fmtT(iso){try{return new Date(iso).toLocaleTimeString('es-PE',{hour:'numeric',minute:'2-digit',hour12:true})}catch{return'--:--'}}
+function fmtTInput(iso){try{return new Date(iso).toLocaleTimeString('es-PE',{hour:'numeric',minute:'2-digit',hour12:true})}catch{return''}}
 function fmtDay(d){try{return new Date(d+'T12:00:00').toLocaleDateString([],{weekday:'short',day:'numeric',month:'short'})}catch{return d}}
 
 
-/* ── REFLEXIONES ── */
 const REFLEXIONES=[
   "Creo en mi capacidad de dar lo mejor de mí en este día",
   "Voy a hacer todas estas cosas con el propósito de no perder el tiempo porque sé que este día no volverá",
@@ -932,11 +923,7 @@ const REFLEXIONES=[
   "Declaración, acción inmediata, reconocimiento",
   "Cada minuto es una elección entre quién eres y quién quieres ser"
 ];
-function getReflexion(){
-  const d=new Date();
-  const dayOfYear=Math.floor((d-new Date(d.getFullYear(),0,0))/86400000);
-  return REFLEXIONES[dayOfYear%REFLEXIONES.length];
-}
+function getReflexion(){const d=new Date();const dayOfYear=Math.floor((d-new Date(d.getFullYear(),0,0))/86400000);return REFLEXIONES[dayOfYear%REFLEXIONES.length]}
 
 /* ── EMOJIS ── */
 const EM=['💼','💻','📱','🎯','🏋️','❤️','🏠','📚','🎨','🎵','🌱','✈️','🍎','💡','🔬','🎮','💰','🤝','🌍','⚡','🔥','💪','🧘','👨‍👩‍👧','🎓','🛠️','📊','🌙','☀️','⭐','🚀','🎭','🍕','🎬','🏆','🦁'];
@@ -1065,6 +1052,34 @@ function doLogout(){
   document.getElementById('l-u').focus();
 }
 
+
+/* ── EDITAR SUEÑO DESDE TIMELINE ── */
+function openTlSleepEdit(entryId){
+  const e=db.entries.find(en=>en.id===entryId);
+  if(!e||e.type!=='sleep')return;
+  document.getElementById('tlSlpId').value=e.id;
+  const st=new Date(e.start_time);
+  const en=new Date(e.end_time);
+  document.getElementById('tlSlpSt').value=String(st.getHours()).padStart(2,'0')+':'+String(st.getMinutes()).padStart(2,'0');
+  document.getElementById('tlSlpEn').value=String(en.getHours()).padStart(2,'0')+':'+String(en.getMinutes()).padStart(2,'0');
+  openM('tlSleepEdit');
+}
+async function saveTlSleepEdit(){
+  const id=document.getElementById('tlSlpId').value;
+  const st=document.getElementById('tlSlpSt').value,en=document.getElementById('tlSlpEn').value;
+  if(!st||!en)return showToast('Completa ambas horas',true);
+  const e=db.entries.find(e=>e.id===id);if(!e)return;
+  const start=new Date(e.date+'T'+st+':00');
+  let end=new Date(e.date+'T'+en+':00');
+  if(end<=start)end.setDate(end.getDate()+1);
+  const dur=Math.floor((end-start)/1000);
+  if(dur<=0||dur>86400)return showToast('Horas inválidas',true);
+  const{error}=await sb.from('time_entries').update({start_time:start.toISOString(),end_time:end.toISOString(),duration:dur}).eq('id',id);
+  if(error)return showToast('Error al guardar',true);
+  e.start_time=start.toISOString();e.end_time=end.toISOString();e.duration=dur;
+  closeM('tlSleepEdit');renderAll();renderTL();showToast('😴 Sueño actualizado');
+}
+
 /* ── SLEEP ── */
 async function saveSleepSetup(){
   const st=document.getElementById('ss-sl').value,wt=document.getElementById('ss-wk').value;if(!st||!wt)return;
@@ -1075,16 +1090,16 @@ async function saveSleepSetup(){
   if(document.getElementById('mainLayout').style.display==='none')launchApp();
   await procSleep();
 }
-/* ── SLEEP POPUP MEJORADO ── */
-function showQuickConfirm(){document.getElementById('popQuickConfirm').style.display='flex';document.getElementById('popAdjustForm').style.display='none'}
-function showSleepAdjust(){document.getElementById('popQuickConfirm').style.display='none';document.getElementById('popAdjustForm').style.display='block'}
-async function confirmSleepRoutine(){
+
+function showPopQuick(){document.getElementById('popQuick').style.display='flex';document.getElementById('popAdjust').style.display='none'}
+function showPopAdjust(){document.getElementById('popQuick').style.display='none';document.getElementById('popAdjust').style.display='block'}
+async function confirmRoutineSleep(){
   const r=user.sleep_routine;if(!r?.enabled)return;
   const yest=new Date();yest.setDate(yest.getDate()-1);const yStr=localDate(yest);
-  const sleepStart=new Date(yStr+'T'+r.sleep_time+':00'),wakeEnd=new Date(today()+'T'+r.wake_time+':00');
-  const dur=Math.floor((wakeEnd-sleepStart)/1000);
+  const start=new Date(yStr+'T'+r.sleep_time+':00'),end=new Date(today()+'T'+r.wake_time+':00');
+  const dur=Math.floor((end-start)/1000);
   if(dur>0&&dur<86400){
-    const{data}=await sb.from('time_entries').insert([{user_id:user.id,type:'sleep',description:'Sueño',start_time:sleepStart.toISOString(),end_time:wakeEnd.toISOString(),duration:dur,date:yStr}]).select().single();
+    const{data}=await sb.from('time_entries').insert([{user_id:user.id,type:'sleep',description:'Sueño',start_time:start.toISOString(),end_time:end.toISOString(),duration:dur,date:yStr}]).select().single();
     if(data)db.entries.unshift(data);
   }
   closeEl('slPop');renderAll();showToast('😴 Sueño registrado');
@@ -1102,6 +1117,9 @@ async function procSleep(){
     const ap=new Date(new Date(late[0].end_time).getTime()+30*60000);
     document.getElementById('pop-sl').value=String(ap.getHours()).padStart(2,'0')+':'+String(ap.getMinutes()).padStart(2,'0');
     document.getElementById('pop-wk').value=r.wake_time;
+    document.getElementById('popRoutineInfo').textContent=`Rutina: ${r.sleep_time} – ${r.wake_time}`;
+    showPopQuick();
+    document.getElementById('pop-wk').value=r.wake_time;
     document.getElementById('slPop').classList.add('open');
   }else{
     const dur=Math.floor((wakeEnd-sleepStart)/1000);
@@ -1116,7 +1134,8 @@ async function saveSleepPop(updateRoutine){
   const st=document.getElementById('pop-sl').value,wt=document.getElementById('pop-wk').value;
   if(!st||!wt)return showToast('Completa ambas horas',true);
   const start=new Date(yStr+'T'+st+':00'),end=new Date(today()+'T'+wt+':00');
-  const dur=Math.floor((end-start)/1000);if(dur<=0)return showToast('Hora de despertar debe ser posterior',true);
+  const dur=Math.floor((end-start)/1000);
+  if(dur<=0)return showToast('Hora de despertar debe ser posterior',true);
   const{data}=await sb.from('time_entries').insert([{user_id:user.id,type:'sleep',description:'Sueño',start_time:start.toISOString(),end_time:end.toISOString(),duration:dur,date:yStr}]).select().single();
   if(data)db.entries.unshift(data);
   if(updateRoutine){
@@ -1163,29 +1182,7 @@ function loadMantra(){const v=user?.mantra||'';const el=document.getElementById(
 async function saveMantra(){const v=document.getElementById('manIn').value.trim();if(v){await sb.from('users').update({mantra:v}).eq('id',user.id);user.mantra=v;}loadMantra();closeM('mantraM');showToast('Mantra guardado ✓')}
 
 
-/* ── MINI DASHBOARD ── */
-function renderMiniDash(){
-  const dayE=db.entries.filter(e=>e.date===today());
-  const bk={};let tot=0;
-  dayE.forEach(e=>{const m=Math.floor(e.duration/60);tot+=m;if(e.type==='sleep'){bk['😴 Sueño']=(bk['😴 Sueño']||0)+m;return}const pj=db.projects.find(p=>p.id===e.project_id);const a=db.areas.find(a=>a.id===e.category_id||a.id===pj?.category_id);const lbl=a?(a.icon||'')+' '+a.name:'Sin área';bk[lbl]=(bk[lbl]||0)+m});
-  const empty=1440-tot;if(empty>0)bk['⬛ Vacío']=empty;
-  const C=['#00ffff','#7c3aed','#0066ff','#00ff88','#ff3366','#ffaa00','#8b5cf6','#374151'];
-  let ang=0,paths='',leg='';
-  Object.entries(bk).forEach(([lbl,m],i)=>{
-    const pc=m/1440,sa=ang;ang+=pc*360;
-    const r=40,cx=50,cy=50,ir=22;
-    const a1=sa*Math.PI/180-Math.PI/2,a2=ang*Math.PI/180-Math.PI/2;
-    const x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1),x2=cx+r*Math.cos(a2),y2=cy+r*Math.sin(a2);
-    const xi1=cx+ir*Math.cos(a1),yi1=cy+ir*Math.sin(a1),xi2=cx+ir*Math.cos(a2),yi2=cy+ir*Math.sin(a2);
-    const lg=pc>.5?1:0,col=C[i%C.length];
-    paths+=`<path d="M${xi1} ${yi1} L${x1} ${y1} A${r} ${r} 0 ${lg} 1 ${x2} ${y2} L${xi2} ${yi2} A${ir} ${ir} 0 ${lg} 0 ${xi1} ${yi1} Z" fill="${col}" opacity=".9"/>`;
-    leg+=`<div class="leg-item"><div class="leg-dot" style="background:${col}"></div><span style="font-size:.8125rem">${lbl}</span><span class="leg-val">${fmtM(m)}</span></div>`;
-  });
-  const elSvg=document.getElementById('pieSvgHome'),elPct=document.getElementById('piePctHome'),elLeg=document.getElementById('pieLegHome');
-  if(elSvg)elSvg.innerHTML=paths;
-  if(elPct)elPct.textContent=Math.floor((tot/1440)*100)+'%';
-  if(elLeg)elLeg.innerHTML=leg;
-}
+function renderMiniDash(){const dayE=db.entries.filter(e=>e.date===today());const bk={};let tot=0;dayE.forEach(e=>{const m=Math.floor(e.duration/60);tot+=m;if(e.type==='sleep'){bk['😴 Sueño']=(bk['😴 Sueño']||0)+m;return}const pj=db.projects.find(p=>p.id===e.project_id);const a=db.areas.find(a=>a.id===e.category_id||a.id===pj?.category_id);const lbl=a?(a.icon||'')+' '+a.name:'Sin área';bk[lbl]=(bk[lbl]||0)+m});const empty=1440-tot;if(empty>0)bk['⬛ Vacío']=empty;const C=['#00ffff','#7c3aed','#0066ff','#00ff88','#ff3366','#ffaa00','#8b5cf6','#374151'];let ang=0,paths='',leg='';Object.entries(bk).forEach(([lbl,m],i)=>{const pc=m/1440,sa=ang;ang+=pc*360;const r=40,cx=50,cy=50,ir=22;const a1=sa*Math.PI/180-Math.PI/2,a2=ang*Math.PI/180-Math.PI/2;const x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1),x2=cx+r*Math.cos(a2),y2=cy+r*Math.sin(a2);const xi1=cx+ir*Math.cos(a1),yi1=cy+ir*Math.sin(a1),xi2=cx+ir*Math.cos(a2),yi2=cy+ir*Math.sin(a2);const lg=pc>.5?1:0,col=C[i%C.length];paths+=`<path d="M${xi1} ${yi1} L${x1} ${y1} A${r} ${r} 0 ${lg} 1 ${x2} ${y2} L${xi2} ${yi2} A${ir} ${ir} 0 ${lg} 0 ${xi1} ${yi1} Z" fill="${col}" opacity=".9"/>`;leg+=`<div class="leg-item"><div class="leg-dot" style="background:${col}"></div><span style="font-size:.8125rem">${lbl}</span><span class="leg-val">${fmtM(m)}</span></div>`});const el1=document.getElementById('pieSvgHome'),el2=document.getElementById('piePctHome'),el3=document.getElementById('pieLegHome');if(el1)el1.innerHTML=paths;if(el2)el2.textContent=Math.floor((tot/1440)*100)+'%';if(el3)el3.innerHTML=leg}
 
 /* ── DATA — SIN LÍMITE ── */
 async function loadAll(){
@@ -1216,27 +1213,26 @@ function updProg(){
   const tot=tM+sM;
   const tP=Math.min((tM/1440)*100,100);
   const sP=Math.min((sM/1440)*100,Math.max(0,100-tP));
-  const now=new Date();
-  const sleepTime=user?.sleep_routine?.sleep_time;
-  let remaining=0;
-  if(sleepTime){
-    const [sh,sm]=sleepTime.split(':').map(Number);
-    const sleepToday=new Date(now);
-    sleepToday.setHours(sh,sm,0,0);
-    if(sleepToday<now)sleepToday.setDate(sleepToday.getDate()+1);
-    remaining=Math.max(0,Math.floor((sleepToday-now)/60000)-tot);
-  }else{
-    remaining=Math.max(0,1440-tot);
-  }
   document.getElementById('progMin').textContent=tot;
   document.getElementById('progPct').textContent=Math.floor((tot/1440)*100)+'%';
-  document.getElementById('progRem').textContent=fmtM(remaining);
   document.getElementById('pbT').style.width=tP+'%';
   document.getElementById('pbS').style.width=sP+'%';
   document.getElementById('legT').textContent=fmtM(tM);
   document.getElementById('legS').textContent=fmtM(sM);
   document.getElementById('hs-t').textContent=fmtM(tM);
   document.getElementById('hs-s').textContent=fmtM(sM);
+  const now=new Date();
+  const sleepTime=user?.sleep_routine?.sleep_time;
+  let remaining=0;
+  if(sleepTime){
+    const[sh,sm]=sleepTime.split(':').map(Number);
+    const sleepToday=new Date(now.getFullYear(),now.getMonth(),now.getDate(),sh,sm,0);
+    if(sleepToday<now)sleepToday.setDate(sleepToday.getDate()+1);
+    remaining=Math.max(0,Math.floor((sleepToday-now)/60000)-tM);
+  }else{
+    remaining=Math.max(0,1440-tot);
+  }
+  document.getElementById('progRem').textContent=fmtM(remaining);
 }
 
 /* ── TIMER ── */
@@ -1278,8 +1274,7 @@ async function stopTimer(){
   timerStart=null;
   document.getElementById('tBan').classList.remove('on');
   document.getElementById('ht').classList.remove('on');
-  updateFavicon(false);
-  renderAll();
+  renderAll();updateFavicon(false);
 }
 function switchAct(){stopTimer()}
 
@@ -1289,9 +1284,7 @@ function renderQT(){
   const items=[
     ...db.areas.map(a=>({id:a.id,type:'area',name:a.name,icon:a.icon||'📁',color:a.color,sub:'Área'})),
     ...db.projects.map(p=>{const ar=db.areas.find(a=>a.id===p.category_id);return{id:p.id,type:'project',name:p.name,icon:ar?.icon||'📌',color:p.color,sub:ar?.name||'Proyecto'}})
-  ];
-  items.forEach(it=>{it.useCount=db.entries.filter(e=>e.category_id===it.id||e.project_id===it.id).length});
-  items.sort((a,b)=>b.useCount-a.useCount); // Sin .slice(0,8) — fix ocultar sin feedback
+  ]; // Sin .slice(0,8) — fix ocultar sin feedback
   if(!items.length){g.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:1.25rem;color:var(--t3)"><button class="btn btn-sm" onclick="openNewArea()">➕ Crear Área</button></div>`;return}
   const active=user?.active_timer;
   g.innerHTML=items.map(it=>{
@@ -1309,7 +1302,6 @@ function renderQT(){
 /* ── TIMELINE — openManualAt FIXED: prellenar hora ── */
 function renderTL(){
   const ds=document.getElementById('tlDate').value||today();
-  document.getElementById('tlReflect').textContent='\"'+getReflexion()+'\"';
   document.getElementById('tlTit').textContent=ds===today()?'Hoy — '+fmtDay(ds):fmtDay(ds);
   const dayE=db.entries.filter(e=>e.date===ds);
   const r=user?.sleep_routine;
@@ -1332,7 +1324,7 @@ function renderTL(){
         const actBtns=e.type!=='sleep'
           ?`<div class="tl-acts"><button class="tl-abtn edit" onclick="event.stopPropagation();openEditE('${e.id}')" title="Editar">✏️</button><button class="tl-abtn del" onclick="event.stopPropagation();delEntry('${e.id}')" title="Eliminar">🗑️</button></div>`
           :`<div class="tl-acts"><button class="tl-abtn edit" onclick="event.stopPropagation();openSleepEntryEdit('${e.id}')" title="Editar sueño">✏️</button><button class="tl-abtn del" onclick="event.stopPropagation();delEntry('${e.id}')" title="Eliminar">🗑️</button></div>`;
-        return`<div class="tl-e ${cls}" onclick="${e.type!=='sleep'?'openEditE(\''+e.id+'\')':'openSleepEntryEdit(\''+e.id+'\')'}">
+        return`<div class="tl-e ${cls}" onclick="${e.type===\'sleep\'?`openTlSleepEdit(\\'${e.id}\\')`:\'openEditE(\''+e.id+'\')':'openSleepEntryEdit(\''+e.id+'\')'}">
           ${e.type==='sleep'?sleepIcon+' ':(ar?.icon?ar.icon+' ':'')}${txt}${slBtn}
           <span class="tl-dur">${fmtS(e.duration)}</span>
           ${actBtns}
@@ -1468,64 +1460,6 @@ function renderHist(){
 }
 function togDay(bid,cid){const b=document.getElementById(bid),c=document.getElementById(cid);if(!b)return;const op=b.classList.contains('open');b.classList.toggle('open',!op);if(c)c.classList.toggle('open',!op)}
 
-
-/* ── TENDENCIAS ── */
-function renderTrends(){
-  const now=new Date();
-  const thisWeek=[],lastWeek=[];
-  for(let i=0;i<7;i++){
-    const d=new Date(now);d.setDate(d.getDate()-i);
-    thisWeek.push(localDate(d));
-    const d2=new Date(now);d2.setDate(d2.getDate()-i-7);
-    lastWeek.push(localDate(d2));
-  }
-  const thisWeekByArea={},lastWeekByArea={};
-  db.entries.filter(e=>thisWeek.includes(e.date)&&e.type!=='sleep').forEach(e=>{
-    const pj=db.projects.find(p=>p.id===e.project_id);
-    const a=db.areas.find(a=>a.id===e.category_id||a.id===pj?.category_id);
-    if(a)thisWeekByArea[a.name]=(thisWeekByArea[a.name]||0)+Math.floor(e.duration/60);
-  });
-  db.entries.filter(e=>lastWeek.includes(e.date)&&e.type!=='sleep').forEach(e=>{
-    const pj=db.projects.find(p=>p.id===e.project_id);
-    const a=db.areas.find(a=>a.id===e.category_id||a.id===pj?.category_id);
-    if(a)lastWeekByArea[a.name]=(lastWeekByArea[a.name]||0)+Math.floor(e.duration/60);
-  });
-  const allAreas=new Set([...Object.keys(thisWeekByArea),...Object.keys(lastWeekByArea)]);
-  let html='<div style="display:flex;flex-direction:column;gap:.75rem">';
-  allAreas.forEach(area=>{
-    const thisW=thisWeekByArea[area]||0,lastW=lastWeekByArea[area]||0;
-    const diff=thisW-lastW,trend=diff>0?'📈':'📉',trendColor=diff>0?'var(--ok)':'var(--del)';
-    const pct=lastW>0?Math.round((diff/lastW)*100):0;
-    html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 1rem;border-radius:10px;background:var(--bg3)">
-      <div><strong>${area}</strong></div>
-      <div style="display:flex;align-items:center;gap:1rem">
-        <span style="font-family:'Space Mono',monospace">${fmtM(thisW)}</span>
-        <span style="color:${trendColor};font-weight:700">${trend} ${Math.abs(pct)}%</span>
-      </div>
-    </div>`;
-  });
-  html+='</div>';
-  const elComp=document.getElementById('weekComparison');
-  if(elComp)elComp.innerHTML=html;
-  let trendHtml='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:.5rem">';
-  thisWeek.reverse().forEach(date=>{
-    const dayEntries=db.entries.filter(e=>e.date===date&&e.type!=='sleep');
-    const mins=dayEntries.reduce((s,e)=>s+Math.floor(e.duration/60),0);
-    const height=Math.min((mins/180)*100,100);
-    const dayName=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][new Date(date+'T12:00').getDay()];
-    trendHtml+=`<div style="text-align:center">
-      <div style="height:120px;display:flex;align-items:flex-end;justify-content:center">
-        <div style="width:100%;background:linear-gradient(180deg,var(--cyan),var(--blue));border-radius:6px 6px 0 0;height:${height}%;min-height:${mins>0?'8px':'0'}"></div>
-      </div>
-      <div style="font-size:.7rem;color:var(--t3);margin-top:.3rem">${dayName}</div>
-      <div style="font-family:'Space Mono',monospace;font-size:.75rem;font-weight:700;color:var(--cyan)">${fmtM(mins)}</div>
-    </div>`;
-  });
-  trendHtml+='</div>';
-  const elWeek=document.getElementById('trendsWeekly');
-  if(elWeek)elWeek.innerHTML=trendHtml;
-}
-
 /* ── DASHBOARD ── */
 function renderDash(){
   const dayE=db.entries.filter(e=>e.date===today());
@@ -1566,9 +1500,9 @@ function renderDash(){
     }
   });
   const topArea=Object.values(areaStats).sort((a,b)=>b.mins-a.mins)[0];
-  const elTop=document.getElementById('dTopArea');
-  if(elTop)elTop.textContent=topArea?`${topArea.icon||'📁'} ${topArea.name}`:'—';
-  renderTrends();
+  document.getElementById('dTopArea').textContent=topArea?`${topArea.icon||'📁'} ${topArea.name}`:'Sin registros';
+  const tM=dayE.filter(e=>e.type!=='sleep').reduce((s,e)=>s+Math.floor(e.duration/60),0);
+  document.getElementById('dToday').textContent=fmtM(tM);
 }
 
 /* ── SELECTS ── */
