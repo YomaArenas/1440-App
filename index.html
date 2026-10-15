@@ -472,6 +472,13 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
   .bn-item{padding:.5rem .25rem}
 }
 @media (prefers-reduced-motion:reduce){.q-bar>div,.pbar>div{transition:none}}
+#page-home.active{display:flex;flex-direction:column}
+#page-home>#tBan{order:0}#page-home>#homeGoals{order:1}#page-home>.split{order:2;margin-top:1.125rem}#page-home>.prog-wrap{order:3;margin-top:1.125rem}#page-home>#miniDash{order:4}
+.modes{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem}
+.mode{padding:.45rem .9rem;border-radius:99px;border:1.5px solid var(--bdr);background:none;color:var(--t2);font-family:inherit;font-size:.875rem;font-weight:700;cursor:pointer}
+.mode.on{border-color:var(--cyan);color:var(--cyan);background:rgba(0,255,255,.07)}
+.go{background:linear-gradient(135deg,var(--cyan),var(--blue));color:var(--bg);border:none;border-radius:10px;padding:.5rem .9rem;font-family:inherit;font-size:.9375rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.go:active{transform:scale(.97)}
 </style>
 </head>
 <body>
@@ -580,7 +587,6 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
   </div>
   <div class="sb-nav">
     <div class="sb-item active" id="sn-home" onclick="goPage('home')"><span class="sb-ic">●</span><span class="sb-lbl">Inicio</span></div>
-    <div class="sb-item" id="sn-focus" onclick="goPage('focus')"><span class="sb-ic">◎</span><span class="sb-lbl">Foco</span></div>
     <div class="sb-item" id="sn-goals" onclick="goPage('goals')"><span class="sb-ic">⚑</span><span class="sb-lbl">Metas</span></div>
     <div class="sb-item" id="sn-review" onclick="goPage('review')"><span class="sb-ic">◷</span><span class="sb-lbl">Mi semana</span></div>
     <div class="sb-item" id="sn-tl" onclick="goPage('tl')"><span class="sb-ic">▤</span><span class="sb-lbl">Timeline</span></div>
@@ -657,7 +663,7 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
         </div>
         <div class="split">
           <div class="qt-card card" style="border-radius:16px">
-            <div class="qt-lbl">⚡ Quick Track — 1 click</div>
+            <div class="qt-lbl">⚡ Otras cosas que estás haciendo</div>
             <div class="qt-grid" id="qtG"></div>
           </div>
           <div class="rm-card glass" onclick="openM('manM')">
@@ -669,7 +675,7 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
       <div class="card blk" id="homeGoals" style="margin-top:1.125rem"></div>
 
       <!-- MINI DASHBOARD -->
-      <div class="card" style="border-radius:16px;padding:1.5rem;margin-top:1.125rem">
+      <div class="card" id="miniDash" style="border-radius:16px;padding:1.5rem;margin-top:1.125rem">
         <div style="font-size:.875rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:1.125rem;display:flex;align-items:center;justify-content:space-between">
           <span>📊 TU DÍA EN RESUMEN</span>
           <button class="btn btn-ghost btn-xs" onclick="goPage('dash')">Ver análisis →</button>
@@ -744,47 +750,6 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
         </div>
       </div>
 
-      <!-- FOCO -->
-      <div class="page" id="page-focus">
-        <div class="page-title">🎯 Foco</div>
-        <div class="fo-wrap">
-          <div class="card blk">
-            <div class="fo-ring">
-              <svg viewBox="0 0 100 100" aria-hidden="true">
-                <circle cx="50" cy="50" r="45" fill="none" stroke="var(--bg3)" stroke-width="6"/>
-                <circle id="foArc" cx="50" cy="50" r="45" fill="none" stroke="url(#foGrad)" stroke-width="6" stroke-linecap="round" stroke-dasharray="282.74" stroke-dashoffset="0"/>
-                <defs><linearGradient id="foGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--cyan)"/><stop offset="1" stop-color="var(--blue)"/></linearGradient></defs>
-              </svg>
-              <div class="fo-ctr"><div class="fo-time" id="foTime" aria-live="off">25:00</div><div class="fo-goal" id="foGoalLbl">Elige en qué vas a enfocarte</div></div>
-            </div>
-            <div id="foSetup">
-              <div class="fg"><label for="foGoal">¿En qué inviertes este bloque?</label><select id="foGoal"></select></div>
-              <div class="durs" id="foDurs"></div>
-              <button class="btn" style="width:100%" onclick="focusStart()">▶ Empezar bloque</button>
-            </div>
-            <div id="foRun" class="hide" style="display:flex;gap:.625rem">
-              <button class="btn btn-ghost" style="flex:1" onclick="focusStop(false)">⏹ Terminar ahora</button>
-              <button class="btn btn-ghost" style="flex:1" onclick="focusStop(true)">✕ Descartar</button>
-            </div>
-          </div>
-          <div>
-            <div class="card blk">
-              <div class="sec-lbl">Hoy</div>
-              <div class="fo-stats">
-                <div><div class="v" id="foBlocks">0</div><div class="s">Bloques</div></div>
-                <div><div class="v" id="foMin">0m</div><div class="s">En foco</div></div>
-                <div><div class="v" id="foNoGoal">0m</div><div class="s">Sin meta</div></div>
-              </div>
-              <div class="fo-log" id="foLog"></div>
-            </div>
-            <div class="card blk">
-              <div class="sec-lbl">Cómo funciona</div>
-              <p style="color:var(--t2);font-size:.9375rem;line-height:1.6">Cada bloque se guarda solo en tu registro, ligado a la meta que elegiste. Si lo terminas antes, se guarda el tiempo real. Al acabar, tómate 5 minutos de pausa antes del siguiente.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- METAS -->
       <div class="page" id="page-goals">
         <div class="page-title">🏁 Metas del trimestre
@@ -828,7 +793,6 @@ input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer;margin:.35r
 <!-- BOTTOM NAV -->
 <nav class="bot-nav" id="botNav" style="display:none">
   <div class="bn-item active" id="bn-home" onclick="goPage('home')"><div class="bn-ic">●</div><div class="bn-lbl">Inicio</div></div>
-  <div class="bn-item" id="bn-focus" onclick="goPage('focus')"><div class="bn-ic">◎</div><div class="bn-lbl">Foco</div></div>
   <div class="bn-item" id="bn-goals" onclick="goPage('goals')"><div class="bn-ic">⚑</div><div class="bn-lbl">Metas</div></div>
   <div class="bn-item" id="bn-review" onclick="goPage('review')"><div class="bn-ic">◷</div><div class="bn-lbl">Semana</div></div>
   <div class="bn-item" id="bn-more" onclick="openM('moreM')"><div class="bn-ic">⋯</div><div class="bn-lbl">Más</div></div>
@@ -1035,6 +999,8 @@ const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6I
 const {createClient}=supabase; const sb=createClient(SB,SK);
 let user=null, db={areas:[],projects:[],entries:[]};
 let timerIv=null, timerStart=null, selDur=30, manualMode='dur';
+let homeMode=(()=>{try{return parseInt(localStorage.getItem('1440_mode'))||0}catch{return 0}})();
+function qtExtra(){return{dur:homeMode||null}}
 let confirmResolve=null;
 
 
@@ -1386,45 +1352,71 @@ function updProg(){
 }
 
 /* ── TIMER ── */
+function tickTimer(){
+  const t=user?.active_timer||{};
+  const el=Math.floor((Date.now()-timerStart.getTime())/1000);
+  if(t.dur){
+    const left=t.dur*60-el;
+    if(left<=0){stopTimer(true);return}
+    const mm=String(Math.floor(left/60)).padStart(2,'0'),ss=String(left%60).padStart(2,'0');
+    document.getElementById('tbT').textContent=mm+':'+ss;
+    document.getElementById('htT').textContent=mm+':'+ss;
+    document.title=mm+':'+ss+' · '+(t.name||'');
+  }else{
+    document.getElementById('tbT').textContent=fmtS(el);
+    document.getElementById('htT').textContent=String(Math.floor(el/3600)).padStart(2,'0')+':'+String(Math.floor((el%3600)/60)).padStart(2,'0');
+  }
+}
 function resumeTimerUI(name,meta){
+  const t=user?.active_timer||{};
   document.getElementById('tBan').classList.add('on');
   document.getElementById('tbN').textContent=name;
-  document.getElementById('tbM').textContent=meta||'';
+  document.getElementById('tbM').textContent=(meta||'')+(t.dur?' · bloque de '+t.dur+' min (suena al terminar)':' · tú decides cuándo parar');
   document.getElementById('ht').classList.add('on');
   document.getElementById('htN').textContent=name;
   if(timerIv)clearInterval(timerIv);
-  timerIv=setInterval(()=>{
-    const el=Math.floor((Date.now()-timerStart.getTime())/1000);
-    document.getElementById('tbT').textContent=fmtS(el);
-    document.getElementById('htT').textContent=String(Math.floor(el/3600)).padStart(2,'0')+':'+String(Math.floor((el%3600)/60)).padStart(2,'0');
-  },1000);
+  tickTimer();
+  timerIv=setInterval(tickTimer,1000);
   renderQT();
 }
-async function startTimer(id,type,name,meta){
+async function startTimer(id,type,name,meta,extra){
+  if(timerStart&&user.active_timer)await stopTimer();
   if(timerIv)clearInterval(timerIv);
   timerStart=new Date();
   beep(880,70,.2);setTimeout(()=>beep(1100,70,.15),90);
-  const t={id,type,name,meta,start:timerStart.toISOString()};
+  const t={id,type,name,meta,start:timerStart.toISOString(),...(extra||{})};
+  if(!t.dur)delete t.dur;
   user.active_timer=t;
   await sb.from('users').update({active_timer:t}).eq('id',user.id);
-  resumeTimerUI(name,meta);
+  resumeTimerUI(name,meta);updateFavicon(true);
 }
-async function stopTimer(){
+async function stopTimer(auto){
   if(!timerStart)return;
   if(timerIv){clearInterval(timerIv);timerIv=null}
-  beep(440,120,.18);
-  const end=new Date(),dur=Math.floor((end-timerStart)/1000);
   const t=user.active_timer||{};
+  const isAuto=auto===true&&!!t.dur;
+  const end=isAuto?new Date(timerStart.getTime()+t.dur*60000):new Date();
+  const dur=Math.floor((end-timerStart)/1000);
+  if(isAuto){beep(880,120,.2);setTimeout(()=>beep(1100,120,.2),180);setTimeout(()=>beep(1320,200,.2),360);
+    try{if('Notification'in window&&Notification.permission==='granted')new Notification('Bloque terminado ✓',{body:(t.name||'')+' · tómate 5 minutos'})}catch{}}
+  else beep(440,120,.18);
   if(dur>5){
     const pl={user_id:user.id,type:'tracked',description:t.name||'Actividad',start_time:timerStart.toISOString(),end_time:end.toISOString(),duration:dur,date:localDate(timerStart)};
-    if(t.type==='project')pl.project_id=t.id;if(t.type==='area')pl.category_id=t.id;
-    const{data}=await sb.from('time_entries').insert([pl]).select().single();if(data)db.entries.unshift(data);
+    if(t.type==='project')pl.project_id=t.id;
+    if(t.type==='area')pl.category_id=t.id;
+    if(t.type==='goal'){pl.goal_id=t.goalId||t.id;pl.category_id=t.catId||null}
+    if(t.dur)pl.subtype='focus';
+    const{data,error}=await sb.from('time_entries').insert([pl]).select().single();
+    if(error)showToast('No se pudo guardar el tiempo',true);
+    if(data)db.entries.unshift(data);
   }
   user.active_timer=null;await sb.from('users').update({active_timer:null}).eq('id',user.id);
-  timerStart=null;
+  timerStart=null;document.title='1440';
   document.getElementById('tBan').classList.remove('on');
   document.getElementById('ht').classList.remove('on');
   renderAll();updateFavicon(false);
+  if(isAuto)showToast('🎯 Bloque de '+t.dur+' min guardado. Descansa 5 minutos.');
+  if(typeof refreshGoalViews==='function')refreshGoalViews();
 }
 function switchAct(){stopTimer()}
 
@@ -1442,7 +1434,7 @@ function renderQT(){
     const m=db.entries.filter(e=>e.date===today()&&(e.category_id===it.id||e.project_id===it.id)).reduce((s,e)=>s+Math.floor(e.duration/60),0);
     const col=it.color||'';
     return`<div class="qt-item${on?' on':''}" style="${col?'border-color:'+col+'35':''}"
-      onclick="${on?'stopTimer()':'startTimer(\''+it.id+'\',\''+it.type+'\',\''+esc(it.name)+'\',\''+esc(it.sub)+'\')'}" >
+      onclick="${on?'stopTimer()':'startTimer(\''+it.id+'\',\''+it.type+'\',\''+esc(it.name)+'\',\''+esc(it.sub)+'\',qtExtra())'}" >
       <div><div class="qt-nm">${it.icon} ${it.name}</div><div class="qt-st">${fmtM(m)}</div></div>
       <div class="qt-play" style="${!on&&col?'background:linear-gradient(135deg,'+col+','+col+'99)':''}">${on?'⏹':'▶'}</div>
     </div>`;
@@ -1850,8 +1842,7 @@ document.getElementById('l-u').focus();
    Reglas de negocio documentadas en REGLAS.md
    ══════════════════════════════════════════════════════════ */
 db.goals=[];db.logs=[];db.reviews=[];db.recs=[];
-let wkOffset=0, foIv=null, foDur=25, extraReady=true;
-const FO_KEY='1440_focus';
+let wkOffset=0, extraReady=true;
 const DAY_LBL=['L','M','M','J','V','S','D'];
 
 /* ── helpers ── */
@@ -1919,25 +1910,35 @@ async function loadExtra(){
 }
 
 /* ── INICIO: tarjeta de foco ── */
+function setMode(n){homeMode=n;try{localStorage.setItem('1440_mode',String(n))}catch{}if('Notification'in window&&n&&Notification.permission==='default'){try{Notification.requestPermission()}catch{}}renderHomeGoals();renderQT()}
+async function startGoal(id){
+  const g=goalById(id);if(!g)return;
+  const a=areaById(g.category_id);
+  await startTimer(g.id,'goal',g.title,a?a.name:'Meta',{goalId:g.id,catId:g.category_id||null,dur:homeMode||null});
+  goPage('home');
+}
 function renderHomeGoals(){
-  let box=document.getElementById('homeGoals');
+  const box=document.getElementById('homeGoals');
   if(!box)return;
   const wk={start:weekStart(),end:addDays(weekStart(),6)};
   const focus=db.goals.filter(g=>g.is_focus&&!g.done).slice(0,3);
   const dayIdx=((new Date().getDay()+6)%7)+1;
   const low=db.areas.filter(a=>+a.weekly_min_hours>0).map(a=>{const m=db.entries.filter(e=>e.type!=='sleep'&&inR(e.date,wk.start,wk.end)&&entryArea(e)===a.id).reduce((s,e)=>s+eMin(e),0);return{a,m,exp:a.weekly_min_hours*60*dayIdx/7}}).filter(x=>dayIdx>=4&&x.m<x.exp*0.6).sort((x,y)=>x.m/x.exp-y.m/y.exp);
   const rec=db.recs[0];
-  let h='';
-  if(focus.length){h+=`<div class="sec-lbl"><span>🎯 Tus 3 focos del trimestre</span><button class="btn btn-ghost btn-xs" onclick="goPage('goals')">Ver metas →</button></div><div class="g-list">`+focus.map(g=>goalMini(g)).join('')+'</div>'}
-  else if(db.goals.length){h+=`<div class="sec-lbl"><span>🎯 Elige tus 3 focos</span><button class="btn btn-ghost btn-xs" onclick="goPage('goals')">Ir a metas →</button></div><p class="empty">Marca con ★ las 3 metas que más importan este trimestre.</p>`}
-  else{h+=`<div class="sec-lbl"><span>🎯 Metas del trimestre</span></div><p class="empty">Aún no tienes metas. <button class="btn btn-xs" onclick="goPage('goals')">Crear metas</button></p>`}
+  const chips=[[0,'Libre'],[25,'25 min'],[50,'50 min'],[90,'90 min']].map(([n,l])=>`<button class="mode${homeMode===n?' on':''}" onclick="setMode(${n})">${l}</button>`).join('');
+  let h=`<div class="sec-lbl"><span>▶ ¿En qué vas a trabajar ahora?</span></div>
+    <div class="modes">${chips}</div>
+    <div style="font-size:.8125rem;color:var(--t3);margin-bottom:1rem">${homeMode?'Suena al terminar los '+homeMode+' min y el tiempo se guarda solo.':'Tú decides cuándo parar. Toca ⏹ para guardar.'}</div>`;
+  if(focus.length){h+=`<div class="g-list">`+focus.map(g=>goalMini(g)).join('')+`</div><div style="margin-top:.75rem"><button class="btn btn-ghost btn-xs" onclick="goPage('goals')">Ver todas mis metas →</button></div>`}
+  else if(db.goals.length){h+=`<p class="empty">Marca con ★ tus 3 metas más importantes y aparecerán aquí.</p><div style="text-align:center"><button class="btn btn-sm" onclick="goPage('goals')">Ir a Metas</button></div>`}
+  else{h+=`<p class="empty">Aún no tienes metas.</p><div style="text-align:center"><button class="btn btn-sm" onclick="goPage('goals')">Crear mis metas</button></div>`}
   if(low.length)h+=`<div class="alert" style="margin-top:1rem">⚠️ Vas por debajo de tu mínimo en: ${low.slice(0,3).map(x=>`<strong>${escH((x.a.icon||'')+' '+x.a.name)}</strong> (${fmtM(x.m)} de ${x.a.weekly_min_hours} h)`).join(', ')}${low.length>3?' y '+(low.length-3)+' más':''}. <a href="#" onclick="goPage('review');return false" style="color:var(--cyan)">Ver semana</a></div>`;
   if(rec)h+=`<div style="margin-top:1rem"><div class="sec-lbl"><span>🤖 Última recomendación</span><button class="btn btn-ghost btn-xs" onclick="goPage('review')">Ver todas →</button></div><div class="rec"><div class="rec-b">${escH(rec.body.length>280?rec.body.slice(0,280)+'…':rec.body)}</div></div></div>`;
   box.innerHTML=h;
 }
-function goalMini(g){const p=gProg(g),a=areaById(g.category_id),col=a?.color||'var(--cyan)';
-  return`<div class="g-card" style="background:var(--bg3)"><div class="g-top"><div class="g-title">${escH(a?.icon||'')} ${escH(g.title)}</div>${p.st&&p.st!=='mute'?`<span class="pill ${p.st}">${ST_LBL[p.st]}</span>`:''}</div>
-  <div class="pbar"><div style="width:${p.pct*100}%;background:${col}"></div></div><div class="g-meta"><span>${escH(p.main)}</span>${p.sub?`<span>${escH(p.sub)}</span>`:''}</div></div>`}
+function goalMini(g){const p=gProg(g),a=areaById(g.category_id),col=a?.color||'var(--cyan)';const on=user?.active_timer&&user.active_timer.goalId===g.id;
+  return`<div class="g-card" style="background:var(--bg3)"><div class="g-top"><div class="g-title">${escH(a?.icon||'')} ${escH(g.title)}</div>${on?`<button class="go" style="background:var(--del);color:#fff" onclick="stopTimer()">⏹ Parar</button>`:`<button class="go" onclick="startGoal('${g.id}')">▶ Empezar</button>`}</div>
+  <div class="pbar"><div style="width:${p.pct*100}%;background:${col}"></div></div><div class="g-meta"><span>${escH(p.main)}</span>${p.sub?`<span>${escH(p.sub)}</span>`:''}${p.st&&p.st!=='mute'?`<span class="pill ${p.st}">${ST_LBL[p.st]}</span>`:''}</div></div>`}
 
 /* ── METAS ── */
 function renderGoals(){
@@ -1971,7 +1972,7 @@ function goalCard(g){
       <div class="g-title${g.done?' done':''}">${escH(g.title)}</div>
       <div class="g-acts">
         ${g.kind==='count'||g.kind==='value'?`<button class="ibtn" onclick="openLog('${g.id}')" title="Registrar avance">＋</button>`:''}
-        ${g.kind!=='task'?`<button class="ibtn" onclick="focusFor('${g.id}')" title="Bloque de foco">▶</button>`:''}
+        ${g.kind!=='task'?`<button class="ibtn" onclick="startGoal('${g.id}')" title="Empezar a trabajar en esta meta">▶</button>`:''}
         <button class="ibtn${g.is_focus?' on':''}" onclick="toggleFocus('${g.id}')" title="Foco del trimestre">★</button>
         <button class="ibtn" onclick="openGoal('${g.id}')" title="Editar">✎</button>
       </div>
@@ -2063,7 +2064,7 @@ async function saveLog(){
   const g=goalById(id);if(gProg(g).pct>=1){beep(880,60,.15);setTimeout(()=>beep(1320,120,.15),80);showToast('🏁 ¡Meta cumplida!')}else showToast('Avance guardado ✓');
 }
 async function delLog(lid){await sb.from('goal_logs').delete().eq('id',lid);const l=db.logs.find(x=>x.id===lid);db.logs=db.logs.filter(x=>x.id!==lid);if(l)openLog(l.goal_id);refreshGoalViews()}
-function refreshGoalViews(){renderHomeGoals();if(document.getElementById('page-goals').classList.contains('active'))renderGoals();if(document.getElementById('page-review').classList.contains('active'))renderReview();if(document.getElementById('page-focus').classList.contains('active'))renderFocus()}
+function refreshGoalViews(){renderHomeGoals();if(document.getElementById('page-goals').classList.contains('active'))renderGoals();if(document.getElementById('page-review').classList.contains('active'))renderReview()}
 
 /* ── carga inicial de metas Q4 2026 ── */
 async function seedQ4(){
@@ -2108,84 +2109,6 @@ async function seedQ4(){
   if(error)return showToast('Error: '+error.message,true);
   db.goals.push(...data);renderAll();renderGoals();showToast('🏁 Metas cargadas ✓');
 }
-
-/* ── FOCO (pomodoro ligado a metas) ── */
-function foState(){try{return JSON.parse(localStorage.getItem(FO_KEY)||'null')}catch{return null}}
-function foSet(s){try{s?localStorage.setItem(FO_KEY,JSON.stringify(s)):localStorage.removeItem(FO_KEY)}catch{}}
-function renderFocus(){
-  const sel=document.getElementById('foGoal'),prev=sel.value;
-  const act=db.goals.filter(g=>!g.done&&g.kind!=='task'||(g.kind==='task'&&!g.done));
-  let h='';
-  db.areas.forEach(a=>{const gs=act.filter(g=>g.category_id===a.id);h+=`<optgroup label="${escH((a.icon||'')+' '+a.name)}">${gs.map(g=>`<option value="g:${g.id}">${g.is_focus?'★ ':''}${escH(g.title)}</option>`).join('')}<option value="a:${a.id}">Otra cosa de ${escH(a.name)}</option></optgroup>`});
-  const free=act.filter(g=>!g.category_id);if(free.length)h+=`<optgroup label="Sin área">${free.map(g=>`<option value="g:${g.id}">${escH(g.title)}</option>`).join('')}</optgroup>`;
-  sel.innerHTML=h||'<option value="">Crea un área o meta primero</option>';
-  if(prev&&[...sel.options].some(o=>o.value===prev))sel.value=prev;
-  document.getElementById('foDurs').innerHTML=[25,50,90].map(d=>`<button class="dur${foDur===d?' on':''}" onclick="foDur=${d};renderFocus()">${d} min</button>`).join('');
-  const t=today(),fe=db.entries.filter(e=>e.date===t&&e.subtype==='focus');
-  const nog=db.entries.filter(e=>e.date===t&&e.type!=='sleep'&&!e.goal_id).reduce((s,e)=>s+eMin(e),0);
-  document.getElementById('foBlocks').textContent=fe.length;
-  document.getElementById('foMin').textContent=fmtM(fe.reduce((s,e)=>s+eMin(e),0));
-  document.getElementById('foNoGoal').textContent=fmtM(nog);
-  document.getElementById('foLog').innerHTML=fe.slice(0,8).map(e=>`<div><span>${fmtT(e.start_time)} · ${escH(e.description||'')}</span><span>${fmtM(eMin(e))}</span></div>`).join('');
-  foPaint();
-}
-function focusFor(gid){goPage('focus');setTimeout(()=>{const s=document.getElementById('foGoal');if([...s.options].some(o=>o.value==='g:'+gid))s.value='g:'+gid},0)}
-async function focusStart(){
-  const v=document.getElementById('foGoal').value;if(!v)return showToast('Elige una meta o área',true);
-  if(user.active_timer)await stopTimer();
-  const[t,id]=v.split(':');const g=t==='g'?goalById(id):null;
-  const catId=g?g.category_id:id,a=areaById(catId);
-  foSet({goalId:g?.id||null,catId,label:g?g.title:(a?a.name:'Foco'),start:new Date().toISOString(),dur:foDur});
-  if('Notification'in window&&Notification.permission==='default'){try{Notification.requestPermission()}catch{}}
-  beep(660,70,.18);setTimeout(()=>beep(990,90,.15),90);
-  foTick();
-}
-function foPaint(){
-  const s=foState();
-  document.getElementById('foSetup').classList.toggle('hide',!!s);
-  document.getElementById('foRun').classList.toggle('hide',!s);
-  const total=(s?s.dur:foDur)*60;
-  const left=s?Math.max(0,Math.round(total-(Date.now()-new Date(s.start))/1000)):total;
-  const mm=String(Math.floor(left/60)).padStart(2,'0'),ss=String(left%60).padStart(2,'0');
-  document.getElementById('foTime').textContent=mm+':'+ss;
-  document.getElementById('foGoalLbl').textContent=s?s.label:'Elige en qué vas a enfocarte';
-  document.getElementById('foArc').setAttribute('stroke-dashoffset',String(282.74*(1-left/total)));
-  if(s)document.title=mm+':'+ss+' · '+s.label;
-}
-function foTick(){
-  if(foIv)clearInterval(foIv);
-  const step=()=>{const s=foState();if(!s){clearInterval(foIv);foIv=null;document.title='1440';foPaint();return}
-    if(Date.now()-new Date(s.start)>=s.dur*60000){focusComplete();return}
-    if(document.getElementById('page-focus').classList.contains('active'))foPaint();else{const left=Math.max(0,Math.round(s.dur*60-(Date.now()-new Date(s.start))/1000));document.title=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0')+' · '+s.label}};
-  step();foIv=setInterval(step,1000);updateFavicon(true);
-}
-async function foSave(s,end){
-  const start=new Date(s.start),dur=Math.floor((end-start)/1000);
-  if(dur<60)return false;
-  const pl={user_id:user.id,type:'tracked',subtype:'focus',description:'🎯 '+s.label,start_time:start.toISOString(),end_time:end.toISOString(),duration:dur,date:localDate(start),category_id:s.catId||null,goal_id:s.goalId||null};
-  const{data,error}=await sb.from('time_entries').insert([pl]).select().single();
-  if(error){showToast('No se pudo guardar el bloque',true);return false}
-  db.entries.unshift(data);return true;
-}
-async function focusComplete(){
-  const s=foState();if(!s)return;foSet(null);
-  if(foIv){clearInterval(foIv);foIv=null}
-  const end=new Date(new Date(s.start).getTime()+s.dur*60000);
-  await foSave(s,end);
-  beep(880,120,.2);setTimeout(()=>beep(1100,120,.2),180);setTimeout(()=>beep(1320,200,.2),360);
-  try{if('Notification'in window&&Notification.permission==='granted')new Notification('Bloque terminado ✓',{body:s.label+' · tómate 5 minutos'})}catch{}
-  document.title='1440';updateFavicon(false);showToast('🎯 Bloque de '+s.dur+' min guardado. Pausa de 5 min.');
-  renderAll();if(document.getElementById('page-focus').classList.contains('active'))renderFocus();
-}
-async function focusStop(discard){
-  const s=foState();if(!s)return;
-  if(discard){const ok=await askConfirm('¿Descartar este bloque?','No se guardará el tiempo.','✕','Descartar');if(!ok)return}
-  foSet(null);if(foIv){clearInterval(foIv);foIv=null}
-  document.title='1440';updateFavicon(false);
-  if(!discard){const saved=await foSave(s,new Date());showToast(saved?'Bloque guardado ✓':'Menos de 1 minuto, no se guardó')}
-  renderAll();renderFocus();
-}
-function resumeFocus(){const s=foState();if(!s||foIv)return;if(Date.now()-new Date(s.start)>=s.dur*60000)focusComplete();else foTick()}
 
 /* ── SEMANA ── */
 function wkShift(n){wkOffset=Math.min(0,wkOffset+n);renderReview()}
@@ -2255,27 +2178,26 @@ async function copyForClaude(){
 }
 
 /* ── ENGANCHES con el código existente ── */
-PAGES.push('goals','focus','review');
+PAGES.push('goals','review');
 const _goPage=goPage;
 goPage=function(name){
   _goPage(name);
   const more=['tl','areas','dash','hist'].includes(name);
   document.getElementById('bn-more')?.classList.toggle('active',more);
   if(name==='goals')renderGoals();
-  if(name==='focus')renderFocus();
   if(name==='review')renderReview();
   window.scrollTo({top:0});
 };
 const _loadAll=loadAll;
 loadAll=async function(){await _loadAll();await loadExtra()};
 const _renderAll=renderAll;
-renderAll=function(){_renderAll();renderHomeGoals();resumeFocus()};
+renderAll=function(){_renderAll();renderHomeGoals()};
 const _openNewArea=openNewArea;
 openNewArea=function(){_openNewArea();document.getElementById('aMin').value=''};
 const _openEditArea=openEditArea;
 openEditArea=function(id){_openEditArea(id);const a=areaById(id);document.getElementById('aMin').value=a?.weekly_min_hours||''};
 const _doLogout=doLogout;
-doLogout=function(){if(foIv){clearInterval(foIv);foIv=null}document.title='1440';db.goals=[];db.logs=[];db.reviews=[];db.recs=[];_doLogout()};
+doLogout=function(){document.title='1440';db.goals=[];db.logs=[];db.reviews=[];db.recs=[];_doLogout()};
 </script>
 </body>
 </html>
