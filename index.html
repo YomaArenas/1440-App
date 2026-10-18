@@ -541,6 +541,27 @@ html{font-size:17px}
   .hm-mid .prog-wrap{margin:0!important}
 }
 @media(max-width:1024px){.hm-grid .split{margin:0}.hm-grid #homeGoals,.hm-grid .prog-wrap{margin:0!important}}
+
+/* v2.1 */
+.sb-nav{overflow-y:auto;overflow-x:hidden}.sb-ic{font-size:1.35rem;font-weight:400}.sb-item{padding:11px 14px}
+.nw-card{min-height:236px;display:flex;flex-direction:column}
+.nw-top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}.nw-l{min-width:0}
+.nw-t{font-size:1.45rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nw-clk{text-align:right;flex-shrink:0}.nw-clk #nwT{font-family:'Space Mono',monospace;font-size:1.9rem;font-weight:700;color:var(--t);display:block;line-height:1.15}
+.nw-clk .nw-of{display:block;font-size:.82rem;color:var(--t2)}
+.nw-bar{margin:.8rem 0 .4rem}.nw-note{min-height:1.45em;font-size:.88rem;color:var(--t2);margin-bottom:.6rem}
+.nw-acts{display:flex}.nw-acts .btn{width:100%;flex:1;justify-content:center}
+.nw-row2{display:flex;gap:.5rem;margin-top:.5rem}.nw-row2 .btn{flex:1;justify-content:center;padding:.5rem .3rem;font-size:.9rem;min-width:0}
+.pbd{font-size:.8rem;color:var(--t2);white-space:nowrap;margin-left:auto;padding-left:.4rem}
+.pbdur{height:42px;display:flex;align-items:center;font-weight:700;font-family:'Space Mono',monospace}
+.gm{display:flex;align-items:center;gap:.7rem;padding:.6rem .7rem;border-radius:12px;background:var(--bg3)}
+.gm-main{flex:1;min-width:0}.gm-t{font-size:.92rem;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:.35rem}
+.gm-s{display:flex;gap:.5rem;align-items:center;font-size:.78rem;color:var(--t2);margin-top:.3rem;flex-wrap:wrap}
+.gm-go{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--cyan);background:none;color:var(--cyan);cursor:pointer;flex-shrink:0;font-size:.9rem}
+.gm-go.on{background:var(--del);border-color:var(--del);color:#fff}
+#homeGoals .g-list{gap:.5rem}
+.nw-card{flex-shrink:0}.hm-side{overflow-y:auto}.qt-nm{white-space:normal!important;line-height:1.25}
+@media(min-width:1025px){.hm-grid>section{overflow:hidden}.hm-mid,.hm-side{overflow-y:auto}.hm-side #homeGoals{flex:1 0 auto;overflow:visible}.hm-side #wkSide{flex-shrink:0}}
 </style>
 </head>
 <body>
@@ -648,21 +669,21 @@ html{font-size:17px}
     <span class="sb-logo-txt">1440</span>
   </div>
   <div class="sb-nav">
-    <div class="sb-item active" id="sn-home" onclick="goPage('home')"><span class="sb-ic">●</span><span class="sb-lbl">Inicio</span></div>
-    <div class="sb-item" id="sn-goals" onclick="goPage('goals')"><span class="sb-ic">⚑</span><span class="sb-lbl">Metas</span></div>
-    <div class="sb-item" id="sn-review" onclick="goPage('review')"><span class="sb-ic">◷</span><span class="sb-lbl">Mi semana</span></div>
-    <div class="sb-item" id="sn-tl" onclick="goPage('tl')"><span class="sb-ic">▤</span><span class="sb-lbl">Timeline</span></div>
-    <div class="sb-item" id="sn-areas" onclick="goPage('areas')"><span class="sb-ic">◫</span><span class="sb-lbl">Áreas de Vida</span></div>
-    <div class="sb-item" id="sn-dash" onclick="goPage('dash')"><span class="sb-ic">◧</span><span class="sb-lbl">Análisis</span></div>
-    <div class="sb-item" id="sn-hist" onclick="goPage('hist')"><span class="sb-ic">▦</span><span class="sb-lbl">Historial</span></div>
+    <div class="sb-item active" id="sn-home" onclick="goPage('home')" title="Inicio"><span class="sb-ic">🏠</span><span class="sb-lbl">Inicio</span></div>
+    <div class="sb-item" id="sn-goals" onclick="goPage('goals')" title="Metas"><span class="sb-ic">🎯</span><span class="sb-lbl">Metas</span></div>
+    <div class="sb-item" id="sn-review" onclick="goPage('review')" title="Mi semana"><span class="sb-ic">📅</span><span class="sb-lbl">Mi semana</span></div>
+    <div class="sb-item" id="sn-tl" onclick="goPage('tl')" title="Timeline"><span class="sb-ic">🕒</span><span class="sb-lbl">Timeline</span></div>
+    <div class="sb-item" id="sn-areas" onclick="goPage('areas')" title="Áreas de Vida"><span class="sb-ic">🧩</span><span class="sb-lbl">Áreas de Vida</span></div>
+    <div class="sb-item" id="sn-dash" onclick="goPage('dash')" title="Análisis"><span class="sb-ic">📊</span><span class="sb-lbl">Análisis</span></div>
+    <div class="sb-item" id="sn-hist" onclick="goPage('hist')" title="Historial"><span class="sb-ic">📜</span><span class="sb-lbl">Historial</span></div>
     <div class="sb-div"></div>
     <div class="sb-sec">Crear</div>
-    <div class="sb-item" onclick="openM('areaM')"><span class="sb-ic">＋</span><span class="sb-lbl">Nueva Área</span></div>
-    <div class="sb-item" onclick="openM('projM')"><span class="sb-ic">▦</span><span class="sb-lbl">Nuevo Proyecto</span></div>
+    <div class="sb-item" onclick="openM('areaM')"><span class="sb-ic">➕</span><span class="sb-lbl">Nueva Área</span></div>
+    <div class="sb-item" onclick="openM('projM')"><span class="sb-ic">📁</span><span class="sb-lbl">Nuevo Proyecto</span></div>
   </div>
   <div class="sb-bot">
-    <div class="sb-item" onclick="openM('settingsM')"><span class="sb-ic">◉</span><span class="sb-lbl">Ajustes</span></div>
-    <div class="sb-item" style="color:#ff6b6b" onclick="doLogout()"><span class="sb-ic">◁</span><span class="sb-lbl">Salir</span></div>
+    <div class="sb-item" onclick="openM('settingsM')"><span class="sb-ic">⚙️</span><span class="sb-lbl">Ajustes</span></div>
+    <div class="sb-item" style="color:#ff6b6b" onclick="doLogout()"><span class="sb-ic">🚪</span><span class="sb-lbl">Salir</span></div>
   </div>
 </nav>
 
@@ -773,6 +794,7 @@ html{font-size:17px}
       <div class="page" id="page-areas">
         <div class="page-title">📁 Áreas de Vida
           <div style="margin-left:auto;display:flex;gap:.5rem">
+            <button class="btn btn-ghost btn-sm" onclick="reorganizeAreas()">🧩 Ordenar áreas</button>
             <button class="btn btn-ghost btn-sm" onclick="openNewArea()">+ Área</button>
             <button class="btn btn-sm" onclick="openNewProj()">+ Proyecto</button>
           </div>
@@ -861,10 +883,10 @@ html{font-size:17px}
 
 <!-- BOTTOM NAV -->
 <nav class="bot-nav" id="botNav" style="display:none">
-  <div class="bn-item active" id="bn-home" onclick="goPage('home')"><div class="bn-ic">●</div><div class="bn-lbl">Inicio</div></div>
-  <div class="bn-item" id="bn-goals" onclick="goPage('goals')"><div class="bn-ic">⚑</div><div class="bn-lbl">Metas</div></div>
-  <div class="bn-item" id="bn-review" onclick="goPage('review')"><div class="bn-ic">◷</div><div class="bn-lbl">Semana</div></div>
-  <div class="bn-item" id="bn-more" onclick="openM('moreM')"><div class="bn-ic">⋯</div><div class="bn-lbl">Más</div></div>
+  <div class="bn-item active" id="bn-home" onclick="goPage('home')"><div class="bn-ic">🏠</div><div class="bn-lbl">Inicio</div></div>
+  <div class="bn-item" id="bn-goals" onclick="goPage('goals')"><div class="bn-ic">🎯</div><div class="bn-lbl">Metas</div></div>
+  <div class="bn-item" id="bn-review" onclick="goPage('review')"><div class="bn-ic">📅</div><div class="bn-lbl">Semana</div></div>
+  <div class="bn-item" id="bn-more" onclick="openM('moreM')"><div class="bn-ic">☰</div><div class="bn-lbl">Más</div></div>
 </nav>
 
 <!-- AREA MODAL -->
@@ -1990,12 +2012,12 @@ function renderHomeGoals(){
   const box=document.getElementById('homeGoals');
   if(!box)return;
   const wk={start:weekStart(),end:addDays(weekStart(),6)};
-  const focus=db.goals.filter(g=>g.is_focus&&!g.done).slice(0,3);
+  const q0=quarter().key,act0=db.goals.filter(g=>!g.done&&(g.quarter===q0||!g.quarter)),focus=[...act0.filter(g=>g.is_focus),...act0.filter(g=>!g.is_focus)].slice(0,6);
   const dayIdx=((new Date().getDay()+6)%7)+1;
   const low=db.areas.filter(a=>+a.weekly_min_hours>0).map(a=>{const m=db.entries.filter(e=>e.type!=='sleep'&&inR(e.date,wk.start,wk.end)&&entryArea(e)===a.id).reduce((s,e)=>s+eMin(e),0);return{a,m,exp:a.weekly_min_hours*60*dayIdx/7}}).filter(x=>dayIdx>=4&&x.m<x.exp*0.6).sort((x,y)=>x.m/x.exp-y.m/y.exp);
   const rec=db.recs[0];
   const chips=[[0,'Libre'],[25,'25 min'],[50,'50 min'],[90,'90 min']].map(([n,l])=>`<button class="mode${homeMode===n?' on':''}" onclick="setMode(${n})">${l}</button>`).join('');
-  let h=`<div class="sec-lbl"><span>★ Mis metas clave</span></div>
+  let h=`<div class="sec-lbl"><span>★ Mis metas</span></div>
     <div class="modes">${chips}</div>
     <div style="font-size:.8125rem;color:var(--t3);margin-bottom:1rem">${homeMode?'Suena al terminar los '+homeMode+' min y el tiempo se guarda solo.':'Tú decides cuándo parar. Toca ⏹ para guardar.'}</div>`;
   if(focus.length){h+=`<div class="g-list">`+focus.map(g=>goalMini(g)).join('')+`</div><div style="margin-top:.75rem"><button class="btn btn-ghost btn-xs" onclick="goPage('goals')">Ver todas mis metas →</button></div>`}
@@ -2006,8 +2028,7 @@ function renderHomeGoals(){
   box.innerHTML=h;
 }
 function goalMini(g){const p=gProg(g),a=areaById(g.category_id),col=a?.color||'var(--cyan)';const on=user?.active_timer&&user.active_timer.goalId===g.id;
-  return`<div class="g-card" style="background:var(--bg3)"><div class="g-top"><div class="g-title">${escH(a?.icon||'')} ${escH(g.title)}</div>${on?`<button class="go" style="background:var(--del);color:#fff" onclick="stopTimer()">⏹ Parar</button>`:`<button class="go" onclick="startGoal('${g.id}')">▶ Empezar</button>`}</div>
-  <div class="pbar"><div style="width:${p.pct*100}%;background:${col}"></div></div><div class="g-meta"><span>${escH(p.main)}</span>${p.sub?`<span>${escH(p.sub)}</span>`:''}${p.st&&p.st!=='mute'?`<span class="pill ${p.st}">${ST_LBL[p.st]}</span>`:''}</div></div>`}
+  return`<div class="gm"><div class="gm-main"><div class="gm-t">${g.is_focus?'★ ':''}${escH(g.title)}</div><div class="pbar"><div style="width:${p.pct*100}%;background:${col}"></div></div><div class="gm-s"><span>${escH(a?.icon||'')} ${escH(p.main)}</span>${p.st&&p.st!=='mute'?`<span class="pill ${p.st}">${ST_LBL[p.st]}</span>`:''}</div></div>${g.kind==='task'?`<button class="gm-go" style="border-color:var(--ok);color:var(--ok)" onclick="toggleTask('${g.id}')" title="Marcar como hecha" aria-label="Marcar como hecha">✓</button>`:on?`<button class="gm-go on" onclick="stopTimer()" aria-label="Parar">■</button>`:`<button class="gm-go" onclick="startGoal('${g.id}')" title="Empezar a trabajar en esto" aria-label="Empezar">▶</button>`}</div>`}
 
 /* ── METAS ── */
 function renderGoals(){
@@ -2273,14 +2294,15 @@ doLogout=function(){document.title='1440';db.goals=[];db.logs=[];db.reviews=[];d
 <div class="overlay" id="planM">
   <div class="modal"><div class="mhd"><h2 id="pbH">Bloque</h2><button class="mclose" onclick="closeM('planM')">×</button></div>
     <input type="hidden" id="pbId"><input type="hidden" id="pbMode">
-    <div class="fg"><label for="pbKind">Tipo</label><select id="pbKind" onchange="pbKindUI()">
-      <option value="work">Trabajo / meta (se mide)</option><option value="free">Descanso, comida, gym… (no se mide)</option><option value="meeting">Reunión</option></select></div>
-    <div class="fg" id="pbAreaW"><label for="pbArea">Área de vida</label><select id="pbArea" onchange="pbFillGoals()"></select></div>
+    <div class="fg" id="pbAreaW"><label for="pbArea">¿A qué área pertenece?</label><select id="pbArea" onchange="pbFillGoals()"></select>
+      <div style="font-size:.82rem;color:var(--t3);margin-top:.3rem">Comida, baño o breaks van en “Rutina y descanso”. Todo cuenta: así tu día suma 1440.</div></div>
     <div class="fg" id="pbGoalW"><label for="pbGoal">Meta (opcional)</label><select id="pbGoal" onchange="pbGoalPick()"></select></div>
+    <div class="fg"><label for="pbKind">Tipo</label><select id="pbKind"><option value="work">Actividad</option><option value="meeting">Reunión</option></select></div>
     <div class="fg"><label for="pbTitle">Nombre del bloque</label><input type="text" id="pbTitle" maxlength="80" placeholder="Ej: Novalti · pacto de socios"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
-      <div class="fg"><label for="pbStart">Desde</label><input type="time" id="pbStart"></div>
-      <div class="fg"><label for="pbEnd">Hasta</label><input type="time" id="pbEnd"></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem">
+      <div class="fg"><label for="pbStart">Desde</label><input type="time" id="pbStart" oninput="updPbDur()"></div>
+      <div class="fg"><label for="pbEnd">Hasta</label><input type="time" id="pbEnd" oninput="updPbDur()"></div>
+      <div class="fg"><label>Dura</label><div id="pbDur" class="pbdur">—</div></div></div>
     <div class="mbtns"><button class="btn btn-del" id="pbDel" onclick="delBlock()">Eliminar</button><button class="btn btn-ghost" onclick="closeM('planM')">Cancelar</button><button class="btn" onclick="saveBlock()">Guardar</button></div>
   </div>
 </div>
@@ -2371,13 +2393,13 @@ function renderPlan(){
     <button class="ibtn" onclick="planShift(-1)" aria-label="Día anterior">‹</button><button class="ibtn" onclick="planShift(0)">Hoy</button><button class="ibtn" onclick="planShift(1)" aria-label="Día siguiente">›</button></div></div>`;
   if(!planReady)h+=`<div class="pb-empty">Falta un paso en Supabase: correr el SQL del plan (archivo supabase-plan.sql).</div>`;
   else{
-    if(isT){const c=capacity();h+=`<div class="pl-sum${c.free<0?' bad':''}">${c.free<0?`⚠️ Tienes ${fmtM(-c.free)} más de bloques que de día. Mueve o quita algo.`:`Por hacer ${fmtM(c.pend)} · libre ${fmtM(c.free)}`}</div>`}
+    if(isT){const c=capacity();h+=`<div class="pl-sum${c.free<0?' bad':''}">${c.free<0?`⚠️ Tienes ${fmtM(-c.free)} más de bloques que de día. Mueve o quita algo.`:`Planeado hoy ${fmtM(bs.reduce((x,b)=>x+b.end_min-b.start_min,0))} · por hacer ${fmtM(c.pend)} · libre ${fmtM(c.free)}`}</div>`}
     if(!bs.length)h+=`<div class="pb-empty">Aún no hay bloques ${isT?'hoy':'este día'}.<br>Agrega uno o arma tu plantilla.</div>`;
     h+=`<div class="pl-list">`+bs.map(b=>{
       const a=areaById(b.category_id),now=isT&&b.status==='pending'&&b.start_min<=n&&n<b.end_min,late=isT&&b.status==='pending'&&b.end_min<=n&&b.kind==='work';
-      const st=b.status==='done'?'✓ hecho':b.status==='moved'?'→ pasó a mañana':now?'ahora':late?'sin hacer':(b.kind==='free'?'no se mide':b.kind==='meeting'?'reunión':(a?a.name:''));
+      const st=b.status==='done'?'✓ hecho':b.status==='moved'?'→ pasó a mañana':now?'ahora':late?'sin hacer':(b.kind==='meeting'?'reunión · '+(a?a.name:''):(a?a.name:''));
       const col=a?.color?`style="border-left-color:${a.color}"`:'';
-      return`<div class="pb ${b.kind}${b.status!=='pending'?' done':''}${now?' now':''}${late?' late':''}" ${col} onclick="openBlock('${b.id}')"><div><div class="pbt">${hhmm(b.start_min)}–${hhmm(b.end_min)} · ${escH(blkName(b))}</div><div class="pbs">${escH(st)}</div></div>${isT&&b.status==='pending'&&measurable(b)&&!user.active_timer?`<button class="pb-go" onclick="event.stopPropagation();startBlock('${b.id}')" aria-label="Empezar">▶</button>`:''}</div>`}).join('')+`</div>`;
+      return`<div class="pb ${b.kind}${b.status!=='pending'?' done':''}${now?' now':''}${late?' late':''}" ${col} onclick="openBlock('${b.id}')"><div><div class="pbt">${hhmm(b.start_min)}–${hhmm(b.end_min)} · ${escH(blkName(b))}</div><div class="pbs">${escH(st)}</div></div><span class="pbd">${fmtM(b.end_min-b.start_min)}</span>${isT&&b.status==='pending'&&measurable(b)&&!user.active_timer?`<button class="pb-go" onclick="event.stopPropagation();startBlock('${b.id}')" aria-label="Empezar">▶</button>`:''}</div>`}).join('')+`</div>`;
   }
   h+=`<div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.8rem"><button class="btn btn-sm" onclick="openBlock(null,'day')">+ Bloque</button><button class="btn btn-ghost btn-sm" onclick="openTpl()">Plantillas</button>${isT?`<button class="btn btn-ghost btn-sm" onclick="openClose()">Cerrar día</button><button class="btn btn-ghost btn-sm" onclick="openSiestaModal()">💤 Siesta</button>`:''}</div></div>`;
   box.innerHTML=h;
@@ -2385,28 +2407,31 @@ function renderPlan(){
 async function planShift(d){planDs=d===0?today():addDays(planDs||today(),d);await ensureDay(planDs);renderPlan()}
 
 /* ── AHORA TOCA (centro) ── */
+function nwShell(lbl,name,meta,clock,note,primary,secs){
+  return`<div class="nw-top"><div class="nw-l"><div class="nw-lbl">${lbl}</div><div class="nw-t">${name}</div><div class="nw-meta">${meta||''}</div></div><div class="nw-clk"><span id="nwT">${clock}</span><span class="nw-of" id="nwOf"></span></div></div><div class="nw-bar"><i id="nwB"></i></div><div class="nw-note">${note||''}</div><div class="nw-acts">${primary}</div><div class="nw-row2">${secs}</div>`}
 function renderNow(){
   const box=$('nowCard');if(!box||!user)return;
-  const t=user.active_timer,cur=curBlock(),nxt=nextBlock(),pz=lsGet('1440_pause'),n=nowMin();
+  const t=user.active_timer,cur=curBlock(),nxt=nextBlock(),pz=lsGet('1440_pause');
   const tb=t&&t.blockId?db.plan.find(b=>b.id===t.blockId):null,over=!!(t&&t.bEnd&&Date.now()>=t.bEnd);
-  let h='';
+  const mtg='<button class="btn btn-ghost" onclick="openMeeting()">Reunión</button>';
+  let h;
   if(t){
-    h=`<div class="nw-lbl">AHORA${tb?' · '+hhmm(tb.start_min)+'–'+hhmm(tb.end_min):''}</div><div class="nw-t">${escH(t.name)}</div><div class="nw-meta">${escH(t.meta||'')}</div>
-    <div class="nw-clock"><span id="nwT">00:00:00</span><span class="nw-of" id="nwOf"></span></div><div class="nw-bar"><i id="nwB"></i></div>`;
-    if(over)h+=`<div class="nw-nudge">⏰ Terminó este bloque. ¿Qué sigue? <span style="color:var(--t2)">(si no respondes, se detiene solo)</span></div>`;
-    h+=`<div class="nw-acts">`+(tb?`<button class="btn" onclick="nextFromBlock()">${nxt&&measurable(nxt)?'Pasar a '+escH(blkName(nxt)):'Terminar bloque'}</button>`:`<button class="btn" onclick="stopTimer()">⏹ Parar</button>`)
-      +(over?`<button class="btn btn-ghost" onclick="extendBlock()">Seguir 15 min</button>`:`<button class="btn btn-ghost" onclick="pauseBlock()">⏸ Pausa</button>`)
-      +`<button class="btn btn-ghost" onclick="openMeeting()">Entró una reunión</button>`+(tb?`<button class="btn btn-ghost" onclick="stopTimer()">⏹ Parar</button>`:'')+`</div>`;
+    const note=over?'⏰ Terminó el bloque. ¿Qué sigue? Si no respondes, se detiene solo.':(tb&&nxt?'Siguiente: '+escH(blkName(nxt))+' · '+hhmm(nxt.start_min):'');
+    h=nwShell('AHORA'+(tb?' · '+hhmm(tb.start_min)+'–'+hhmm(tb.end_min):''),escH(t.name),escH(t.meta||''),'00:00:00',note,
+      tb?`<button class="btn" onclick="nextFromBlock()">${nxt&&measurable(nxt)?'Pasar a '+escH(blkName(nxt)):'Terminar bloque'}</button>`:`<button class="btn" onclick="stopTimer()">⏹ Parar</button>`,
+      (over?'<button class="btn btn-ghost" onclick="extendBlock()">+15 min</button>':'<button class="btn btn-ghost" onclick="pauseBlock()">⏸ Pausa</button>')+mtg+(tb?'<button class="btn btn-ghost" onclick="stopTimer()">⏹ Parar</button>':''));
   }else if(pz){
-    h=`<div class="nw-lbl">EN PAUSA</div><div class="nw-t">${escH(pz.name)}</div><div class="nw-meta">Pausaste a las ${hhmm(new Date(pz.ts).getHours()*60+new Date(pz.ts).getMinutes())}</div>
-    <div class="nw-acts" style="margin-top:1rem"><button class="btn" onclick="resumePause()">▶ Reanudar</button><button class="btn btn-ghost" onclick="dropPause()">Descartar</button><button class="btn btn-ghost" onclick="openMeeting()">Entró una reunión</button></div>`;
+    h=nwShell('EN PAUSA',escH(pz.name),'Pausaste a las '+hhmm(new Date(pz.ts).getHours()*60+new Date(pz.ts).getMinutes()),'⏸','Lo trabajado ya quedó guardado.',
+      '<button class="btn" onclick="resumePause()">▶ Reanudar</button>','<button class="btn btn-ghost" onclick="dropPause()">Descartar</button>'+mtg);
   }else if(cur){
     const a=areaById(cur.category_id);
-    h=`<div class="nw-lbl">AHORA TOCA · ${hhmm(cur.start_min)}–${hhmm(cur.end_min)}</div><div class="nw-t">${escH(blkName(cur))}</div><div class="nw-meta">${cur.kind==='free'?'Descanso · no se mide':cur.kind==='meeting'?'Reunión':escH(a?a.name:'')}</div>
-    <div class="nw-acts" style="margin-top:1.1rem">${measurable(cur)?`<button class="btn" onclick="startBlock('${cur.id}')">▶ Empezar</button>`:`<button class="btn" onclick="markBlock('${cur.id}','done')">✓ Listo</button>`}<button class="btn btn-ghost" onclick="openMeeting()">Entró una reunión</button></div>`;
+    h=nwShell('AHORA TOCA · '+hhmm(cur.start_min)+'–'+hhmm(cur.end_min),escH(blkName(cur)),(cur.kind==='meeting'?'Reunión · ':'')+escH(a?a.name:''),fmtM(cur.end_min-cur.start_min),nxt?'Siguiente: '+escH(blkName(nxt))+' · '+hhmm(nxt.start_min):'',
+      measurable(cur)?`<button class="btn" onclick="startBlock('${cur.id}')">▶ Empezar</button>`:`<button class="btn" onclick="markBlock('${cur.id}','done')">✓ Listo</button>`,
+      `<button class="btn btn-ghost" onclick="openBlock(null,'day')">+ Bloque</button>`+mtg);
   }else{
-    h=`<div class="nw-lbl">AHORA</div><div class="nw-t">${nxt?'Siguiente: '+escH(blkName(nxt)):'Nada planeado ahora'}</div><div class="nw-meta">${nxt?'a las '+hhmm(nxt.start_min):'Elige abajo qué vas a hacer, o agrega un bloque.'}</div>
-    <div class="nw-acts" style="margin-top:1.1rem">${nxt&&measurable(nxt)?`<button class="btn" onclick="startBlock('${nxt.id}')">▶ Empezar ya</button>`:''}<button class="btn btn-ghost" onclick="openBlock(null,'day')">+ Bloque</button><button class="btn btn-ghost" onclick="openMeeting()">Entró una reunión</button></div>`;
+    h=nwShell('AHORA',nxt?'Siguiente: '+escH(blkName(nxt)):'Nada planeado ahora',nxt?'a las '+hhmm(nxt.start_min):'Elige abajo qué vas a hacer o agrega un bloque.','—','',
+      nxt&&measurable(nxt)?`<button class="btn" onclick="startBlock('${nxt.id}')">▶ Empezar ya</button>`:`<button class="btn" onclick="openBlock(null,'day')">+ Bloque</button>`,
+      (nxt&&measurable(nxt)?`<button class="btn btn-ghost" onclick="openBlock(null,'day')">+ Bloque</button>`:'')+mtg);
   }
   box.innerHTML=h;
 }
@@ -2491,7 +2516,7 @@ async function saveMeeting(){
   const bs=dayBlocks(ds).filter(b=>b.status==='pending');
   const cur=bs.find(b=>b.start_min<=n&&n<b.end_min);
   const later=bs.filter(b=>b.start_min>=n&&b!==cur);
-  const ins=[{user_id:user.id,date:ds,start_min:n,end_min:Math.min(1440,n+mins),title,kind:'meeting',category_id:null,goal_id:null}];
+  const ins=[{user_id:user.id,date:ds,start_min:n,end_min:Math.min(1440,n+mins),title,kind:'meeting',category_id:cur?cur.category_id:null,goal_id:null}];
   const ups=[];
   if(cur){
     if(n-cur.start_min<5)later.push(cur);
@@ -2507,7 +2532,8 @@ async function saveMeeting(){
 }
 
 /* ── editor de bloques ── */
-function pbKindUI(){const w=$('pbKind').value==='work';$('pbAreaW').style.display=w?'':'none';$('pbGoalW').style.display=w?'':'none'}
+function pbKindUI(){}
+function updPbDur(){const d=toMin($('pbEnd').value)-toMin($('pbStart').value);$('pbDur').textContent=d>0?fmtM(d):'—';$('pbDur').style.color=d>0?'var(--cyan)':'var(--warn)'}
 function pbFillGoals(sel){
   const a=$('pbArea').value,q=quarter().key;
   $('pbGoal').innerHTML='<option value="">— Sin meta específica —</option>'+db.goals.filter(g=>!g.done&&(g.quarter===q||!g.quarter)&&(!a||g.category_id===a)).map(g=>`<option value="${g.id}">${escH(g.title)}</option>`).join('');
@@ -2522,15 +2548,15 @@ function openBlock(id,mode){
   const list=$('pbMode').value==='tpl'?tplBlocks(tplDow):dayBlocks(ds),last=list.length?list[list.length-1].end_min:Math.ceil((nowMin()+1)/30)*30;
   $('pbKind').value=b?.kind||'work';$('pbArea').value=b?.category_id||'';pbFillGoals(b?.goal_id);
   $('pbTitle').value=b?.title||'';$('pbStart').value=hhmm(b?b.start_min:Math.min(last,1380));$('pbEnd').value=hhmm(b?b.end_min:Math.min(last+60,1439));
-  pbKindUI();closeM('tplM');openM('planM');
+  updPbDur();closeM('tplM');openM('planM');
 }
 async function saveBlock(){
   const id=$('pbId').value,mode=$('pbMode').value,kind=$('pbKind').value;
   const s=toMin($('pbStart').value),e=toMin($('pbEnd').value);
   if(e<=s)return showToast('La hora final debe ser después de la inicial',true);
-  const cat=kind==='work'?($('pbArea').value||null):null,gid=kind==='work'?($('pbGoal').value||null):null;
-  if(kind==='work'&&!cat)return showToast('Elige un área para que se mida el tiempo',true);
-  let title=$('pbTitle').value.trim();if(!title)title=kind==='meeting'?'Reunión':kind==='free'?'Descanso':(gid?goalById(gid).title:areaById(cat).name);
+  const cat=$('pbArea').value||null,gid=$('pbGoal').value||null;
+  if(!cat)return showToast('Elige a qué área pertenece para que cuente en tu día',true);
+  let title=$('pbTitle').value.trim();if(!title)title=kind==='meeting'?'Reunión':kind==='free'?'Descanso':(gid&&goalById(gid)?goalById(gid).title:areaById(cat).name);
   const pl={kind,category_id:cat,goal_id:gid,title,start_min:s,end_min:e};
   const old=id&&db.plan.find(x=>x.id===id);
   if(old){const{error}=await sb.from('plan_blocks').update(pl).eq('id',id);if(error)return pbErr(error);Object.assign(old,pl)}
@@ -2549,7 +2575,7 @@ function openTpl(){tplDow=dowOf(planDs||today());renderTpl();openM('tplM')}
 function renderTpl(){
   $('tplTabs').innerHTML=DOW_N.map((d,i)=>`<button class="chip${i===tplDow?' on':''}" onclick="tplDow=${i};renderTpl()">${d.slice(0,3)}</button>`).join('');
   const l=tplBlocks(tplDow);
-  $('tplList').innerHTML=l.length?l.map(b=>{const a=areaById(b.category_id);return`<div class="pb ${b.kind}" ${a?.color?`style="border-left-color:${a.color}"`:''} onclick="openBlock('${b.id}')"><div><div class="pbt">${hhmm(b.start_min)}–${hhmm(b.end_min)} · ${escH(blkName(b))}</div><div class="pbs">${b.kind==='free'?'no se mide':escH(a?a.name:'')}</div></div></div>`}).join(''):`<div class="pb-empty">Sin bloques para ${DOW_N[tplDow].toLowerCase()}.</div>`;
+  $('tplList').innerHTML=l.length?l.map(b=>{const a=areaById(b.category_id);return`<div class="pb ${b.kind}" ${a?.color?`style="border-left-color:${a.color}"`:''} onclick="openBlock('${b.id}')"><div><div class="pbt">${hhmm(b.start_min)}–${hhmm(b.end_min)} · ${escH(blkName(b))}</div><div class="pbs">${escH(a?a.name:'')}</div></div><span class="pbd">${fmtM(b.end_min-b.start_min)}</span></div>`}).join(''):`<div class="pb-empty">Sin bloques para ${DOW_N[tplDow].toLowerCase()}.</div>`;
 }
 async function tplToWeekdays(){
   const src=tplBlocks(tplDow);if(!src.length)return showToast('Primero arma este día',true);
@@ -2600,7 +2626,7 @@ function renderWeekSide(){
     const done=db.entries.filter(e=>e.type!=='sleep'&&inR(e.date,wk.start,wk.end)&&entryArea(e)===a.id).reduce((s,e)=>s+eMin(e),0);
     const sch=dayBlocks(today()).filter(b=>b.status==='pending'&&b.kind==='work'&&b.category_id===a.id&&b.end_min>n).reduce((s,b)=>s+b.end_min-Math.max(b.start_min,n),0)
       +db.plan.filter(b=>!b.date&&b.kind==='work'&&b.category_id===a.id&&b.dow>td).reduce((s,b)=>s+b.end_min-b.start_min,0);
-    return{a,done,sch,min:a.weekly_min_hours*60}}).sort((x,y)=>(y.min-x.done-x.sch)-(x.min-y.done-y.sch));
+    return{a,done,sch,min:a.weekly_min_hours*60}}).sort((x,y)=>(y.min-x.done-x.sch)-(x.min-y.done-y.sch)).slice(0,5);
   box.innerHTML=`<div class="sec-lbl"><span>Tu semana · hecho + agendado</span></div>`+(rows.length?rows.map(r=>{
     const miss=r.min-r.done-r.sch;
     return`<div class="ws-row"><div class="l"><b style="font-weight:600">${escH((r.a.icon||'')+' '+r.a.name)}</b><span>${fmtM(r.done)} de ${fmtM(r.min)}</span></div>
@@ -2617,6 +2643,85 @@ const _renderAll2=renderAll;
 renderAll=function(){_renderAll2();if(user){renderWeekSide();renderNow()}};
 const _doLogout2=doLogout;
 doLogout=function(){if(nowIv){clearInterval(nowIv);nowIv=null}db.plan=[];_nowKey='';_doLogout2()};
+</script>
+
+<script>
+/* ══ 1440 · ÁREAS ORDENADAS, SESIÓN RECORDADA, RUTINA ══ */
+const _nrm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+const AREA_PLAN=[
+ {k:'emp',keys:['empresa','trabajo','pariscorp','empleo'],name:'Empresa',icon:'🏢',color:'#6e98dc',min:0},
+ {k:'free',keys:['freelance'],name:'Freelance',icon:'💼',color:'#4fb3a9',min:0},
+ {k:'nov',keys:['novalti'],name:'Novalti',icon:'🚀',color:'#a08be6',min:4},
+ {k:'che',keys:['cherry'],name:'Cherry',icon:'🍒',color:'#ef7f92',min:3},
+ {k:'coti',keys:['coti'],name:'Coti y apps propias',icon:'💻',color:'#e3b862',min:4},
+ {k:'fin',keys:['finanz','dinero','ahorro'],name:'Finanzas',icon:'💰',color:'#62cf9c',min:1},
+ {k:'sal',keys:['salud','deporte','ejercicio','gym','cuerpo'],name:'Salud',icon:'💪',color:'#f0935a',min:4},
+ {k:'yo',keys:['yo misma','personal','crecimiento'],name:'Yo misma',icon:'🧘',color:'#c58be0',min:3},
+ {k:'rel',keys:['relacion','familia','pareja'],name:'Familia y relaciones',icon:'❤️',color:'#e87fb4',min:5},
+ {k:'rut',keys:['rutina'],name:'Rutina y descanso',icon:'🍽️',color:'#8593ad',min:0}];
+const _findArea=A=>db.areas.find(x=>A.keys.some(k=>_nrm(x.name)===k||_nrm(x.name).startsWith(k)));
+async function ensureRoutine(){
+  const A=AREA_PLAN.find(x=>x.k==='rut');if(_findArea(A))return;
+  const{data}=await sb.from('categories').insert([{user_id:user.id,name:A.name,icon:A.icon,color:A.color,weekly_min_hours:0}]).select().single();
+  if(data){db.areas.push(data);renderAll()}
+}
+async function reorganizeAreas(){
+  const ok=await askConfirm('¿Ordenar tus áreas de vida?','Separo Empresa, Freelance, Novalti, Cherry y Coti; dejo Finanzas, Salud, Yo misma y Familia; agrego Rutina y descanso, y muevo tus metas al área que les toca. No pierdes tiempo registrado.','🧩','Ordenar');
+  lsSet('1440_areas_v2',1);if(!ok)return;
+  const map={};
+  for(const A of AREA_PLAN){
+    let a=_findArea(A);
+    if(!a){const{data,error}=await sb.from('categories').insert([{user_id:user.id,name:A.name,icon:A.icon,color:A.color,weekly_min_hours:A.min}]).select().single();if(error)return showToast('Error: '+error.message,true);a=data;db.areas.push(a)}
+    else{const up={};if(_nrm(a.name)!==_nrm(A.name))up.name=A.name;if(!(+a.weekly_min_hours>0)&&A.min)up.weekly_min_hours=A.min;
+      if(Object.keys(up).length){await sb.from('categories').update(up).eq('id',a.id);Object.assign(a,up)}}
+    map[A.k]=a.id;
+  }
+  const to={cherry:'che',novalti:'nov',coti:'coti'};
+  for(const g of db.goals){const k=to[_nrm(g.title).split(/[: ]/)[0]];if(k&&g.category_id!==map[k]){await sb.from('goals').update({category_id:map[k]}).eq('id',g.id);g.category_id=map[k]}}
+  const used=id=>db.entries.some(e=>e.category_id===id)||db.projects.some(p=>p.category_id===id)||db.goals.some(g=>g.category_id===id)||db.plan.some(b=>b.category_id===id);
+  for(const a of db.areas.filter(x=>/^negocio|^emprend/.test(_nrm(x.name)))){
+    if(!used(a.id)){await sb.from('categories').delete().eq('id',a.id);db.areas=db.areas.filter(x=>x.id!==a.id)}
+    else if(+a.weekly_min_hours>0){await sb.from('categories').update({weekly_min_hours:0}).eq('id',a.id);a.weekly_min_hours=0}
+  }
+  renderAll();if(typeof renderAreas==='function')renderAreas();refreshGoalViews();planRefresh();showToast('Áreas ordenadas ✓');
+}
+const _loadPlan=loadPlan;
+loadPlan=async function(){await _loadPlan();await ensureRoutine();if(!lsGet('1440_areas_v2'))setTimeout(reorganizeAreas,700)};
+
+/* ── sesión recordada: solo PIN ── */
+async function enterUser(ud){
+  user=ud;await loadAll();launchApp();
+  if(!ud.sleep_routine?.enabled)$('slOv').classList.add('open');else await procSleep();
+  if(ud.active_timer?.start){timerStart=new Date(ud.active_timer.start);resumeTimerUI(ud.active_timer.name,ud.active_timer.meta)}
+}
+const _doLogin=doLogin;
+doLogin=async function(){
+  const last=lsGet('1440_lastuser');
+  if(last&&$('lf-login').dataset.pinonly==='1')$('l-u').value=last;
+  await _doLogin();
+  if(user){lsSet('1440_session',{id:user.id});lsSet('1440_lastuser',user.username)}
+};
+const _doLogout3=doLogout;
+doLogout=function(){lsSet('1440_session',null);_doLogout3();pinOnlyUI()};
+function pinOnlyUI(){
+  const last=lsGet('1440_lastuser'),w=$('l-u').closest('.fg'),f=$('lf-login');
+  if(!last){w.style.display='';f.dataset.pinonly='0';const o=$('otherU');if(o)o.remove();return}
+  w.style.display='none';f.dataset.pinonly='1';
+  if(!$('otherU')){const d=document.createElement('div');d.id='otherU';d.style.cssText='text-align:center;color:var(--t2);font-size:.95rem;margin:.2rem 0 .6rem';
+    d.innerHTML='Hola, <b>@'+escH(last)+'</b> · <a href="#" style="color:var(--cyan)" onclick="otherUser();return false">¿otro usuario?</a>';w.parentNode.insertBefore(d,w)}
+  setTimeout(()=>$('lp1').focus(),50);
+}
+function otherUser(){lsSet('1440_lastuser',null);pinOnlyUI();$('l-u').value='';$('l-u').focus()}
+(async function restore(){
+  pinOnlyUI();
+  const ses=lsGet('1440_session');if(!ses||!ses.id)return;
+  $('lscr').style.display='none';
+  try{
+    const{data}=await sb.from('users').select('*').eq('id',ses.id).maybeSingle();
+    if(!data)throw 0;
+    await enterUser(data);
+  }catch(e){lsSet('1440_session',null);$('lscr').style.display='flex'}
+})();
 </script>
 </body>
 </html>

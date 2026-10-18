@@ -26,3 +26,11 @@
 - **Cerrar el día:** resume bloques cumplidos y permite pasar los pendientes de trabajo a mañana (quedan "pasó a mañana" hoy).
 - **Estados de un bloque:** pendiente, hecho (al terminar o detener el cronómetro), pasó a mañana.
 - Los avisos solo funcionan con la app abierta.
+
+## Ajustes v2.1
+- **Todo cuenta:** cada bloque pertenece a un área, incluida "Rutina y descanso" (comida, baño, breaks). Así el día suma 1440. Ya no existe "no se mide".
+- **Sueño:** no se agrega como bloque; el sueño sale de tu rutina en Ajustes y se registra solo. Los bloques planean las horas despiertas hasta tu hora de dormir.
+- **Duración:** el editor de bloques muestra cuánto dura mientras eliges Desde/Hasta; cada bloque del plan muestra su duración exacta.
+- **Áreas sugeridas:** Empresa, Freelance, Novalti, Cherry, Coti y apps propias, Finanzas, Salud, Yo misma, Familia y relaciones, Rutina y descanso. "Ordenar áreas" las crea o renombra sin tocar el tiempo ya registrado, y mueve las metas a su área. Una vez al entrar se ofrece; después queda el botón en Áreas de Vida.
+- **Sesión:** la app recuerda la sesión en este dispositivo (sin pedir PIN al recargar). Al salir, pide solo el PIN y recuerda el usuario; "¿otro usuario?" lo cambia.
+- **Metas en Inicio:** hasta 6 metas del trimestre (primero las ★), con un botón redondo ▶ para empezar o ✓ para tareas.
