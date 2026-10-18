@@ -40,3 +40,7 @@
 - **Proyectos:** tienen su propia página (menú lateral) para crear, editar y eliminar. Un bloque puede ser de un área o de un proyecto de esa área; el tiempo cuenta en ambos.
 - **Barra del día:** vive en el encabezado (minutos registrados de 1440 y lo que queda hasta dormir).
 - **Plan de hoy:** línea de tiempo vertical con un marcador "ahora" entre los bloques.
+
+## Ajustes v2.4
+- **Sueño de anoche:** cada mañana, si el sueño se registró automáticamente con tu rutina, aparece una tarjeta "Anoche dormiste X – Y. ¿Es correcto?" con Sí o Corregir (cambia la hora de dormir y de despertar). Al confirmar o corregir, deja de preguntar. Si cambia el día con la app abierta, se registra y pregunta sin recargar.
+- **Copiar plantillas:** "Copiar a otros días" deja elegir los días. Por defecto marca martes a viernes que estén vacíos. Los días con ● ya tienen plan y piden confirmación antes de reemplazarse. Lunes y fin de semana nunca se marcan solos.

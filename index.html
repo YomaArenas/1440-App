@@ -614,6 +614,7 @@ b,strong{font-weight:500}
 .hstat-ic{display:inline-flex;color:var(--cyan)}.hstat-ic .hi{width:17px;height:17px}
 .hdr-btn{color:var(--t2)}.hdr-btn:hover{color:var(--cyan);border-color:var(--cyan)}
 .qt-item>div:first-child{min-width:0;flex:1}.qt-item{padding:.7rem .75rem}
+.slc{display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;padding:.6rem .9rem;border-radius:12px;background:rgba(160,139,230,.1);border:1px solid rgba(160,139,230,.35);font-size:.9rem}.slc-t{display:flex;align-items:center;gap:.5rem}.slc-b{display:flex;gap:.4rem}.hm-mid #sleepCard:empty{display:none}
 </style>
 </head>
 <body>
@@ -761,6 +762,7 @@ b,strong{font-weight:500}
       <div class="page active" id="page-home">
         <div class="hm-grid">
           <section class="hm-mid">
+            <div id="sleepCard"></div>
             <div class="nw-card" id="nowCard"></div>
             <div class="split">
           <div class="qt-card card" style="border-radius:16px">
@@ -2369,9 +2371,10 @@ doLogout=function(){document.title='1440';db.goals=[];db.logs=[];db.reviews=[];d
     <p style="color:var(--t2);font-size:.95rem;margin-bottom:.8rem">Arma cómo es tu día típico. Cada mañana tu plan aparece solo con esta plantilla.</p>
     <div class="chips" id="tplTabs" style="margin-bottom:.8rem"></div>
     <div id="tplList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:.8rem"></div>
+    <div id="tplCopy"></div>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap">
       <button class="btn btn-sm" onclick="openBlock(null,'tpl')">+ Bloque</button>
-      <button class="btn btn-ghost btn-sm" onclick="tplToWeekdays()">Copiar a L–V</button>
+      <button class="btn btn-ghost btn-sm" onclick="tplCopyUI()">Copiar a otros días</button>
       <button class="btn btn-ghost btn-sm" onclick="dayToTpl()">Usar el plan de hoy</button>
       <button class="btn btn-ghost btn-sm" onclick="genNextWeek()">Armar próxima semana</button>
     </div>
@@ -2809,6 +2812,43 @@ function otherUser(){lsSet('1440_lastuser',null);pinOnlyUI();$('l-u').value='';$
     await enterUser(data);
   }catch(e){lsSet('1440_session',null);$('lscr').style.display='flex'}
 })();
+</script>
+
+<script>
+/* ══ 1440 · confirmar sueño de anoche + copiar plantillas a días elegidos ══ */
+let _lastDay=today(),tplSel=new Set();
+function lastSleep(){const y=addDays(today(),-1);return db.entries.find(e=>e.type==='sleep'&&e.subtype!=='siesta'&&e.date===y)}
+function renderSleepCard(){
+  const box=$('sleepCard');if(!box||!user)return;
+  const e=lastSleep();
+  if(!e||!e.auto_detected){box.innerHTML='';return}
+  box.innerHTML=`<div class="slc"><div class="slc-t"><span class="hstat-ic" style="color:var(--sleep)">${THEME_IC.moon}</span><span>Anoche dormiste <b>${fmtT(e.start_time)} – ${fmtT(e.end_time)}</b> (${fmtM(Math.floor(e.duration/60))}). ¿Es correcto?</span></div><div class="slc-b"><button class="btn btn-sm" onclick="confirmSleep()">Sí</button><button class="btn btn-ghost btn-sm" onclick="openTlSleepEdit('${e.id}')">Corregir</button></div></div>`;
+}
+async function confirmSleep(){
+  const e=lastSleep();if(!e)return;e.auto_detected=false;
+  await sb.from('time_entries').update({auto_detected:false}).eq('id',e.id);renderSleepCard();showToast('Sueño confirmado ✓');
+}
+const _stse=saveTlSleepEdit;
+saveTlSleepEdit=async function(){const id=$('tlSlpId').value;await _stse();const e=db.entries.find(x=>x.id===id);
+  if(e&&e.auto_detected){e.auto_detected=false;await sb.from('time_entries').update({auto_detected:false}).eq('id',id)}renderSleepCard()};
+const _renderAll5=renderAll;renderAll=function(){_renderAll5();renderSleepCard()};
+/* cambio de día sin recargar */
+setInterval(async()=>{if(!user||today()===_lastDay)return;_lastDay=today();planDs=today();try{await procSleep()}catch{}await ensureDay(today());planRefresh();renderSleepCard()},30000);
+/* copiar plantilla a días elegidos */
+function tplCopyUI(){
+  const box=$('tplCopy');
+  if(!tplBlocks(tplDow).length){box.innerHTML='';return showToast('Primero arma este día',true)}
+  tplSel=new Set(DOW_N.map((_,i)=>i).filter(i=>i!==tplDow&&i>=1&&i<=4&&!tplBlocks(i).length));
+  drawCopy();
+}
+function drawCopy(){
+  $('tplCopy').innerHTML=`<div class="pl-sum" style="margin:0 0 .4rem">Copiar ${DOW_N[tplDow].toLowerCase()} a:</div><div class="chips" style="margin-bottom:.6rem">${DOW_N.map((d,i)=>i===tplDow?'':`<button class="chip${tplSel.has(i)?' on':''}" onclick="tplSel.has(${i})?tplSel.delete(${i}):tplSel.add(${i});drawCopy()">${d.slice(0,3)}${tplBlocks(i).length?' ●':''}</button>`).join('')}</div><div style="font-size:.8rem;color:var(--t3);margin-bottom:.6rem">● = ya tiene plan y se reemplaza.</div><button class="btn btn-sm" onclick="doCopyTpl()">Copiar</button><button class="btn btn-ghost btn-sm" style="margin-left:.4rem" onclick="$('tplCopy').innerHTML=''">Cancelar</button><div style="height:.8rem"></div>`;
+}
+async function doCopyTpl(){
+  const dows=[...tplSel];if(!dows.length)return showToast('Elige al menos un día',true);
+  if(dows.some(d=>tplBlocks(d).length)&&!await askConfirm('¿Reemplazar el plan de esos días?','Los días marcados con ● ya tienen bloques.','📋','Reemplazar'))return;
+  await copyTpl(tplBlocks(tplDow),dows);$('tplCopy').innerHTML='';renderTpl();showToast('Plantilla copiada ✓');
+}
 </script>
 </body>
 </html>
