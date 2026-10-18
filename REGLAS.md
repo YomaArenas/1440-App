@@ -44,3 +44,6 @@
 ## Ajustes v2.4
 - **Sueño de anoche:** cada mañana, si el sueño se registró automáticamente con tu rutina, aparece una tarjeta "Anoche dormiste X – Y. ¿Es correcto?" con Sí o Corregir (cambia la hora de dormir y de despertar). Al confirmar o corregir, deja de preguntar. Si cambia el día con la app abierta, se registra y pregunta sin recargar.
 - **Copiar plantillas:** "Copiar a otros días" deja elegir los días. Por defecto marca martes a viernes que estén vacíos. Los días con ● ya tienen plan y piden confirmación antes de reemplazarse. Lunes y fin de semana nunca se marcan solos.
+
+## Ajustes v2.5
+- Mantra más pequeño (.72rem). Botones secundarios de "Ahora" (+ Bloque, Reunión, Pausa) en una sola fila, ajustados a su contenido. Pulido visual: tarjeta Ahora con degradado, botón principal con brillo suave, barra con degradado, hovers sutiles.

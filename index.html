@@ -615,6 +615,27 @@ b,strong{font-weight:500}
 .hdr-btn{color:var(--t2)}.hdr-btn:hover{color:var(--cyan);border-color:var(--cyan)}
 .qt-item>div:first-child{min-width:0;flex:1}.qt-item{padding:.7rem .75rem}
 .slc{display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;padding:.6rem .9rem;border-radius:12px;background:rgba(160,139,230,.1);border:1px solid rgba(160,139,230,.35);font-size:.9rem}.slc-t{display:flex;align-items:center;gap:.5rem}.slc-b{display:flex;gap:.4rem}.hm-mid #sleepCard:empty{display:none}
+/* v2.5 */
+.nw-btns{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-top:.2rem}.nw-acts,.nw-row2{display:contents!important}
+.nw-acts .btn,.nw-row2 .btn{flex:0 0 auto!important;width:auto!important}
+.nw-acts .btn{padding:.55rem 1.2rem!important;border-radius:999px!important}
+
+.hdr-mantra .hdr-mv,.hdr-mantra .hdr-mph{font-size:.72rem!important;line-height:1.3;letter-spacing:.01em;opacity:.85}
+.nw-row2{justify-content:flex-start;flex-wrap:wrap;gap:.45rem}
+.nw-row2 .btn{flex:0 0 auto!important;width:auto!important;padding:.42rem .9rem!important;font-size:.82rem!important;border-radius:999px}
+.nw-acts .btn:first-child{border-radius:12px}
+.nw-acts .btn:not(.btn-ghost){background:linear-gradient(135deg,var(--cyan),#8fc7de);box-shadow:0 4px 14px rgba(111,180,209,.22)}
+.nw-acts .btn:not(.btn-ghost):hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(111,180,209,.3)}
+.btn{transition:transform .15s,box-shadow .15s,background .15s,border-color .15s}
+.btn-sm{border-radius:999px}
+#nowCard,#planCol,#wkSide,#homeGoals,.rm-card,.qt-card{border-radius:16px}
+#nowCard{background:linear-gradient(160deg,rgba(111,180,209,.10),rgba(111,180,209,.02) 60%),var(--card,var(--bg2));box-shadow:0 8px 28px rgba(0,0,0,.18)}
+.pb{border-radius:12px;transition:transform .15s,background .15s}.pb:hover{transform:translateX(2px)}
+.gm,.qt-item,.area-card{transition:transform .15s,border-color .15s,box-shadow .15s}
+.gm:hover,.qt-item:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.14)}
+.nw-bar{height:6px;border-radius:99px;overflow:hidden}.nw-bar i{border-radius:99px;background:linear-gradient(90deg,var(--cyan),#a08be6)}
+*{scrollbar-width:thin;scrollbar-color:rgba(130,150,180,.3) transparent}
+.sb-item{border-radius:10px;transition:background .15s,color .15s}
 </style>
 </head>
 <body>
@@ -2469,7 +2490,7 @@ async function planShift(d){planDs=d===0?today():addDays(planDs||today(),d);awai
 
 /* ── AHORA TOCA (centro) ── */
 function nwShell(lbl,name,meta,clock,note,primary,secs){
-  return`<div class="nw-top"><div class="nw-l"><div class="nw-lbl">${lbl}</div><div class="nw-t">${name}</div><div class="nw-meta">${meta||''}</div></div><div class="nw-clk"><span id="nwT">${clock}</span><span class="nw-of" id="nwOf"></span></div></div><div class="nw-bar"><i id="nwB"></i></div><div class="nw-note">${note||''}</div><div class="nw-acts">${primary}</div><div class="nw-row2">${secs}</div>`}
+  return`<div class="nw-top"><div class="nw-l"><div class="nw-lbl">${lbl}</div><div class="nw-t">${name}</div><div class="nw-meta">${meta||''}</div></div><div class="nw-clk"><span id="nwT">${clock}</span><span class="nw-of" id="nwOf"></span></div></div><div class="nw-bar"><i id="nwB"></i></div><div class="nw-note">${note||''}</div><div class="nw-btns"><div class="nw-acts">${primary}</div><div class="nw-row2">${secs}</div></div>`}
 function renderNow(){
   const box=$('nowCard');if(!box||!user)return;
   const t=user.active_timer,cur=curBlock(),nxt=nextBlock(),pz=lsGet('1440_pause');
