@@ -562,6 +562,30 @@ html{font-size:17px}
 #homeGoals .g-list{gap:.5rem}
 .nw-card{flex-shrink:0}.hm-side{overflow-y:auto}.qt-nm{white-space:normal!important;line-height:1.25}
 @media(min-width:1025px){.hm-grid>section{overflow:hidden}.hm-mid,.hm-side{overflow-y:auto}.hm-side #homeGoals{flex:1 0 auto;overflow:visible}.hm-side #wkSide{flex-shrink:0}}
+
+/* v2.2 */
+.sb-ic svg,.bn-ic svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;display:block;margin:0 auto}
+.sb-ic svg .f,.bn-ic svg .f{fill:currentColor;stroke:none}
+.sb-ic{font-size:inherit}
+.toast{background:#1f7a52;color:#fff}.day.on{background:#1f7a52;border-color:#1f7a52;color:#fff}.btn-ok{background:#1f7a52;color:#fff}
+.gm{padding:.5rem .65rem;gap:.6rem}.gm-t{margin-bottom:.25rem;font-size:.9rem;line-height:1.28}
+.gm-s{margin-top:0;flex-wrap:nowrap;gap:.45rem}.gm-s .pbar{flex:1;min-width:34px;height:5px}.gm-s>span{white-space:nowrap}
+.gm-go{width:32px;height:32px}
+.pl-list{position:relative;padding:2px 2px 2px 18px}
+.pl-list::before{content:'';position:absolute;left:7px;top:10px;bottom:10px;width:2px;background:var(--bdr);border-radius:2px}
+.pb{position:relative}.pb::before{content:'';position:absolute;left:-15px;top:50%;margin-top:-5px;width:10px;height:10px;border-radius:50%;background:var(--bg2);border:2px solid var(--t3);box-sizing:border-box}
+.pb.done::before{background:var(--ok);border-color:var(--ok)}.pb.now::before{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 0 4px rgba(111,180,209,.25)}
+.pnow{position:relative;font-size:.74rem;font-weight:700;color:var(--cyan);border-top:1.5px dashed var(--cyan);padding-top:2px;margin:2px 0 2px -4px}
+.pnow::before{content:'';position:absolute;left:-11px;top:-6px;width:10px;height:10px;border-radius:50%;background:var(--cyan)}
+.hdr-bud{display:none;align-items:center;gap:.6rem;flex:0 1 300px;min-width:210px}
+.hb-top{display:flex;justify-content:space-between;gap:.6rem;font-size:.78rem;color:var(--t2);white-space:nowrap}.hb-top b{color:var(--t);font-family:'Space Mono',monospace;font-weight:700}
+.hb-bar{height:6px;border-radius:99px;background:var(--bdr);overflow:hidden;display:flex;margin-top:4px}.hb-bar i{display:block;height:100%}.hb-bar .t{background:var(--cyan)}.hb-bar .s{background:var(--sleep)}
+@media(min-width:1025px){.hdr-bud{display:flex}.prog-wrap{display:none!important}}
+.pj-grp{margin-bottom:1rem}.pj-gh{font-weight:700;margin-bottom:.5rem;display:flex;gap:.5rem;align-items:center}
+.gm .pbar{background:var(--bdr)}
+@media(min-width:1025px){.hm-mid .split{display:flex!important;flex-direction:column;gap:.6rem;flex:1 1 auto;min-height:190px}
+.hm-mid .qt-card{flex:1;min-height:0;min-width:0}.hm-mid .qt-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.hm-mid .rm-card{flex:none;flex-direction:row!important;align-items:center;padding:.55rem 1rem;gap:.7rem;min-height:0}.hm-mid .rm-card .rm-ic{font-size:1.3rem}.hm-mid .rm-lbl br{display:none}.hm-mid .rm-sub{margin-left:.3rem}}
 </style>
 </head>
 <body>
@@ -669,21 +693,18 @@ html{font-size:17px}
     <span class="sb-logo-txt">1440</span>
   </div>
   <div class="sb-nav">
-    <div class="sb-item active" id="sn-home" onclick="goPage('home')" title="Inicio"><span class="sb-ic">🏠</span><span class="sb-lbl">Inicio</span></div>
-    <div class="sb-item" id="sn-goals" onclick="goPage('goals')" title="Metas"><span class="sb-ic">🎯</span><span class="sb-lbl">Metas</span></div>
-    <div class="sb-item" id="sn-review" onclick="goPage('review')" title="Mi semana"><span class="sb-ic">📅</span><span class="sb-lbl">Mi semana</span></div>
-    <div class="sb-item" id="sn-tl" onclick="goPage('tl')" title="Timeline"><span class="sb-ic">🕒</span><span class="sb-lbl">Timeline</span></div>
-    <div class="sb-item" id="sn-areas" onclick="goPage('areas')" title="Áreas de Vida"><span class="sb-ic">🧩</span><span class="sb-lbl">Áreas de Vida</span></div>
-    <div class="sb-item" id="sn-dash" onclick="goPage('dash')" title="Análisis"><span class="sb-ic">📊</span><span class="sb-lbl">Análisis</span></div>
-    <div class="sb-item" id="sn-hist" onclick="goPage('hist')" title="Historial"><span class="sb-ic">📜</span><span class="sb-lbl">Historial</span></div>
-    <div class="sb-div"></div>
-    <div class="sb-sec">Crear</div>
-    <div class="sb-item" onclick="openM('areaM')"><span class="sb-ic">➕</span><span class="sb-lbl">Nueva Área</span></div>
-    <div class="sb-item" onclick="openM('projM')"><span class="sb-ic">📁</span><span class="sb-lbl">Nuevo Proyecto</span></div>
-  </div>
+    <div class="sb-item active" id="sn-home" onclick="goPage('home')" title="Inicio"><span class="sb-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.2 12 4.5l8 6.7V19a1.8 1.8 0 0 1-1.8 1.8H5.8A1.8 1.8 0 0 1 4 19z"/><circle class="f" cx="12" cy="15.2" r="1.7"/></svg></span><span class="sb-lbl">Inicio</span></div>
+    <div class="sb-item" id="sn-goals" onclick="goPage('goals')" title="Metas"><span class="sb-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="4.4"/><circle class="f" cx="12" cy="12" r="1.5"/></svg></span><span class="sb-lbl">Metas</span></div>
+    <div class="sb-item" id="sn-review" onclick="goPage('review')" title="Mi semana"><span class="sb-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.8" y="5.2" width="16.4" height="14.8" rx="3.6"/><path d="M3.8 10h16.4M8.2 3.4v3.6M15.8 3.4v3.6"/><circle class="f" cx="15" cy="14.8" r="1.4"/></svg></span><span class="sb-lbl">Mi semana</span></div>
+    <div class="sb-item" id="sn-tl" onclick="goPage('tl')" title="Timeline"><span class="sb-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 4.5v15"/><circle class="f" cx="7.5" cy="7.2" r="2"/><circle class="f" cx="7.5" cy="16.8" r="2"/><path d="M12.5 7.2h6.5M12.5 12h4.5M12.5 16.8h6.5"/></svg></span><span class="sb-lbl">Timeline</span></div>
+    <div class="sb-item" id="sn-areas" onclick="goPage('areas')" title="Áreas de Vida"><span class="sb-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.8" height="6.8" rx="2.2"/><rect x="13.2" y="4" width="6.8" height="6.8" rx="2.2"/><rect x="4" y="13.2" width="6.8" height="6.8" rx="2.2"/><circle class="f" cx="16.6" cy="16.6" r="3.4"/></svg></span><span class="sb-lbl">Áreas de Vida</span></div>
+    <div class="sb-item" id="sn-projects" onclick="goPage('projects')" title="Proyectos"><span class="sb-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 8.2a2.4 2.4 0 0 1 2.4-2.4h3.2l2 2.2h6.4a2.4 2.4 0 0 1 2.4 2.4v7.6a2.4 2.4 0 0 1-2.4 2.4H6.2a2.4 2.4 0 0 1-2.4-2.4z"/><circle class="f" cx="12" cy="14" r="1.5"/></svg></span><span class="sb-lbl">Proyectos</span></div>
+    <div class="sb-item" id="sn-dash" onclick="goPage('dash')" title="Análisis"><span class="sb-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19.5v-6M12 19.5V5.5M18 19.5v-9.5" stroke-width="3"/></svg></span><span class="sb-lbl">Análisis</span></div>
+    <div class="sb-item" id="sn-hist" onclick="goPage('hist')" title="Historial"><span class="sb-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.3-5.4"/><path d="M4.3 4.4v4h4"/><path d="M12 8.2V12l2.6 1.6"/></svg></span><span class="sb-lbl">Historial</span></div>
+    </div>
   <div class="sb-bot">
-    <div class="sb-item" onclick="openM('settingsM')"><span class="sb-ic">⚙️</span><span class="sb-lbl">Ajustes</span></div>
-    <div class="sb-item" style="color:#ff6b6b" onclick="doLogout()"><span class="sb-ic">🚪</span><span class="sb-lbl">Salir</span></div>
+    <div class="sb-item" onclick="openM('settingsM')"><span class="sb-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h9M17 8h3M4 16h3M11 16h9"/><circle cx="15" cy="8" r="2"/><circle cx="9" cy="16" r="2"/></svg></span><span class="sb-lbl">Ajustes</span></div>
+    <div class="sb-item" style="color:#ff6b6b" onclick="doLogout()"><span class="sb-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 4.5H7A2.5 2.5 0 0 0 4.5 7v10A2.5 2.5 0 0 0 7 19.5h2.5M15 8l4 4-4 4M19 12H9.5"/></svg></span><span class="sb-lbl">Salir</span></div>
   </div>
 </nav>
 
@@ -693,6 +714,7 @@ html{font-size:17px}
     <div class="hdr-mq">¿Quién quieres ser?</div>
     <div id="hdrM" class="hdr-mph">Escribe tu mantra...</div>
   </div>
+  <div class="hdr-bud" title="Tu día: minutos registrados de 1440"><span style="font-size:1.2rem">🪙</span><div style="flex:1;min-width:0"><div class="hb-top"><span><b id="hbMin">0</b> / 1440</span><span>quedan <b id="hbRem">—</b></span></div><div class="hb-bar"><i class="t" id="hbT"></i><i class="s" id="hbS"></i></div></div></div>
   <div class="hstats">
     <div class="hstat" style="cursor:default"><span class="hstat-ic">⚡</span><span class="hstat-val" id="hs-t">0m</span><span class="hstat-lbl">activo</span></div>
     <div class="hstat" onclick="openSleepEdit()" title="Editar rutina de sueño" style="cursor:pointer"><span class="hstat-ic">😴</span><span class="hstat-val" id="hs-s">0m</span><span class="hstat-lbl">sueño</span></div>
@@ -719,7 +741,7 @@ html{font-size:17px}
           </div>
           <div class="rm-card glass" onclick="openM('manM')">
             <div class="rm-ic">📝</div>
-            <div><div class="rm-lbl">Registro<br>Manual</div><div class="rm-sub">Tiempo pasado</div></div>
+            <div><div class="rm-lbl">Registro manual</div><div class="rm-sub">Tiempo pasado</div></div>
           </div>
         </div>
             <div class="prog-wrap glass">
@@ -742,9 +764,6 @@ html{font-size:17px}
           <div class="prog-bar">
             <div class="pb-t" id="pbT" style="width:0%"></div>
             <div class="pb-s" id="pbS" style="width:0%"></div>
-          </div>
-          <div style="display:flex;justify-content:flex-end;margin-top:.625rem">
-            <button class="btn btn-ghost btn-xs" onclick="openSiestaModal()" title="Registrar siesta">💤 Registrar siesta</button>
           </div>
         </div>
           </section>
@@ -791,6 +810,13 @@ html{font-size:17px}
       </div>
 
       <!-- ÁREAS -->
+      <div class="page" id="page-projects">
+        <div class="page-title">📁 Proyectos
+          <div style="margin-left:auto"><button class="btn btn-sm" onclick="openNewProj()">+ Proyecto</button></div>
+        </div>
+        <div id="projC"></div>
+      </div>
+
       <div class="page" id="page-areas">
         <div class="page-title">📁 Áreas de Vida
           <div style="margin-left:auto;display:flex;gap:.5rem">
@@ -883,10 +909,10 @@ html{font-size:17px}
 
 <!-- BOTTOM NAV -->
 <nav class="bot-nav" id="botNav" style="display:none">
-  <div class="bn-item active" id="bn-home" onclick="goPage('home')"><div class="bn-ic">🏠</div><div class="bn-lbl">Inicio</div></div>
-  <div class="bn-item" id="bn-goals" onclick="goPage('goals')"><div class="bn-ic">🎯</div><div class="bn-lbl">Metas</div></div>
-  <div class="bn-item" id="bn-review" onclick="goPage('review')"><div class="bn-ic">📅</div><div class="bn-lbl">Semana</div></div>
-  <div class="bn-item" id="bn-more" onclick="openM('moreM')"><div class="bn-ic">☰</div><div class="bn-lbl">Más</div></div>
+  <div class="bn-item active" id="bn-home" onclick="goPage('home')"><div class="bn-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.2 12 4.5l8 6.7V19a1.8 1.8 0 0 1-1.8 1.8H5.8A1.8 1.8 0 0 1 4 19z"/><circle class="f" cx="12" cy="15.2" r="1.7"/></svg></div><div class="bn-lbl">Inicio</div></div>
+  <div class="bn-item" id="bn-goals" onclick="goPage('goals')"><div class="bn-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="4.4"/><circle class="f" cx="12" cy="12" r="1.5"/></svg></div><div class="bn-lbl">Metas</div></div>
+  <div class="bn-item" id="bn-review" onclick="goPage('review')"><div class="bn-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.8" y="5.2" width="16.4" height="14.8" rx="3.6"/><path d="M3.8 10h16.4M8.2 3.4v3.6M15.8 3.4v3.6"/><circle class="f" cx="15" cy="14.8" r="1.4"/></svg></div><div class="bn-lbl">Semana</div></div>
+  <div class="bn-item" id="bn-more" onclick="openM('moreM')"><div class="bn-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="f" cx="6" cy="12" r="1.7"/><circle class="f" cx="12" cy="12" r="1.7"/><circle class="f" cx="18" cy="12" r="1.7"/></svg></div><div class="bn-lbl">Más</div></div>
 </nav>
 
 <!-- AREA MODAL -->
@@ -1921,7 +1947,8 @@ document.getElementById('l-u').focus();
   <div class="modal"><div class="mhd"><h2>Más</h2><button class="mclose" onclick="closeM('moreM')">×</button></div>
     <div class="more-grid">
       <button class="btn btn-ghost" onclick="closeM('moreM');goPage('tl')">▤ Timeline</button>
-      <button class="btn btn-ghost" onclick="closeM('moreM');goPage('areas')">◫ Áreas</button>
+      <button class="btn btn-ghost" onclick="closeM('moreM');goPage('areas')">Áreas</button>
+      <button class="btn btn-ghost" onclick="closeM('moreM');goPage('projects')">Proyectos</button>
       <button class="btn btn-ghost" onclick="closeM('moreM');goPage('dash')">◧ Análisis</button>
       <button class="btn btn-ghost" onclick="closeM('moreM');goPage('hist')">▦ Historial</button>
     </div>
@@ -2028,7 +2055,7 @@ function renderHomeGoals(){
   box.innerHTML=h;
 }
 function goalMini(g){const p=gProg(g),a=areaById(g.category_id),col=a?.color||'var(--cyan)';const on=user?.active_timer&&user.active_timer.goalId===g.id;
-  return`<div class="gm"><div class="gm-main"><div class="gm-t">${g.is_focus?'★ ':''}${escH(g.title)}</div><div class="pbar"><div style="width:${p.pct*100}%;background:${col}"></div></div><div class="gm-s"><span>${escH(a?.icon||'')} ${escH(p.main)}</span>${p.st&&p.st!=='mute'?`<span class="pill ${p.st}">${ST_LBL[p.st]}</span>`:''}</div></div>${g.kind==='task'?`<button class="gm-go" style="border-color:var(--ok);color:var(--ok)" onclick="toggleTask('${g.id}')" title="Marcar como hecha" aria-label="Marcar como hecha">✓</button>`:on?`<button class="gm-go on" onclick="stopTimer()" aria-label="Parar">■</button>`:`<button class="gm-go" onclick="startGoal('${g.id}')" title="Empezar a trabajar en esto" aria-label="Empezar">▶</button>`}</div>`}
+  return`<div class="gm"><div class="gm-main"><div class="gm-t">${g.is_focus?'★ ':''}${escH(g.title)}</div><div class="gm-s"><div class="pbar"><div style="width:${p.pct*100}%;background:${col}"></div></div><span>${escH(p.main)}</span>${p.st&&p.st!=='mute'?`<span class="pill ${p.st}">${ST_LBL[p.st]}</span>`:''}</div></div>${g.kind==='task'?`<button class="gm-go" style="border-color:var(--ok);color:var(--ok)" onclick="toggleTask('${g.id}')" title="Marcar como hecha" aria-label="Marcar como hecha">✓</button>`:on?`<button class="gm-go on" onclick="stopTimer()" aria-label="Parar">■</button>`:`<button class="gm-go" onclick="startGoal('${g.id}')" title="Empezar a trabajar en esto" aria-label="Empezar">▶</button>`}</div>`}
 
 /* ── METAS ── */
 function renderGoals(){
@@ -2359,7 +2386,9 @@ const measurable=b=>b.kind!=='free'&&!!(b.goal_id||b.category_id);
 const midnight=()=>{const d=new Date();d.setHours(0,0,0,0);return d.getTime()};
 const curBlock=()=>{const n=nowMin();return dayBlocks(today()).find(b=>b.status==='pending'&&b.start_min<=n&&n<b.end_min)};
 const nextBlock=()=>{const n=nowMin();return dayBlocks(today()).find(b=>b.status==='pending'&&b.start_min>n&&b.kind!=='meeting')};
-const blkName=b=>b.title||(db.goals.find(g=>g.id===b.goal_id)?.title)||(areaById(b.category_id)?.name)||'Bloque';
+const blkName=b=>b.title||(db.goals.find(g=>g.id===b.goal_id)?.title)||(db.projects.find(p=>p.id===b.project_id)?.name)||(areaById(b.category_id)?.name)||'Bloque';
+const pjx=b=>b.project_id?{project_id:b.project_id}:{};
+function pbAreaId(){const v=$('pbArea').value;return v.startsWith('a:')?v.slice(2):v.startsWith('p:')?(db.projects.find(p=>p.id===v.slice(2))||{}).category_id||'':''}
 const pbErr=e=>showToast('No se pudo guardar el plan'+(e&&e.message?': '+e.message:''),true);
 
 /* ── carga ── */
@@ -2374,7 +2403,7 @@ async function ensureDay(ds){
   if(!planReady||db.plan.some(b=>b.date===ds)||lsGet('1440_gen_'+ds))return;
   lsSet('1440_gen_'+ds,1);
   const t=tplBlocks(dowOf(ds));if(!t.length)return;
-  const{data}=await sb.from('plan_blocks').insert(t.map(b=>({user_id:user.id,date:ds,start_min:b.start_min,end_min:b.end_min,title:b.title,kind:b.kind,category_id:b.category_id,goal_id:b.goal_id}))).select();
+  const{data}=await sb.from('plan_blocks').insert(t.map(b=>({user_id:user.id,date:ds,start_min:b.start_min,end_min:b.end_min,title:b.title,kind:b.kind,category_id:b.category_id,goal_id:b.goal_id,...pjx(b)}))).select();
   if(data)db.plan.push(...data);
 }
 function planRefresh(){renderPlan();renderNow();renderWeekSide();_nowKey=''}
@@ -2395,11 +2424,11 @@ function renderPlan(){
   else{
     if(isT){const c=capacity();h+=`<div class="pl-sum${c.free<0?' bad':''}">${c.free<0?`⚠️ Tienes ${fmtM(-c.free)} más de bloques que de día. Mueve o quita algo.`:`Planeado hoy ${fmtM(bs.reduce((x,b)=>x+b.end_min-b.start_min,0))} · por hacer ${fmtM(c.pend)} · libre ${fmtM(c.free)}`}</div>`}
     if(!bs.length)h+=`<div class="pb-empty">Aún no hay bloques ${isT?'hoy':'este día'}.<br>Agrega uno o arma tu plantilla.</div>`;
-    h+=`<div class="pl-list">`+bs.map(b=>{
+    let _m=false;h+=`<div class="pl-list">`+bs.map(b=>{const pre=(isT&&!_m&&b.start_min>n&&!bs.some(x=>x.start_min<=n&&n<x.end_min))?(_m=true,`<div class="pnow">ahora · ${hhmm(n)}</div>`):'';
       const a=areaById(b.category_id),now=isT&&b.status==='pending'&&b.start_min<=n&&n<b.end_min,late=isT&&b.status==='pending'&&b.end_min<=n&&b.kind==='work';
       const st=b.status==='done'?'✓ hecho':b.status==='moved'?'→ pasó a mañana':now?'ahora':late?'sin hacer':(b.kind==='meeting'?'reunión · '+(a?a.name:''):(a?a.name:''));
       const col=a?.color?`style="border-left-color:${a.color}"`:'';
-      return`<div class="pb ${b.kind}${b.status!=='pending'?' done':''}${now?' now':''}${late?' late':''}" ${col} onclick="openBlock('${b.id}')"><div><div class="pbt">${hhmm(b.start_min)}–${hhmm(b.end_min)} · ${escH(blkName(b))}</div><div class="pbs">${escH(st)}</div></div><span class="pbd">${fmtM(b.end_min-b.start_min)}</span>${isT&&b.status==='pending'&&measurable(b)&&!user.active_timer?`<button class="pb-go" onclick="event.stopPropagation();startBlock('${b.id}')" aria-label="Empezar">▶</button>`:''}</div>`}).join('')+`</div>`;
+      return pre+`<div class="pb ${b.kind}${b.status!=='pending'?' done':''}${now?' now':''}${late?' late':''}" ${col} onclick="openBlock('${b.id}')"><div><div class="pbt">${hhmm(b.start_min)}–${hhmm(b.end_min)} · ${escH(blkName(b))}</div><div class="pbs">${escH(st)}</div></div><span class="pbd">${fmtM(b.end_min-b.start_min)}</span>${isT&&b.status==='pending'&&measurable(b)&&!user.active_timer?`<button class="pb-go" onclick="event.stopPropagation();startBlock('${b.id}')" aria-label="Empezar">▶</button>`:''}</div>`}).join('')+(isT&&!_m&&bs.length&&!bs.some(x=>x.start_min<=n&&n<x.end_min)?`<div class="pnow">ahora · ${hhmm(n)}</div>`:'')+`</div>`;
   }
   h+=`<div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.8rem"><button class="btn btn-sm" onclick="openBlock(null,'day')">+ Bloque</button><button class="btn btn-ghost btn-sm" onclick="openTpl()">Plantillas</button>${isT?`<button class="btn btn-ghost btn-sm" onclick="openClose()">Cerrar día</button><button class="btn btn-ghost btn-sm" onclick="openSiestaModal()">💤 Siesta</button>`:''}</div></div>`;
   box.innerHTML=h;
@@ -2465,6 +2494,7 @@ async function startBlock(id){
   const g=b.goal_id?goalById(b.goal_id):null,cat=g?(g.category_id||b.category_id):b.category_id,a=areaById(cat);
   const ex={blockId:b.id,bEnd};
   if(g)await startTimer(g.id,'goal',blkName(b),a?a.name:'Meta',{...ex,goalId:g.id,catId:cat||null});
+  else if(b.project_id)await startTimer(b.project_id,'project',blkName(b),a?a.name:'Proyecto',ex);
   else await startTimer(b.category_id,'area',blkName(b),a?a.name:'Bloque',ex);
   planRefresh();
 }
@@ -2522,7 +2552,7 @@ async function saveMeeting(){
     if(n-cur.start_min<5)later.push(cur);
     else{const rem=cur.end_min-n;
       ups.push([cur.id,{end_min:n,...(hadTimer?{status:'done'}:{})}]);
-      ins.push({user_id:user.id,date:ds,start_min:Math.min(1430,n+mins),end_min:Math.min(1440,n+mins+rem),title:blkName(cur)+' (cont.)',kind:cur.kind,category_id:cur.category_id,goal_id:cur.goal_id})}
+      ins.push({user_id:user.id,date:ds,start_min:Math.min(1430,n+mins),end_min:Math.min(1440,n+mins+rem),title:blkName(cur)+' (cont.)',kind:cur.kind,category_id:cur.category_id,goal_id:cur.goal_id,...pjx(cur)})}
   }
   later.forEach(b=>ups.push([b.id,{start_min:Math.min(1430,b.start_min+mins),end_min:Math.min(1440,b.end_min+mins)}]));
   ups.forEach(([id,v])=>Object.assign(db.plan.find(x=>x.id===id),v));
@@ -2535,18 +2565,18 @@ async function saveMeeting(){
 function pbKindUI(){}
 function updPbDur(){const d=toMin($('pbEnd').value)-toMin($('pbStart').value);$('pbDur').textContent=d>0?fmtM(d):'—';$('pbDur').style.color=d>0?'var(--cyan)':'var(--warn)'}
 function pbFillGoals(sel){
-  const a=$('pbArea').value,q=quarter().key;
+  const a=pbAreaId(),q=quarter().key;
   $('pbGoal').innerHTML='<option value="">— Sin meta específica —</option>'+db.goals.filter(g=>!g.done&&(g.quarter===q||!g.quarter)&&(!a||g.category_id===a)).map(g=>`<option value="${g.id}">${escH(g.title)}</option>`).join('');
   if(sel)$('pbGoal').value=sel;
 }
-function pbGoalPick(){const g=goalById($('pbGoal').value);if(g&&g.category_id&&$('pbArea').value!==g.category_id){$('pbArea').value=g.category_id;pbFillGoals(g.id)}}
+function pbGoalPick(){const g=goalById($('pbGoal').value);if(g&&g.category_id&&pbAreaId()!==g.category_id){$('pbArea').value='a:'+g.category_id;pbFillGoals(g.id)}}
 function openBlock(id,mode){
   const b=id?db.plan.find(x=>x.id===id):null,ds=planDs||today();
   $('pbId').value=id||'';$('pbMode').value=b?(b.date?'day':'tpl'):(mode||'day');
   $('pbH').textContent=b?'Editar bloque':'Nuevo bloque';$('pbDel').style.display=b?'':'none';
-  $('pbArea').innerHTML='<option value="">— Elige —</option>'+db.areas.map(a=>`<option value="${a.id}">${escH((a.icon||'')+' '+a.name)}</option>`).join('');
+  $('pbArea').innerHTML='<option value="">— Elige —</option>'+db.areas.map(a=>`<option value="a:${a.id}">${escH((a.icon||'')+' '+a.name)}</option>`+db.projects.filter(p=>p.category_id===a.id).map(p=>`<option value="p:${p.id}">&nbsp;&nbsp;↳ ${escH(p.name)}</option>`).join('')).join('');
   const list=$('pbMode').value==='tpl'?tplBlocks(tplDow):dayBlocks(ds),last=list.length?list[list.length-1].end_min:Math.ceil((nowMin()+1)/30)*30;
-  $('pbKind').value=b?.kind||'work';$('pbArea').value=b?.category_id||'';pbFillGoals(b?.goal_id);
+  $('pbKind').value=b?.kind||'work';$('pbArea').value=b?.project_id?'p:'+b.project_id:(b?.category_id?'a:'+b.category_id:'');pbFillGoals(b?.goal_id);
   $('pbTitle').value=b?.title||'';$('pbStart').value=hhmm(b?b.start_min:Math.min(last,1380));$('pbEnd').value=hhmm(b?b.end_min:Math.min(last+60,1439));
   updPbDur();closeM('tplM');openM('planM');
 }
@@ -2554,10 +2584,10 @@ async function saveBlock(){
   const id=$('pbId').value,mode=$('pbMode').value,kind=$('pbKind').value;
   const s=toMin($('pbStart').value),e=toMin($('pbEnd').value);
   if(e<=s)return showToast('La hora final debe ser después de la inicial',true);
-  const cat=$('pbArea').value||null,gid=$('pbGoal').value||null;
+  const cat=pbAreaId()||null,proj=$('pbArea').value.startsWith('p:')?$('pbArea').value.slice(2):null,gid=$('pbGoal').value||null;
   if(!cat)return showToast('Elige a qué área pertenece para que cuente en tu día',true);
   let title=$('pbTitle').value.trim();if(!title)title=kind==='meeting'?'Reunión':kind==='free'?'Descanso':(gid&&goalById(gid)?goalById(gid).title:areaById(cat).name);
-  const pl={kind,category_id:cat,goal_id:gid,title,start_min:s,end_min:e};
+  const pl={kind,category_id:cat,goal_id:gid,title,start_min:s,end_min:e};if(proj||(id&&(db.plan.find(x=>x.id===id)||{}).project_id))pl.project_id=proj;
   const old=id&&db.plan.find(x=>x.id===id);
   if(old){const{error}=await sb.from('plan_blocks').update(pl).eq('id',id);if(error)return pbErr(error);Object.assign(old,pl)}
   else{const row={...pl,user_id:user.id,date:mode==='day'?(planDs||today()):null,dow:mode==='tpl'?tplDow:null};
@@ -2586,7 +2616,7 @@ async function copyTpl(src,dows){
   for(const d of dows){
     await sb.from('plan_blocks').delete().eq('user_id',user.id).eq('dow',d).is('date',null);
     db.plan=db.plan.filter(b=>b.date||b.dow!==d);
-    const{data,error}=await sb.from('plan_blocks').insert(src.map(b=>({user_id:user.id,date:null,dow:d,start_min:b.start_min,end_min:b.end_min,title:b.title.replace(/ \(cont\.\)$/,''),kind:b.kind,category_id:b.category_id,goal_id:b.goal_id}))).select();
+    const{data,error}=await sb.from('plan_blocks').insert(src.map(b=>({user_id:user.id,date:null,dow:d,start_min:b.start_min,end_min:b.end_min,title:b.title.replace(/ \(cont\.\)$/,''),kind:b.kind,category_id:b.category_id,goal_id:b.goal_id,...pjx(b)}))).select();
     if(error)return pbErr(error);db.plan.push(...data);
   }
 }
@@ -2612,7 +2642,7 @@ function openClose(){
 async function movePending(){
   const ds=today(),tm=addDays(ds,1),pend=dayBlocks(ds).filter(b=>b.status==='pending'&&b.kind==='work');
   await ensureDay(tm);
-  const{data,error}=await sb.from('plan_blocks').insert(pend.map(b=>({user_id:user.id,date:tm,start_min:b.start_min,end_min:b.end_min,title:b.title,kind:b.kind,category_id:b.category_id,goal_id:b.goal_id}))).select();
+  const{data,error}=await sb.from('plan_blocks').insert(pend.map(b=>({user_id:user.id,date:tm,start_min:b.start_min,end_min:b.end_min,title:b.title,kind:b.kind,category_id:b.category_id,goal_id:b.goal_id,...pjx(b)}))).select();
   if(error)return pbErr(error);db.plan.push(...data);
   await Promise.all(pend.map(b=>{b.status='moved';return sb.from('plan_blocks').update({status:'moved'}).eq('id',b.id)}));
   closeM('closeM');planRefresh();showToast('Pendientes pasados a mañana ✓');
@@ -2647,46 +2677,74 @@ doLogout=function(){if(nowIv){clearInterval(nowIv);nowIv=null}db.plan=[];_nowKey
 
 <script>
 /* ══ 1440 · ÁREAS ORDENADAS, SESIÓN RECORDADA, RUTINA ══ */
-const _nrm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+const _nrm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
 const AREA_PLAN=[
  {k:'emp',keys:['empresa','trabajo','pariscorp','empleo'],name:'Empresa',icon:'🏢',color:'#6e98dc',min:0},
  {k:'free',keys:['freelance'],name:'Freelance',icon:'💼',color:'#4fb3a9',min:0},
- {k:'nov',keys:['novalti'],name:'Novalti',icon:'🚀',color:'#a08be6',min:4},
- {k:'che',keys:['cherry'],name:'Cherry',icon:'🍒',color:'#ef7f92',min:3},
- {k:'coti',keys:['coti'],name:'Coti y apps propias',icon:'💻',color:'#e3b862',min:4},
+ {k:'neg',keys:['negocio','emprend'],name:'Negocios',icon:'🚀',color:'#a08be6',min:10},
  {k:'fin',keys:['finanz','dinero','ahorro'],name:'Finanzas',icon:'💰',color:'#62cf9c',min:1},
  {k:'sal',keys:['salud','deporte','ejercicio','gym','cuerpo'],name:'Salud',icon:'💪',color:'#f0935a',min:4},
  {k:'yo',keys:['yo misma','personal','crecimiento'],name:'Yo misma',icon:'🧘',color:'#c58be0',min:3},
  {k:'rel',keys:['relacion','familia','pareja'],name:'Familia y relaciones',icon:'❤️',color:'#e87fb4',min:5},
  {k:'rut',keys:['rutina'],name:'Rutina y descanso',icon:'🍽️',color:'#8593ad',min:0}];
-const _findArea=A=>db.areas.find(x=>A.keys.some(k=>_nrm(x.name)===k||_nrm(x.name).startsWith(k)));
+const BIZ=[{keys:['novalti'],name:'Novalti',color:'#a08be6'},{keys:['cherry'],name:'Cherry',color:'#ef7f92'},{keys:['coti'],name:'Coti',color:'#e3b862'}];
+const _isA=(x,A)=>A.keys.some(k=>_nrm(x.name)===k||_nrm(x.name).startsWith(k));
 async function ensureRoutine(){
-  const A=AREA_PLAN.find(x=>x.k==='rut');if(_findArea(A))return;
+  const A=AREA_PLAN.find(x=>x.k==='rut');if(db.areas.some(x=>_isA(x,A)))return;
   const{data}=await sb.from('categories').insert([{user_id:user.id,name:A.name,icon:A.icon,color:A.color,weekly_min_hours:0}]).select().single();
   if(data){db.areas.push(data);renderAll()}
 }
+async function repoint(from,to,projId){
+  const E=projId?{project_id:projId,category_id:null}:{category_id:to};
+  const r=await Promise.all([sb.from('time_entries').update(E).eq('category_id',from),sb.from('projects').update({category_id:to}).eq('category_id',from),sb.from('goals').update({category_id:to}).eq('category_id',from)]);
+  if(r.some(x=>x.error))return false;
+  const pb=await sb.from('plan_blocks').update(projId?{category_id:to,project_id:projId}:{category_id:to}).eq('category_id',from);
+  if(pb.error&&projId)await sb.from('plan_blocks').update({category_id:to}).eq('category_id',from);
+  db.entries.forEach(e=>{if(e.category_id===from)Object.assign(e,E)});db.projects.forEach(p=>{if(p.category_id===from)p.category_id=to});
+  db.goals.forEach(g=>{if(g.category_id===from)g.category_id=to});db.plan.forEach(b=>{if(b.category_id===from){b.category_id=to;if(projId)b.project_id=projId}});
+  return true;
+}
 async function reorganizeAreas(){
-  const ok=await askConfirm('¿Ordenar tus áreas de vida?','Separo Empresa, Freelance, Novalti, Cherry y Coti; dejo Finanzas, Salud, Yo misma y Familia; agrego Rutina y descanso, y muevo tus metas al área que les toca. No pierdes tiempo registrado.','🧩','Ordenar');
-  lsSet('1440_areas_v2',1);if(!ok)return;
-  const map={};
-  for(const A of AREA_PLAN){
-    let a=_findArea(A);
-    if(!a){const{data,error}=await sb.from('categories').insert([{user_id:user.id,name:A.name,icon:A.icon,color:A.color,weekly_min_hours:A.min}]).select().single();if(error)return showToast('Error: '+error.message,true);a=data;db.areas.push(a)}
-    else{const up={};if(_nrm(a.name)!==_nrm(A.name))up.name=A.name;if(!(+a.weekly_min_hours>0)&&A.min)up.weekly_min_hours=A.min;
-      if(Object.keys(up).length){await sb.from('categories').update(up).eq('id',a.id);Object.assign(a,up)}}
-    map[A.k]=a.id;
-  }
-  const to={cherry:'che',novalti:'nov',coti:'coti'};
-  for(const g of db.goals){const k=to[_nrm(g.title).split(/[: ]/)[0]];if(k&&g.category_id!==map[k]){await sb.from('goals').update({category_id:map[k]}).eq('id',g.id);g.category_id=map[k]}}
-  const used=id=>db.entries.some(e=>e.category_id===id)||db.projects.some(p=>p.category_id===id)||db.goals.some(g=>g.category_id===id)||db.plan.some(b=>b.category_id===id);
-  for(const a of db.areas.filter(x=>/^negocio|^emprend/.test(_nrm(x.name)))){
-    if(!used(a.id)){await sb.from('categories').delete().eq('id',a.id);db.areas=db.areas.filter(x=>x.id!==a.id)}
-    else if(+a.weekly_min_hours>0){await sb.from('categories').update({weekly_min_hours:0}).eq('id',a.id);a.weekly_min_hours=0}
-  }
-  renderAll();if(typeof renderAreas==='function')renderAreas();refreshGoalViews();planRefresh();showToast('Áreas ordenadas ✓');
+  const ok=await askConfirm('¿Ordenar tus áreas de vida?','Quedan 8 áreas: Empresa, Freelance, Negocios, Finanzas, Salud, Yo misma, Familia y relaciones, Rutina y descanso. Novalti, Cherry y Coti pasan a ser proyectos dentro de Negocios. Se juntan las áreas repetidas (Familia, Emprendimiento). Tu tiempo y tus metas se conservan.','🧩','Ordenar');
+  lsSet('1440_areas_v3',1);if(!ok)return;
+  try{
+    const map={};
+    for(const A of AREA_PLAN){
+      const ms=db.areas.filter(x=>_isA(x,A));
+      let prim=ms.find(x=>_nrm(x.name)===_nrm(A.name))||ms[0];
+      if(!prim){const{data,error}=await sb.from('categories').insert([{user_id:user.id,name:A.name,icon:A.icon,color:A.color,weekly_min_hours:A.min}]).select().single();if(error)throw error;prim=data;db.areas.push(prim)}
+      const up={};if(prim.name!==A.name)up.name=A.name;if(!(+prim.weekly_min_hours>0)&&A.min)up.weekly_min_hours=A.min;
+      if(Object.keys(up).length){await sb.from('categories').update(up).eq('id',prim.id);Object.assign(prim,up)}
+      map[A.k]=prim.id;
+      for(const o of ms.filter(x=>x.id!==prim.id)){if(await repoint(o.id,prim.id)){await sb.from('categories').delete().eq('id',o.id);db.areas=db.areas.filter(x=>x.id!==o.id)}}
+    }
+    for(const B of BIZ){
+      let pj=db.projects.find(p=>_nrm(p.name)===_nrm(B.name));
+      if(!pj){const{data,error}=await sb.from('projects').insert([{user_id:user.id,name:B.name,color:B.color,category_id:map.neg}]).select().single();if(error)throw error;pj=data;db.projects.push(pj)}
+      else if(pj.category_id!==map.neg){await sb.from('projects').update({category_id:map.neg}).eq('id',pj.id);pj.category_id=map.neg}
+      for(const o of db.areas.filter(x=>x.id!==map.neg&&B.keys.some(k=>_nrm(x.name).startsWith(k)))){
+        if(await repoint(o.id,map.neg,pj.id)){await sb.from('categories').delete().eq('id',o.id);db.areas=db.areas.filter(x=>x.id!==o.id)}}
+    }
+    renderAll();renderAreas();refreshGoalViews();planRefresh();showToast('Áreas ordenadas ✓');
+  }catch(e){showToast('No se pudo ordenar: '+(e.message||e),true)}
 }
 const _loadPlan=loadPlan;
-loadPlan=async function(){await _loadPlan();await ensureRoutine();if(!lsGet('1440_areas_v2'))setTimeout(reorganizeAreas,700)};
+loadPlan=async function(){await _loadPlan();await ensureRoutine();if(!lsGet('1440_areas_v3'))setTimeout(reorganizeAreas,700)};
+
+/* ── proyectos (página) y barra del día en el header ── */
+PAGES.push('projects');
+function renderProjects(){
+  const c=$('projC');if(!c)return;
+  const grp=[...db.areas.map(a=>({a,l:db.projects.filter(p=>p.category_id===a.id)})),{a:{name:'Sin área',icon:'📌'},l:db.projects.filter(p=>!p.category_id||!db.areas.some(a=>a.id===p.category_id))}].filter(x=>x.l.length);
+  c.innerHTML=grp.length?grp.map(({a,l})=>`<div class="pj-grp"><div class="pj-gh">${escH(a.icon||'')} ${escH(a.name)} <span class="pill mute">${l.length}</span></div><div class="proj-stack">${l.map(projRow).join('')}</div></div>`).join(''):`<div class="empty"><p>Aún no tienes proyectos.</p><br><button class="btn btn-sm" onclick="openNewProj()">+ Proyecto</button></div>`;
+}
+const _renderAreas=renderAreas;renderAreas=function(){_renderAreas();renderProjects()};
+const _goPage4=goPage;goPage=function(n){_goPage4(n);if(n==='projects')renderProjects()};
+const _updProg=updProg;
+updProg=function(){_updProg();
+  const g=id=>$(id);if(!g('hbMin'))return;
+  g('hbMin').textContent=g('progMin').textContent;g('hbRem').textContent=g('progRem').textContent;
+  g('hbT').style.width=g('pbT').style.width;g('hbS').style.width=g('pbS').style.width};
 
 /* ── sesión recordada: solo PIN ── */
 async function enterUser(ud){

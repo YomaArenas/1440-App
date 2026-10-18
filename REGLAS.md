@@ -34,3 +34,9 @@
 - **Áreas sugeridas:** Empresa, Freelance, Novalti, Cherry, Coti y apps propias, Finanzas, Salud, Yo misma, Familia y relaciones, Rutina y descanso. "Ordenar áreas" las crea o renombra sin tocar el tiempo ya registrado, y mueve las metas a su área. Una vez al entrar se ofrece; después queda el botón en Áreas de Vida.
 - **Sesión:** la app recuerda la sesión en este dispositivo (sin pedir PIN al recargar). Al salir, pide solo el PIN y recuerda el usuario; "¿otro usuario?" lo cambia.
 - **Metas en Inicio:** hasta 6 metas del trimestre (primero las ★), con un botón redondo ▶ para empezar o ✓ para tareas.
+
+## Ajustes v2.2
+- **Áreas (8):** Empresa, Freelance, Negocios, Finanzas, Salud, Yo misma, Familia y relaciones, Rutina y descanso. Novalti, Cherry y Coti son **proyectos** dentro de Negocios. "Ordenar áreas" junta las repetidas (Familia, Emprendimiento) y convierte las áreas Cherry/Novalti/Coti en proyectos, conservando tiempo, metas y bloques.
+- **Proyectos:** tienen su propia página (menú lateral) para crear, editar y eliminar. Un bloque puede ser de un área o de un proyecto de esa área; el tiempo cuenta en ambos.
+- **Barra del día:** vive en el encabezado (minutos registrados de 1440 y lo que queda hasta dormir).
+- **Plan de hoy:** línea de tiempo vertical con un marcador "ahora" entre los bloques.
