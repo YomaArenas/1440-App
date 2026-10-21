@@ -661,6 +661,9 @@ b,strong{font-weight:500}
 .sp-b{display:flex;gap:.4rem;flex-wrap:wrap}.sp-c{display:flex;align-items:center;gap:.8rem;margin-bottom:.5rem}
 #spT{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:400;color:var(--t)}.sp-bar{flex:1;height:6px}
 .sp-chip{border-radius:999px!important}
+.pb-mv{display:flex;flex-direction:column;gap:1px;opacity:0;transition:opacity .15s;flex-shrink:0}
+.pb:hover .pb-mv,.pb-mv:focus-within{opacity:1}@media(hover:none){.pb-mv{opacity:.7}}
+.pb-mv button{border:0;background:none;color:var(--t3);font-size:.6rem;line-height:1;padding:2px 4px;cursor:pointer;border-radius:4px}.pb-mv button:hover{color:var(--cyan);background:var(--bg2)}
 </style>
 </head>
 <body>
@@ -1091,7 +1094,7 @@ b,strong{font-weight:500}
       <div style="font-size:.875rem;color:var(--t2)" id="confirmSub"></div>
     </div>
     <div class="mbtns" style="margin-top:1.5rem">
-      <button class="btn btn-ghost" onclick="resolveConfirm(false)">Cancelar</button>
+      <button class="btn btn-ghost" id="confirmNoBtn" onclick="resolveConfirm(false)">Cancelar</button>
       <button class="btn btn-del" id="confirmOkBtn" onclick="resolveConfirm(true)">Eliminar</button>
     </div>
   </div>
@@ -2516,7 +2519,7 @@ function renderPlan(){
       const a=areaById(b.category_id),now=isT&&b.status==='pending'&&b.start_min<=n&&n<b.end_min,late=isT&&b.status==='pending'&&b.end_min<=n&&b.kind==='work';
       const st=b.status==='done'?'✓ hecho':b.status==='moved'?'→ pasó a mañana':now?'ahora':late?'sin hacer':(b.kind==='meeting'?'reunión · '+(a?a.name:''):(a?a.name:''));
       const col=a?.color?`style="border-left-color:${a.color}"`:'';
-      return pre+`<div class="pb ${b.kind}${b.status!=='pending'?' done':''}${now?' now':''}${late?' late':''}" ${col} onclick="openBlock('${b.id}')"><div><div class="pbt">${hhmm(b.start_min)}–${hhmm(b.end_min)} · ${escH(blkName(b))}</div><div class="pbs">${escH(st)}</div></div><span class="pbd">${fmtM(b.end_min-b.start_min)}</span>${b.status==='pending'&&measurable(b)?`<button class="pb-go pb-ok" title="Ya lo hice" onclick="event.stopPropagation();openDid('${b.id}')">✓</button>`:''}${isT&&b.status==='pending'&&measurable(b)&&!user.active_timer?`<button class="pb-go" onclick="event.stopPropagation();startBlock('${b.id}')" aria-label="Empezar">▶</button>`:''}</div>`}).join('')+(isT&&!_m&&bs.length&&!bs.some(x=>x.start_min<=n&&n<x.end_min)?`<div class="pnow">ahora · ${hhmm(n)}</div>`:'')+`</div>`;
+      return pre+`<div class="pb ${b.kind}${b.status!=='pending'?' done':''}${now?' now':''}${late?' late':''}" ${col} onclick="openBlock('${b.id}')"><div><div class="pbt">${hhmm(b.start_min)}–${hhmm(b.end_min)} · ${escH(blkName(b))}</div><div class="pbs">${escH(st)}</div></div><span class="pbd">${fmtM(b.end_min-b.start_min)}</span>${b.status==='pending'&&b.kind!=='meeting'?`<span class="pb-mv"><button aria-label="Subir" onclick="event.stopPropagation();moveBlock('${b.id}',-1)">▲</button><button aria-label="Bajar" onclick="event.stopPropagation();moveBlock('${b.id}',1)">▼</button></span>`:''}${b.status==='pending'&&measurable(b)?`<button class="pb-go pb-ok" title="Ya lo hice" onclick="event.stopPropagation();openDid('${b.id}')">✓</button>`:''}${isT&&b.status==='pending'&&measurable(b)&&!user.active_timer?`<button class="pb-go" onclick="event.stopPropagation();startBlock('${b.id}')" aria-label="Empezar">▶</button>`:''}</div>`}).join('')+(isT&&!_m&&bs.length&&!bs.some(x=>x.start_min<=n&&n<x.end_min)?`<div class="pnow">ahora · ${hhmm(n)}</div>`:'')+`</div>`;
   }
   h+=habHtml(ds);
   h+=`<div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.8rem"><button class="btn btn-sm" onclick="openBlock(null,'day')">+ Bloque</button><button class="btn btn-ghost btn-sm" onclick="openTpl()">Plantillas</button>${isT?`<button class="btn btn-ghost btn-sm" onclick="openClose()">Cerrar día</button><button class="btn btn-ghost btn-sm" onclick="openSiestaModal()">💤 Siesta</button>`:''}</div></div>`;
@@ -3011,6 +3014,45 @@ function spTick(){
   else{const T=$('spT'),B=$('spB');if(T)T.textContent=mmss(el/1000);if(B)B.style.width='0';document.title='⏱ '+mmss(el/1000)+' · '+(t.name||'')}
 }
 const _nt8=nowTick;nowTick=function(){_nt8();spTick()};
+
+/* ── v2.9: reordenar bloques (conservan su duración) ── */
+async function swapBlocks(a,b){
+  if(a.start_min>b.start_min)[a,b]=[b,a];
+  const dA=a.end_min-a.start_min,dB=b.end_min-b.start_min,gap=b.start_min-a.end_min,s0=a.start_min;
+  const nb={start_min:s0,end_min:s0+dB},na={start_min:s0+dB+gap,end_min:s0+dB+gap+dA};
+  const ob={start_min:b.start_min,end_min:b.end_min},oa={start_min:a.start_min,end_min:a.end_min};
+  Object.assign(b,nb);Object.assign(a,na);
+  const[r1,r2]=await Promise.all([sb.from('plan_blocks').update(nb).eq('id',b.id),sb.from('plan_blocks').update(na).eq('id',a.id)]);
+  if(r1.error||r2.error){Object.assign(b,ob);Object.assign(a,oa);pbErr(r1.error||r2.error);return false}
+  return true;
+}
+function swapOk(a,b){
+  if(!a||!b)return false;
+  if(a.kind==='meeting'||b.kind==='meeting'){showToast('Las reuniones tienen hora fija. Edítala desde el bloque.',true);return false}
+  if(a.status!=='pending'||b.status!=='pending'){showToast('Solo se mueven bloques pendientes',true);return false}
+  const t=user.active_timer;if(t&&(t.blockId===a.id||t.blockId===b.id)){showToast('Termina primero el bloque en marcha',true);return false}
+  return true;
+}
+async function moveBlock(id,dir){
+  const b=db.plan.find(x=>x.id===id);if(!b)return;
+  const l=dayBlocks(b.date),i=l.indexOf(b),o=l[i+dir];
+  if(!o)return showToast(dir<0?'Ya es el primero del día':'Ya es el último del día');
+  if(!swapOk(b,o))return;
+  if(await swapBlocks(b,o)){planRefresh()}
+}
+async function askSwap(name){
+  const ok=$('confirmOkBtn'),no=$('confirmNoBtn'),cls=ok.className;ok.className='btn';no.textContent='No, solo empezar';
+  try{return await askConfirm('Empiezas '+name+' antes de lo planeado','¿Intercambio los horarios con lo que tocaba ahora?','🔀','Sí, intercambiar')}
+  finally{ok.className=cls;no.textContent='Cancelar'}
+}
+const _sb9=startBlock;
+startBlock=async function(id){
+  const b=db.plan.find(x=>x.id===id),cur=curBlock();
+  if(b&&cur&&cur.id!==id&&b.date&&b.date===cur.date&&cur.status==='pending'&&b.status==='pending'&&b.start_min>cur.start_min&&b.kind!=='meeting'&&cur.kind!=='meeting'&&!user.active_timer){
+    if(await askSwap(blkName(b))&&swapOk(cur,b))await swapBlocks(cur,b);
+  }
+  return _sb9(id);
+};
 </script>
 </body>
 </html>

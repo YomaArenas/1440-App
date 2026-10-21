@@ -60,3 +60,7 @@
 ## v2.8 Sprints
 - Dentro de un bloque (o actividad en marcha) puedes iniciar un sprint de 15, 25, 50 min o libre, con una línea opcional "¿Qué vas a sacar?" y, si el área tiene proyectos, elegir el proyecto (el tiempo pasa a ese proyecto sin cerrar el bloque). El sprint no duplica tiempo: cuenta dentro del bloque.
 - Al terminar suena y avisa: ✓ Lo saqué / +10 min / ⏳ Sigue. Tras sprints de 50 min o más se inicia una pausa de 5 min (el tiempo de pausa no cuenta). Cuenta regresiva también en el título de la pestaña. Solo funciona con la app abierta.
+
+## v2.9 Reordenar
+- ▲▼ en cada bloque pendiente del plan del día: intercambia con el vecino conservando la duración de cada uno y el hueco entre ambos. Solo ese día (la plantilla no cambia). Reuniones, bloques hechos o el bloque en marcha no se mueven.
+- Si empiezas con ▶ un bloque distinto al que toca ahora, pregunta si intercambia horarios o solo empieza.
