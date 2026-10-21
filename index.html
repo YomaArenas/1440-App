@@ -664,6 +664,7 @@ b,strong{font-weight:500}
 .pb-mv{display:flex;flex-direction:column;gap:1px;opacity:0;transition:opacity .15s;flex-shrink:0}
 .pb:hover .pb-mv,.pb-mv:focus-within{opacity:1}@media(hover:none){.pb-mv{opacity:.7}}
 .pb-mv button{border:0;background:none;color:var(--t3);font-size:.6rem;line-height:1;padding:2px 4px;cursor:pointer;border-radius:4px}.pb-mv button:hover{color:var(--cyan);background:var(--bg2)}
+.hab-hd{cursor:pointer;user-select:none;margin-bottom:0}.hab-hd:hover{color:var(--cyan)}.hab{margin-top:.5rem;padding-top:.45rem}
 </style>
 </head>
 <body>
@@ -2945,15 +2946,19 @@ function habStreak(g){
   const auto=g.auto==='sleep7',days=auto?habitDays(g,{start:addDays(today(),-60),end:today()}):new Set(db.logs.filter(l=>l.goal_id===g.id&&+l.value>=1).map(l=>l.date));
   let d=today(),n=0;if(!days.has(d))d=addDays(d,-1);
   while(days.has(d)){n++;d=addDays(d,-1)}return n}
+function habOpen(){try{return localStorage.getItem('1440_hab_open')==='1'}catch{return false}}
+function habToggle(){try{localStorage.setItem('1440_hab_open',habOpen()?'0':'1')}catch{}renderPlan()}
 function habHtml(ds){
-  const hs=habList();
-  const head=`<div class="hab-hd"><span>Hábitos</span><button class="btn btn-ghost btn-xs" onclick="goPage('goals')">${hs.length?'Gestionar':'+ Crear hábito'}</button></div>`;
-  if(!hs.length)return`<div class="hab">${head}<div class="pb-empty" style="padding:.4rem 0">Crea una meta de tipo "Hábito" (ej. dormir temprano) y aparecerá aquí para marcarla cada día.</div></div>`;
+  const hs=habList(),open=habOpen();
+  const isOn=g=>g.auto==='sleep7'?habitDays(g,{start:ds,end:ds}).has(ds):!!db.logs.find(l=>l.goal_id===g.id&&l.date===ds&&+l.value>=1);
+  const done=hs.filter(isOn).length;
+  const head=`<div class="hab-hd" onclick="habToggle()" role="button" tabindex="0" aria-expanded="${open}"><span>${open?'▾':'▸'} Hábitos${hs.length?' · '+done+'/'+hs.length+' hoy':''}</span>${hs.length?'':'<button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();goPage(\'goals\')">+ Crear</button>'}</div>`;
+  if(!open)return`<div class="hab">${head}</div>`;
+  if(!hs.length)return`<div class="hab">${head}<div class="pb-empty" style="padding:.4rem 0">Crea una meta de tipo "Hábito" (ej. dormir temprano) y aparecerá aquí.</div></div>`;
   const wk={start:weekStart(),end:addDays(weekStart(),6)};
   return`<div class="hab">${head}`+hs.map(g=>{
-    const auto=g.auto==='sleep7',on=auto?habitDays(g,{start:ds,end:ds}).has(ds):!!db.logs.find(l=>l.goal_id===g.id&&l.date===ds&&+l.value>=1);
-    const wd=habitDays(g,wk).size,tg=num(g.target)||7,st=habStreak(g),a=areaById(g.category_id);
-    return`<div class="hab-r${on?' on':''}"><button class="hab-ck" ${auto?'disabled title="Se marca solo con tu sueño"':`onclick="habTap('${g.id}','${ds}')"`} aria-label="Marcar">${on?'✓':''}</button><div class="hab-t"><b>${escH(g.title)}</b><span>${wd}/${tg} esta semana${st>1?' · 🔥 '+st+' días':''}${auto?' · automático':''}${a?' · '+escH(a.name):''}</span></div></div>`}).join('')+`</div>`;
+    const auto=g.auto==='sleep7',on=isOn(g),wd=habitDays(g,wk).size,tg=num(g.target)||7,st=habStreak(g);
+    return`<div class="hab-r${on?' on':''}"><button class="hab-ck" ${auto?'disabled title="Se marca solo con tu sueño"':`onclick="habTap('${g.id}','${ds}')"`} aria-label="Marcar">${on?'✓':''}</button><div class="hab-t"><b>${escH(g.title)}</b><span>${wd}/${tg} esta semana${st>1?' · 🔥 '+st:''}${auto?' · auto':''}</span></div></div>`}).join('')+`</div>`;
 }
 async function habTap(id,ds){await toggleHabit(id,ds);renderPlan()}
 const _rg7=refreshGoalViews;refreshGoalViews=function(){_rg7();try{renderPlan()}catch{}};
