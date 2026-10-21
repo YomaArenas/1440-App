@@ -56,3 +56,7 @@
 ## v2.7
 - **Ya lo hice:** cada bloque pendiente (hoy o días pasados) tiene ✓; confirma o cambia la hora y se guarda como tiempo real y el bloque queda hecho. También en "Cerrar el día".
 - **Hábitos de hoy:** las metas tipo Hábito aparecen en la tarjeta del plan con casilla, avance semanal y racha. Las automáticas (sueño) se marcan solas. Una meta de hábito con horas semanales suma hábito + bloques.
+
+## v2.8 Sprints
+- Dentro de un bloque (o actividad en marcha) puedes iniciar un sprint de 15, 25, 50 min o libre, con una línea opcional "¿Qué vas a sacar?" y, si el área tiene proyectos, elegir el proyecto (el tiempo pasa a ese proyecto sin cerrar el bloque). El sprint no duplica tiempo: cuenta dentro del bloque.
+- Al terminar suena y avisa: ✓ Lo saqué / +10 min / ⏳ Sigue. Tras sprints de 50 min o más se inicia una pausa de 5 min (el tiempo de pausa no cuenta). Cuenta regresiva también en el título de la pestaña. Solo funciona con la app abierta.

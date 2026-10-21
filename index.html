@@ -654,6 +654,13 @@ b,strong{font-weight:500}
 .hab-t{display:flex;flex-direction:column;min-width:0}.hab-t b{font-weight:500;font-size:.92rem}.hab-t span{font-size:.76rem;color:var(--t2)}
 .gm{display:flex;align-items:center;gap:.6rem}.gm-main{flex:1;min-width:0}.gm-go{position:static!important;flex-shrink:0}.gm-s{flex-wrap:wrap}
 .pb .pb-go,.pb .pb-ok{width:28px;height:28px}.pb .pbd{padding-left:0}
+.sp{margin-top:.8rem;padding:.7rem .8rem;border-radius:14px;background:rgba(160,139,230,.08);border:1px solid rgba(160,139,230,.28)}
+.sp.on{border-color:var(--cyan);background:rgba(111,180,209,.07)}.sp.end{border-color:var(--ok)}
+.sp-h{font-size:.85rem;color:var(--t2);margin-bottom:.45rem}
+.sp input,.sp select{width:100%;margin-bottom:.45rem;font-size:.9rem}
+.sp-b{display:flex;gap:.4rem;flex-wrap:wrap}.sp-c{display:flex;align-items:center;gap:.8rem;margin-bottom:.5rem}
+#spT{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:400;color:var(--t)}.sp-bar{flex:1;height:6px}
+.sp-chip{border-radius:999px!important}
 </style>
 </head>
 <body>
@@ -2532,7 +2539,7 @@ function renderNow(){
       tb?`<button class="btn" onclick="nextFromBlock()">${nxt&&measurable(nxt)?'Pasar a '+escH(blkName(nxt)):'Terminar bloque'}</button>`:`<button class="btn" onclick="stopTimer()">⏹ Parar</button>`,
       (over?'<button class="btn btn-ghost" onclick="extendBlock()">+15 min</button>':'<button class="btn btn-ghost" onclick="pauseBlock()">⏸ Pausa</button>')+mtg+(tb?'<button class="btn btn-ghost" onclick="stopTimer()">⏹ Parar</button>':''));
   }else if(pz){
-    h=nwShell('EN PAUSA',escH(pz.name),'Pausaste a las '+hhmm(new Date(pz.ts).getHours()*60+new Date(pz.ts).getMinutes()),'⏸','Lo trabajado ya quedó guardado.',
+    h=nwShell(pz.brk?'PAUSA CORTA':'EN PAUSA',escH(pz.name),'Pausaste a las '+hhmm(new Date(pz.ts).getHours()*60+new Date(pz.ts).getMinutes()),pz.brk?'05:00':'⏸',pz.brk?'Levántate, toma agua. Te aviso a los 5 minutos.':'Lo trabajado ya quedó guardado.',
       '<button class="btn" onclick="resumePause()">▶ Reanudar</button>','<button class="btn btn-ghost" onclick="dropPause()">Descartar</button>'+mtg);
   }else if(cur){
     const a=areaById(cur.category_id);
@@ -2544,7 +2551,7 @@ function renderNow(){
       nxt&&measurable(nxt)?`<button class="btn" onclick="startBlock('${nxt.id}')">▶ Empezar ya</button>`:`<button class="btn" onclick="openBlock(null,'day')">+ Bloque</button>`,
       (nxt&&measurable(nxt)?`<button class="btn btn-ghost" onclick="openBlock(null,'day')">+ Bloque</button>`:'')+mtg);
   }
-  box.innerHTML=h;
+  box.innerHTML=h+spHtml();
 }
 function nowTick(){
   if(!user)return;
@@ -2555,7 +2562,7 @@ function nowTick(){
       try{if('Notification'in window&&Notification.permission==='granted')new Notification('Terminó tu bloque',{body:t.name+' · ¿pasamos al siguiente?'})}catch{}}
     if(late>=15*60000&&!_capping){_capping=true;stopTimer('cap').finally(()=>{_capping=false});return}
   }
-  const over=!!(t&&t.bEnd&&Date.now()>=t.bEnd),key=[t?.id,t?.blockId,over,curBlock()?.id,nextBlock()?.id,!!lsGet('1440_pause')].join('|');
+  const over=!!(t&&t.bEnd&&Date.now()>=t.bEnd),key=[t?.id,t?.blockId,over,t?.sp?.s,t?.sp?.ended,curBlock()?.id,nextBlock()?.id,!!lsGet('1440_pause')].join('|');
   if(key!==_nowKey){_nowKey=key;renderNow()}
   const m=nowMin();if(m!==_minKey){_minKey=m;renderPlan()}
   if(t&&timerStart){
@@ -2592,9 +2599,9 @@ async function extendBlock(){
   const t=user.active_timer;if(!t)return;t.bEnd=Date.now()+15*60000;_nudged=null;
   await sb.from('users').update({active_timer:t}).eq('id',user.id);planRefresh();
 }
-async function pauseBlock(){
+async function pauseBlock(brk){
   const t=user.active_timer;if(!t)return;
-  lsSet('1440_pause',{blockId:t.blockId||null,id:t.id,type:t.type,name:t.name,meta:t.meta,goalId:t.goalId||null,catId:t.catId||null,ts:Date.now()});
+  lsSet('1440_pause',{brk:brk?Date.now()+brk*60000:null,blockId:t.blockId||null,id:t.id,type:t.type,name:t.name,meta:t.meta,goalId:t.goalId||null,catId:t.catId||null,ts:Date.now()});
   _keep=true;try{await stopTimer()}finally{_keep=false}planRefresh();
 }
 async function resumePause(){
@@ -2947,6 +2954,63 @@ function habHtml(ds){
 }
 async function habTap(id,ds){await toggleHabit(id,ds);renderPlan()}
 const _rg7=refreshGoalViews;refreshGoalViews=function(){_rg7();try{renderPlan()}catch{}};
+
+/* ── v2.8: sprints (pomodoro) dentro del bloque ── */
+const mmss=sec=>{sec=Math.max(0,Math.round(sec));return String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0')};
+const spNotify=(t,b)=>{try{if('Notification'in window&&Notification.permission==='granted')new Notification(t,{body:b})}catch{}};
+function spCount(){try{return JSON.parse(localStorage.getItem('1440_spl_'+today())||'[]').length}catch{return 0}}
+function spLog(o){try{const k='1440_spl_'+today(),a=JSON.parse(localStorage.getItem(k)||'[]');a.push(o);localStorage.setItem(k,JSON.stringify(a))}catch{}}
+function spHtml(){
+  if(!user||lsGet('1440_pause'))return'';
+  const t=user.active_timer,cur=curBlock(),sp=t&&t.sp,n=spCount();
+  if(sp&&sp.ended)return`<div class="sp end"><div class="sp-h">⏱ Sprint ${sp.n} terminado${sp.intent?' · '+escH(sp.intent):''}. ¿Cómo te fue?</div><div class="sp-b"><button class="btn btn-sm" onclick="spDone(true)">✓ Lo saqué</button><button class="btn btn-ghost btn-sm" onclick="spMore()">+10 min</button><button class="btn btn-ghost btn-sm" onclick="spDone(false)">⏳ Sigue</button></div></div>`;
+  if(sp)return`<div class="sp on"><div class="sp-h">Sprint ${sp.n} de hoy · ${sp.d?sp.d+' min':'libre'}${sp.intent?' · '+escH(sp.intent):''}</div><div class="sp-c"><span id="spT">--:--</span><div class="nw-bar sp-bar"><i id="spB"></i></div></div><div class="sp-b"><button class="btn btn-ghost btn-sm" onclick="spDone(null)">Terminar sprint</button></div></div>`;
+  const bid=t?t.blockId:(cur&&measurable(cur)?cur.id:null);
+  if(!t&&!bid)return'';
+  const b=bid?db.plan.find(x=>x.id===bid):null,g=b&&b.goal_id?goalById(b.goal_id):null,area=b?(g?(g.category_id||b.category_id):b.category_id):null;
+  const pj=b?db.projects.filter(p=>p.category_id===area):[];
+  const sel=pj.length?`<select id="spPj"><option value="">Proyecto: el del bloque</option>${pj.map(p=>`<option value="${p.id}"${t&&t.type==='project'&&t.id===p.id?' selected':''}>${escH(p.name)}</option>`).join('')}</select>`:'';
+  return`<div class="sp"><div class="sp-h">Sprint de enfoque${n?' · '+n+' hoy':''}</div><input id="spInt" maxlength="80" placeholder="¿Qué vas a sacar? (opcional)">${sel}<div class="sp-b">${[15,25,50].map(m=>`<button class="btn btn-ghost btn-sm sp-chip" onclick="startSprint(${m})">▶ ${m}</button>`).join('')}<button class="btn btn-ghost btn-sm sp-chip" onclick="startSprint(0)">▶ Libre</button></div></div>`;
+}
+async function startSprint(mins){
+  const intent=($('spInt')?.value||'').trim(),pj=$('spPj')?.value||'';
+  let t=user.active_timer;const cur=curBlock(),bid=t?t.blockId:(cur&&measurable(cur)?cur.id:null);
+  if(pj&&bid){
+    const b=db.plan.find(x=>x.id===bid),p=db.projects.find(x=>x.id===pj),a=areaById(p.category_id);
+    if(!(t&&t.type==='project'&&t.id===pj)){const bEnd=(t&&t.bEnd)||Math.max(midnight()+b.end_min*60000,Date.now()+10*60000);
+      _keep=true;try{await startTimer(pj,'project',p.name,a?a.name:'Proyecto',{blockId:bid,bEnd})}finally{_keep=false}}
+  }else if(!t){if(!bid)return showToast('Elige primero un bloque o una actividad',true);await startBlock(bid)}
+  t=user.active_timer;if(!t)return;
+  t.sp={s:Date.now(),d:mins,intent,n:spCount()+1};
+  await sb.from('users').update({active_timer:t}).eq('id',user.id);
+  try{if('Notification'in window&&Notification.permission==='default')Notification.requestPermission()}catch{}
+  _nowKey='';renderNow();planRefresh();
+}
+async function spMore(){const t=user.active_timer;if(!t||!t.sp)return;t.sp.d+=10;delete t.sp.ended;await sb.from('users').update({active_timer:t}).eq('id',user.id);_nowKey='';renderNow()}
+async function spDone(ok){
+  const t=user.active_timer;if(!t||!t.sp)return;const sp=t.sp;
+  spLog({intent:sp.intent||'',d:sp.d,ok,name:t.name,at:Date.now()});
+  delete t.sp;
+  if(ok===false&&sp.d&&sp.d<50){t.sp={s:Date.now(),d:sp.d,intent:sp.intent,n:spCount()+1}}
+  await sb.from('users').update({active_timer:t}).eq('id',user.id);
+  if(sp.d>=50&&!t.sp){await pauseBlock(5);showToast('Pausa de 5 min · descansa 😮‍💨');return}
+  _nowKey='';renderNow();showToast(ok?'¡Sprint cumplido! ✓':'Sprint guardado')
+}
+function spTick(){
+  if(!user)return;
+  const pz=lsGet('1440_pause');
+  if(pz&&pz.brk){const left=Math.ceil((pz.brk-Date.now())/1000),T=$('nwT');
+    if(left<=0&&!pz.rang){pz.rang=1;lsSet('1440_pause',pz);beep(880,120,.2);setTimeout(()=>beep(1100,120,.2),180);spNotify('Fin de la pausa','¿Seguimos?')}
+    if(T)T.textContent=mmss(left)}
+  const t=user.active_timer,sp=t&&t.sp;if(!sp)return;
+  const el=Date.now()-sp.s;
+  if(sp.d){const left=sp.d*60000-el;
+    if(left<=0&&!sp.ended){sp.ended=true;sb.from('users').update({active_timer:t}).eq('id',user.id).then(()=>{});beep(880,120,.2);setTimeout(()=>beep(1100,120,.2),180);spNotify('Sprint terminado ⏱',(sp.intent||t.name)+' · ¿lo sacaste?');_nowKey='';renderNow();document.title='1440';return}
+    const T=$('spT'),B=$('spB');if(T)T.textContent=mmss(left/1000);if(B)B.style.width=Math.min(100,el/(sp.d*60000)*100)+'%';
+    document.title='⏱ '+mmss(left/1000)+' · '+(t.name||'')}
+  else{const T=$('spT'),B=$('spB');if(T)T.textContent=mmss(el/1000);if(B)B.style.width='0';document.title='⏱ '+mmss(el/1000)+' · '+(t.name||'')}
+}
+const _nt8=nowTick;nowTick=function(){_nt8();spTick()};
 </script>
 </body>
 </html>
