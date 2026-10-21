@@ -644,6 +644,16 @@ b,strong{font-weight:500}
  .hdr-mantra .hdr-mv,.hdr-mantra .hdr-mph{font-size:.74rem!important;white-space:normal!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25}
  .hstat:nth-child(2){display:none}
 }
+.pb-ok{color:var(--ok)!important}
+.hab{margin-top:.7rem;border-top:1px solid var(--bdr);padding-top:.6rem;flex-shrink:0;max-height:34%;overflow-y:auto}
+.hab-hd{display:flex;justify-content:space-between;align-items:center;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);margin-bottom:.35rem}
+.hab-r{display:flex;align-items:center;gap:.6rem;padding:.35rem .1rem}
+.hab-ck{width:26px;height:26px;border-radius:8px;border:1.5px solid var(--bdr);background:none;color:#0b1220;cursor:pointer;flex-shrink:0;font-size:.85rem;line-height:1}
+.hab-r.on .hab-ck{background:var(--ok);border-color:var(--ok)}
+.hab-ck:disabled{cursor:default;opacity:.85}
+.hab-t{display:flex;flex-direction:column;min-width:0}.hab-t b{font-weight:500;font-size:.92rem}.hab-t span{font-size:.76rem;color:var(--t2)}
+.gm{display:flex;align-items:center;gap:.6rem}.gm-main{flex:1;min-width:0}.gm-go{position:static!important;flex-shrink:0}.gm-s{flex-wrap:wrap}
+.pb .pb-go,.pb .pb-ok{width:28px;height:28px}.pb .pbd{padding-left:0}
 </style>
 </head>
 <body>
@@ -2115,7 +2125,7 @@ function renderHomeGoals(){
   box.innerHTML=h;
 }
 function goalMini(g){const p=gProg(g),a=areaById(g.category_id),col=a?.color||'var(--cyan)';const on=user?.active_timer&&user.active_timer.goalId===g.id;
-  return`<div class="gm"><div class="gm-main"><div class="gm-t">${g.is_focus?'★ ':''}${escH(g.title)}</div><div class="gm-s"><div class="pbar"><div style="width:${p.pct*100}%;background:${col}"></div></div><span>${escH(p.main)}</span>${p.st&&p.st!=='mute'?`<span class="pill ${p.st}">${ST_LBL[p.st]}</span>`:''}</div></div>${g.kind==='task'?`<button class="gm-go" style="border-color:var(--ok);color:var(--ok)" onclick="toggleTask('${g.id}')" title="Marcar como hecha" aria-label="Marcar como hecha">✓</button>`:on?`<button class="gm-go on" onclick="stopTimer()" aria-label="Parar">■</button>`:`<button class="gm-go" onclick="startGoal('${g.id}')" title="Empezar a trabajar en esto" aria-label="Empezar">▶</button>`}</div>`}
+  return`<div class="gm"><div class="gm-main"><div class="gm-t">${g.is_focus?'★ ':''}${escH(g.title)}</div><div class="gm-s"><div class="pbar"><div style="width:${p.pct*100}%;background:${col}"></div></div><span>${escH(p.main)}</span>${p.st&&p.st!=='mute'?`<span class="pill ${p.st}">${ST_LBL[p.st]}</span>`:''}</div></div>${g.kind==='habit'&&!g.auto&&!(g.weekly_hours>0)?`<button class="gm-go" style="border-color:var(--ok);color:var(--ok)" onclick="toggleHabit('${g.id}',today())" title="Marcar hoy" aria-label="Marcar hoy">✓</button>`:g.kind==='task'?`<button class="gm-go" style="border-color:var(--ok);color:var(--ok)" onclick="toggleTask('${g.id}')" title="Marcar como hecha" aria-label="Marcar como hecha">✓</button>`:on?`<button class="gm-go on" onclick="stopTimer()" aria-label="Parar">■</button>`:`<button class="gm-go" onclick="startGoal('${g.id}')" title="Empezar a trabajar en esto" aria-label="Empezar">▶</button>`}</div>`}
 
 /* ── METAS ── */
 function renderGoals(){
@@ -2421,6 +2431,16 @@ doLogout=function(){document.title='1440';db.goals=[];db.logs=[];db.reviews=[];d
 </div>
 
 <!-- CIERRE DEL DÍA -->
+<div class="overlay" id="didM">
+  <div class="modal"><div class="mhd"><h2>Ya lo hice</h2><button class="mclose" onclick="closeM('didM')">×</button></div>
+    <input type="hidden" id="didId"><input type="hidden" id="didClose">
+    <p id="didT" style="font-size:1.05rem;margin-bottom:.4rem"></p>
+    <p style="color:var(--t2);font-size:.9rem;margin-bottom:.8rem">Confirma la hora real. Se guarda como tiempo trabajado en su área, proyecto o meta.</p>
+    <div class="fg"><label for="didS">Desde</label><input type="time" id="didS" oninput="didDur()"></div><div class="fg"><label for="didE">Hasta</label><input type="time" id="didE" oninput="didDur()"></div>
+    <div id="didD" style="color:var(--t2);font-size:.9rem;margin-top:.5rem"></div>
+    <div class="mbtns"><button class="btn btn-ghost" onclick="closeM('didM')">Cancelar</button><button class="btn" onclick="saveDid()">Guardar</button></div>
+  </div>
+</div>
 <div class="overlay" id="closeM">
   <div class="modal"><div class="mhd"><h2>Cerrar el día</h2><button class="mclose" onclick="closeM('closeM')">×</button></div>
     <div id="clBody"></div>
@@ -2489,8 +2509,9 @@ function renderPlan(){
       const a=areaById(b.category_id),now=isT&&b.status==='pending'&&b.start_min<=n&&n<b.end_min,late=isT&&b.status==='pending'&&b.end_min<=n&&b.kind==='work';
       const st=b.status==='done'?'✓ hecho':b.status==='moved'?'→ pasó a mañana':now?'ahora':late?'sin hacer':(b.kind==='meeting'?'reunión · '+(a?a.name:''):(a?a.name:''));
       const col=a?.color?`style="border-left-color:${a.color}"`:'';
-      return pre+`<div class="pb ${b.kind}${b.status!=='pending'?' done':''}${now?' now':''}${late?' late':''}" ${col} onclick="openBlock('${b.id}')"><div><div class="pbt">${hhmm(b.start_min)}–${hhmm(b.end_min)} · ${escH(blkName(b))}</div><div class="pbs">${escH(st)}</div></div><span class="pbd">${fmtM(b.end_min-b.start_min)}</span>${isT&&b.status==='pending'&&measurable(b)&&!user.active_timer?`<button class="pb-go" onclick="event.stopPropagation();startBlock('${b.id}')" aria-label="Empezar">▶</button>`:''}</div>`}).join('')+(isT&&!_m&&bs.length&&!bs.some(x=>x.start_min<=n&&n<x.end_min)?`<div class="pnow">ahora · ${hhmm(n)}</div>`:'')+`</div>`;
+      return pre+`<div class="pb ${b.kind}${b.status!=='pending'?' done':''}${now?' now':''}${late?' late':''}" ${col} onclick="openBlock('${b.id}')"><div><div class="pbt">${hhmm(b.start_min)}–${hhmm(b.end_min)} · ${escH(blkName(b))}</div><div class="pbs">${escH(st)}</div></div><span class="pbd">${fmtM(b.end_min-b.start_min)}</span>${b.status==='pending'&&measurable(b)?`<button class="pb-go pb-ok" title="Ya lo hice" onclick="event.stopPropagation();openDid('${b.id}')">✓</button>`:''}${isT&&b.status==='pending'&&measurable(b)&&!user.active_timer?`<button class="pb-go" onclick="event.stopPropagation();startBlock('${b.id}')" aria-label="Empezar">▶</button>`:''}</div>`}).join('')+(isT&&!_m&&bs.length&&!bs.some(x=>x.start_min<=n&&n<x.end_min)?`<div class="pnow">ahora · ${hhmm(n)}</div>`:'')+`</div>`;
   }
+  h+=habHtml(ds);
   h+=`<div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.8rem"><button class="btn btn-sm" onclick="openBlock(null,'day')">+ Bloque</button><button class="btn btn-ghost btn-sm" onclick="openTpl()">Plantillas</button>${isT?`<button class="btn btn-ghost btn-sm" onclick="openClose()">Cerrar día</button><button class="btn btn-ghost btn-sm" onclick="openSiestaModal()">💤 Siesta</button>`:''}</div></div>`;
   box.innerHTML=h;
 }
@@ -2697,7 +2718,7 @@ function openClose(){
   const ds=today(),bs=dayBlocks(ds),done=bs.filter(b=>b.status==='done'),pend=bs.filter(b=>b.status==='pending'&&b.kind==='work');
   const m=db.entries.filter(e=>e.date===ds&&e.type!=='sleep').reduce((s,e)=>s+eMin(e),0);
   $('clBody').innerHTML=`<p style="font-size:1.05rem;margin-bottom:.6rem">Hoy cumpliste <b>${done.filter(b=>b.kind==='work').length}</b> de <b>${done.filter(b=>b.kind==='work').length+pend.length}</b> bloques de trabajo y registraste <b>${fmtM(m)}</b>.</p>
-    ${pend.length?`<div style="color:var(--t2);font-size:.95rem;margin-bottom:.4rem">Quedaron pendientes:</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:1rem">${pend.map(b=>`<div class="pb"><div class="pbt">${hhmm(b.start_min)}–${hhmm(b.end_min)} · ${escH(blkName(b))}</div></div>`).join('')}</div>`:`<p style="color:var(--ok);margin-bottom:1rem">Sin pendientes. Buen cierre 👏</p>`}`;
+    ${pend.length?`<div style="color:var(--t2);font-size:.95rem;margin-bottom:.4rem">Quedaron pendientes:</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:1rem">${pend.map(b=>`<div class="pb"><div class="pbt">${hhmm(b.start_min)}–${hhmm(b.end_min)} · ${escH(blkName(b))}</div></div><button class="btn btn-sm" onclick="openDid('${b.id}',1)">✓ Lo hice</button></div>`).join('')}</div>`:`<p style="color:var(--ok);margin-bottom:1rem">Sin pendientes. Buen cierre 👏</p>`}`;
   $('clMove').style.display=pend.length?'':'none';openM('closeM');
 }
 async function movePending(){
@@ -2882,6 +2903,50 @@ async function doCopyTpl(){
   if(dows.some(d=>tplBlocks(d).length)&&!await askConfirm('¿Reemplazar el plan de esos días?','Los días marcados con ● ya tienen bloques.','📋','Reemplazar'))return;
   await copyTpl(tplBlocks(tplDow),dows);$('tplCopy').innerHTML='';renderTpl();showToast('Plantilla copiada ✓');
 }
+
+/* ── v2.7: marcar bloque hecho a posteriori + hábitos de hoy ── */
+const hm2=v=>{const[h,m]=(v||'').split(':').map(Number);return isNaN(h)?null:h*60+m};
+const mm2=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+function didDur(){const a=hm2($('didS').value),b=hm2($('didE').value);$('didD').textContent=(a!=null&&b!=null&&b>a)?'Duración: '+fmtM(b-a):'Revisa las horas: "Hasta" debe ser después de "Desde".'}
+function openDid(id,fromClose){
+  const b=db.plan.find(x=>x.id===id);if(!b)return;
+  $('didId').value=id;$('didClose').value=fromClose?'1':'';
+  $('didT').innerHTML='<b>'+escH(blkName(b))+'</b> · '+fmtDay(b.date||planDs||today());
+  $('didS').value=mm2(b.start_min);$('didE').value=mm2(b.end_min);didDur();
+  if(fromClose)closeM('closeM');openM('didM');
+}
+async function saveDid(){
+  const id=$('didId').value,b=db.plan.find(x=>x.id===id);if(!b)return;
+  const s0=hm2($('didS').value),e0=hm2($('didE').value);
+  if(s0==null||e0==null||e0<=s0)return showToast('Revisa las horas',true);
+  const ds=b.date||planDs||today(),[Y,M,D]=ds.split('-').map(Number);
+  const st=new Date(Y,M-1,D,0,0).getTime()+s0*60000,en=new Date(Y,M-1,D,0,0).getTime()+e0*60000;
+  const g=b.goal_id?goalById(b.goal_id):null,cat=g?(g.category_id||b.category_id):b.category_id;
+  const pl={user_id:user.id,type:'tracked',description:blkName(b),start_time:new Date(st).toISOString(),end_time:new Date(en).toISOString(),duration:(e0-s0)*60,date:ds};
+  if(g){pl.goal_id=g.id;pl.category_id=cat||null}else if(b.project_id)pl.project_id=b.project_id;else pl.category_id=b.category_id;
+  const{data,error}=await sb.from('time_entries').insert([pl]).select().single();
+  if(error)return showToast('No se pudo guardar el tiempo',true);
+  db.entries.unshift(data);await markBlock(id,'done');
+  closeM('didM');renderAll();if(typeof refreshGoalViews==='function')refreshGoalViews();
+  showToast('Bloque registrado ✓');if($('didClose').value)openClose();
+}
+function habList(){const q=quarter().key;return db.goals.filter(g=>g.kind==='habit'&&!g.done&&(g.quarter===q||!g.quarter))}
+function habStreak(g){
+  const auto=g.auto==='sleep7',days=auto?habitDays(g,{start:addDays(today(),-60),end:today()}):new Set(db.logs.filter(l=>l.goal_id===g.id&&+l.value>=1).map(l=>l.date));
+  let d=today(),n=0;if(!days.has(d))d=addDays(d,-1);
+  while(days.has(d)){n++;d=addDays(d,-1)}return n}
+function habHtml(ds){
+  const hs=habList();
+  const head=`<div class="hab-hd"><span>Hábitos</span><button class="btn btn-ghost btn-xs" onclick="goPage('goals')">${hs.length?'Gestionar':'+ Crear hábito'}</button></div>`;
+  if(!hs.length)return`<div class="hab">${head}<div class="pb-empty" style="padding:.4rem 0">Crea una meta de tipo "Hábito" (ej. dormir temprano) y aparecerá aquí para marcarla cada día.</div></div>`;
+  const wk={start:weekStart(),end:addDays(weekStart(),6)};
+  return`<div class="hab">${head}`+hs.map(g=>{
+    const auto=g.auto==='sleep7',on=auto?habitDays(g,{start:ds,end:ds}).has(ds):!!db.logs.find(l=>l.goal_id===g.id&&l.date===ds&&+l.value>=1);
+    const wd=habitDays(g,wk).size,tg=num(g.target)||7,st=habStreak(g),a=areaById(g.category_id);
+    return`<div class="hab-r${on?' on':''}"><button class="hab-ck" ${auto?'disabled title="Se marca solo con tu sueño"':`onclick="habTap('${g.id}','${ds}')"`} aria-label="Marcar">${on?'✓':''}</button><div class="hab-t"><b>${escH(g.title)}</b><span>${wd}/${tg} esta semana${st>1?' · 🔥 '+st+' días':''}${auto?' · automático':''}${a?' · '+escH(a.name):''}</span></div></div>`}).join('')+`</div>`;
+}
+async function habTap(id,ds){await toggleHabit(id,ds);renderPlan()}
+const _rg7=refreshGoalViews;refreshGoalViews=function(){_rg7();try{renderPlan()}catch{}};
 </script>
 </body>
 </html>

@@ -52,3 +52,7 @@
 - Confirmar sueño: se oculta al instante y se recuerda en el navegador aunque falle el guardado.
 - Escritorio: las columnas del Inicio (incluida Mis metas) ahora hacen scroll.
 - Móvil: el mantra ocupa su espacio (2 líneas máx.) y se oculta la etiqueta y el chip de sueño del encabezado.
+
+## v2.7
+- **Ya lo hice:** cada bloque pendiente (hoy o días pasados) tiene ✓; confirma o cambia la hora y se guarda como tiempo real y el bloque queda hecho. También en "Cerrar el día".
+- **Hábitos de hoy:** las metas tipo Hábito aparecen en la tarjeta del plan con casilla, avance semanal y racha. Las automáticas (sueño) se marcan solas. Una meta de hábito con horas semanales suma hábito + bloques.
