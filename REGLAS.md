@@ -47,3 +47,8 @@
 
 ## Ajustes v2.5
 - Mantra más pequeño (.72rem). Botones secundarios de "Ahora" (+ Bloque, Reunión, Pausa) en una sola fila, ajustados a su contenido. Pulido visual: tarjeta Ahora con degradado, botón principal con brillo suave, barra con degradado, hovers sutiles.
+
+## Arreglos v2.6
+- Confirmar sueño: se oculta al instante y se recuerda en el navegador aunque falle el guardado.
+- Escritorio: las columnas del Inicio (incluida Mis metas) ahora hacen scroll.
+- Móvil: el mantra ocupa su espacio (2 líneas máx.) y se oculta la etiqueta y el chip de sueño del encabezado.
