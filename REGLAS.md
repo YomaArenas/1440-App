@@ -67,3 +67,7 @@
 
 ## v3.0 Horas fáciles
 - Todos los campos de hora aceptan escribir: "930", "9:30", "21", "9p"; botones − / + de 15 min; flechas ↑↓ (Shift = 1 min). En bloques y "Ya lo hice" hay atajos de duración (15m…4h) que calculan la hora de fin.
+
+## v3.1 Móvil
+- Orden del Inicio en móvil/tablet: aviso de sueño → minutos del día → Ahora (compacto) → Plan de hoy → Otras cosas + Registro manual (unidos) → Tu semana y Mis metas. El sprint es un acordeón (abierto en escritorio).
+- Corregido: el modal "Ajustar sueño" estaba anidado dentro del modal del mantra y no se veía.

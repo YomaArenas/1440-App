@@ -672,6 +672,29 @@ b,strong{font-weight:500}
 .tw input.bad{border-color:var(--del)!important}
 #planM .r2{grid-template-columns:1fr 1fr!important}#planM .r2 .fg:last-child{grid-column:1/-1;display:flex;align-items:center;gap:.6rem;margin:-.2rem 0 0}#planM .r2 .fg:last-child label{margin:0}
 .tw button{flex:0 0 30px!important}.tw input{padding-left:.3rem!important;padding-right:.3rem!important;min-width:70px}
+
+/* v3.1 móvil/tablet: orden estratégico */
+.sp>summary{cursor:pointer;list-style:none;margin-bottom:0}.sp>summary::-webkit-details-marker{display:none}.sp[open]>summary{margin-bottom:.45rem}
+#sleepCard:empty{display:none}
+@media(max-width:1024px){
+ .hm-grid{display:flex!important;flex-direction:column;gap:10px;height:auto!important}
+ .hm-grid>section{overflow:visible!important}
+ .hm-grid>section.hm-mid{display:contents}
+ #sleepCard{order:0}.hm-mid .prog-wrap{order:1;display:block!important;padding:.6rem .9rem!important}
+ #nowCard{order:2}#planCol{order:3}.hm-mid .split{order:4}.hm-side{order:5}
+ .prog-legend{display:none!important}.prog-bar{height:12px!important}.prog-num{font-size:1.15rem!important}
+ .nw-card{min-height:0!important;padding:.75rem .9rem!important}
+ .nw-t{font-size:1.1rem!important}.nw-clk #nwT{font-size:1.35rem!important}.nw-meta,.nw-note{font-size:.78rem!important}.nw-bar{margin:.45rem 0!important}
+ .nw-acts .btn,.nw-row2 .btn{padding:.42rem .9rem!important;font-size:.85rem!important}
+ .sp{margin-top:.5rem;padding:.5rem .65rem}.sp-c{margin-bottom:.35rem}#spT{font-size:1.2rem}
+ #planCol .pl-card{height:auto!important;padding:.9rem 1rem}
+ .hm-mid .split{display:flex!important;flex-direction:column;gap:0!important;margin:0!important}
+ .split .qt-card{border-radius:16px 16px 0 0!important;border-bottom:0!important;padding:.9rem 1rem}
+ .split .rm-card{border-radius:0 0 16px 16px!important;border-top:1px dashed var(--bdr);min-height:0!important;padding:.65rem 1rem!important;flex-direction:row;justify-content:center;gap:.7rem}
+ .split .rm-card,.split .qt-card{width:100%;box-sizing:border-box}
+ .qt-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.5rem}.qt-item .qt-nm{font-size:.88rem}
+ .qt-item{padding:.5rem .6rem!important}.qt-st{margin-left:0!important}
+}
 </style>
 </head>
 <body>
@@ -1172,6 +1195,7 @@ b,strong{font-weight:500}
     </div>
     <div class="mbtns"><button class="btn btn-ghost" onclick="closeM('mantraM')">Cancelar</button><button class="btn" onclick="saveMantra()">Guardar</button></div>
   </div>
+</div>
 
 <!-- EDITAR SUEÑO DESDE TIMELINE -->
 <div class="overlay" id="tlSleepEdit">
@@ -1194,7 +1218,6 @@ b,strong{font-weight:500}
   </div>
 </div>
 
-</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -2987,7 +3010,7 @@ function spHtml(){
   const b=bid?db.plan.find(x=>x.id===bid):null,g=b&&b.goal_id?goalById(b.goal_id):null,area=b?(g?(g.category_id||b.category_id):b.category_id):null;
   const pj=b?db.projects.filter(p=>p.category_id===area):[];
   const sel=pj.length?`<select id="spPj"><option value="">Proyecto: el del bloque</option>${pj.map(p=>`<option value="${p.id}"${t&&t.type==='project'&&t.id===p.id?' selected':''}>${escH(p.name)}</option>`).join('')}</select>`:'';
-  return`<div class="sp"><div class="sp-h">Sprint de enfoque${n?' · '+n+' hoy':''}</div><input id="spInt" maxlength="80" placeholder="¿Qué vas a sacar? (opcional)">${sel}<div class="sp-b">${[15,25,50].map(m=>`<button class="btn btn-ghost btn-sm sp-chip" onclick="startSprint(${m})">▶ ${m}</button>`).join('')}<button class="btn btn-ghost btn-sm sp-chip" onclick="startSprint(0)">▶ Libre</button></div></div>`;
+  return`<details class="sp"${innerWidth>1024?' open':''}><summary class="sp-h">⏱ Sprint de enfoque${n?' · '+n+' hoy':''}</summary><input id="spInt" maxlength="80" placeholder="¿Qué vas a sacar? (opcional)">${sel}<div class="sp-b">${[15,25,50].map(m=>`<button class="btn btn-ghost btn-sm sp-chip" onclick="startSprint(${m})">▶ ${m}</button>`).join('')}<button class="btn btn-ghost btn-sm sp-chip" onclick="startSprint(0)">▶ Libre</button></div></details>`;
 }
 async function startSprint(mins){
   const intent=($('spInt')?.value||'').trim(),pj=$('spPj')?.value||'';
