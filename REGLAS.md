@@ -64,3 +64,6 @@
 ## v2.9 Reordenar
 - ▲▼ en cada bloque pendiente del plan del día: intercambia con el vecino conservando la duración de cada uno y el hueco entre ambos. Solo ese día (la plantilla no cambia). Reuniones, bloques hechos o el bloque en marcha no se mueven.
 - Si empiezas con ▶ un bloque distinto al que toca ahora, pregunta si intercambia horarios o solo empieza.
+
+## v3.0 Horas fáciles
+- Todos los campos de hora aceptan escribir: "930", "9:30", "21", "9p"; botones − / + de 15 min; flechas ↑↓ (Shift = 1 min). En bloques y "Ya lo hice" hay atajos de duración (15m…4h) que calculan la hora de fin.
